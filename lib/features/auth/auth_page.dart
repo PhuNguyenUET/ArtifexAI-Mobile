@@ -47,30 +47,36 @@ class _AuthPageState extends State<AuthPage> {
       child: BlocBuilder<AuthController, AuthState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColor.backgroundWhite,
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 40),
-                    _buildHeader(context),
-                    const SizedBox(height: 32),
-                    _buildTabBar(context, state),
-                    const SizedBox(height: 28),
-                    if (state.activeTab == AuthTab.signIn)
-                      _buildSignInForm(context, state)
-                    else
-                      _buildSignUpForm(context, state),
-                    const SizedBox(height: 24),
-                    _buildDivider(context),
-                    const SizedBox(height: 24),
-                    _buildOAuthButtons(context, state),
-                    const SizedBox(height: 32),
-                  ],
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                const LavaBackground(),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 40),
+                        _buildHeader(context),
+                        const SizedBox(height: 32),
+                        _buildTabBar(context, state),
+                        const SizedBox(height: 28),
+                        if (state.activeTab == AuthTab.signIn)
+                          _buildSignInForm(context, state)
+                        else
+                          _buildSignUpForm(context, state),
+                        const SizedBox(height: 24),
+                        _buildDivider(context),
+                        const SizedBox(height: 24),
+                        _buildOAuthButtons(context, state),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           );
         },
@@ -83,14 +89,34 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildHeader(BuildContext context) {
     return Column(
       children: [
-        Image.asset(Assets.imgLaunch2, height: 64, width: 64),
-        const SizedBox(height: 16),
+        Container(
+          width: 88,
+          height: 88,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: AppColor.primary.withValues(alpha: 0.45),
+                blurRadius: 28,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: Image.asset(
+              Assets.img.appIcon.appIconBackground.path,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
         Text(
           'Artifex AI',
           style: GoogleFonts.inter(
             fontSize: 28,
             fontWeight: FontWeight.w700,
-            color: AppColor.primary,
+            color: AppColor.spaceTextPrimary,
           ),
         ),
         const SizedBox(height: 6),
@@ -98,7 +124,7 @@ class _AuthPageState extends State<AuthPage> {
           'Generate stunning game art with AI',
           style: GoogleFonts.inter(
             fontSize: 14,
-            color: AppColor.textSubtitle,
+            color: AppColor.spaceTextSecondary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -112,8 +138,9 @@ class _AuthPageState extends State<AuthPage> {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: AppColor.backgroundLight2,
+        color: AppColor.spaceCard,
         borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
+        border: Border.all(color: AppColor.spaceBorder),
       ),
       child: Row(
         children: [
@@ -147,16 +174,16 @@ class _AuthPageState extends State<AuthPage> {
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: isActive ? AppColor.backgroundWhite : Colors.transparent,
+            gradient: isActive
+                ? const LinearGradient(
+                    colors: [Color(0xFF2D2870), Color(0xFF1A1650)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isActive
-                ? [
-                    BoxShadow(
-                      color: AppColor.textTitle.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
+                ? [BoxShadow(color: AppColor.primary.withValues(alpha: 0.25), blurRadius: 8, offset: const Offset(0, 2))]
                 : null,
           ),
           alignment: Alignment.center,
@@ -165,7 +192,7 @@ class _AuthPageState extends State<AuthPage> {
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-              color: isActive ? AppColor.textTitle : AppColor.textSubtitle,
+              color: isActive ? AppColor.spaceTextPrimary : AppColor.spaceTextSecondary,
             ),
           ),
         ),
@@ -204,12 +231,15 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: state.obscurePassword,
             textInputAction: TextInputAction.done,
             prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColor.textSubtitle),
-            suffixIcon: GestureDetector(
-              onTap: () => context.read<AuthController>().toggleObscurePassword(),
-              child: Icon(
-                state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                size: 20,
-                color: AppColor.textSubtitle,
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () => context.read<AuthController>().toggleObscurePassword(),
+                child: Icon(
+                  state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  size: 20,
+                  color: AppColor.textSubtitle,
+                ),
               ),
             ),
             validator: (v) {
@@ -295,12 +325,15 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: state.obscurePassword,
             textInputAction: TextInputAction.next,
             prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColor.textSubtitle),
-            suffixIcon: GestureDetector(
-              onTap: () => context.read<AuthController>().toggleObscurePassword(),
-              child: Icon(
-                state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                size: 20,
-                color: AppColor.textSubtitle,
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () => context.read<AuthController>().toggleObscurePassword(),
+                child: Icon(
+                  state.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  size: 20,
+                  color: AppColor.textSubtitle,
+                ),
               ),
             ),
             validator: (v) {
@@ -317,12 +350,15 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: state.obscureConfirmPassword,
             textInputAction: TextInputAction.done,
             prefixIcon: const Icon(Icons.lock_outline, size: 20, color: AppColor.textSubtitle),
-            suffixIcon: GestureDetector(
-              onTap: () => context.read<AuthController>().toggleObscureConfirmPassword(),
-              child: Icon(
-                state.obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                size: 20,
-                color: AppColor.textSubtitle,
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: GestureDetector(
+                onTap: () => context.read<AuthController>().toggleObscureConfirmPassword(),
+                child: Icon(
+                  state.obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  size: 20,
+                  color: AppColor.textSubtitle,
+                ),
               ),
             ),
             validator: (v) {
@@ -366,18 +402,15 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildDivider(BuildContext context) {
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColor.borderDivider)),
+        Expanded(child: Divider(color: AppColor.spaceBorder)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             'or continue with',
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: AppColor.textSubtitle,
-            ),
+            style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextSecondary),
           ),
         ),
-        const Expanded(child: Divider(color: AppColor.borderDivider)),
+        Expanded(child: Divider(color: AppColor.spaceBorder)),
       ],
     );
   }
@@ -417,20 +450,16 @@ class _AuthPageState extends State<AuthPage> {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColor.borderBorder),
+          side: const BorderSide(color: AppColor.spaceBorder),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
           ),
-          backgroundColor: AppColor.backgroundWhite,
+          backgroundColor: AppColor.spaceCard,
         ),
         child: isLoading
             ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: AppColor.primary,
-                  strokeWidth: 2,
-                ),
+                height: 20, width: 20,
+                child: CircularProgressIndicator(color: AppColor.primary, strokeWidth: 2),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -442,7 +471,7 @@ class _AuthPageState extends State<AuthPage> {
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: AppColor.textLabel,
+                      color: AppColor.spaceTextPrimary,
                     ),
                   ),
                 ],
@@ -461,22 +490,16 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildGithubIcon() {
-    return const Icon(
-      Icons.code,
-      size: 20,
-      color: AppColor.textTitle,
-    );
+    return const Icon(Icons.code, size: 20, color: AppColor.spaceTextPrimary);
   }
-
-  // ─── Error Banner ─────────────────────────────────────────────────────────────
 
   Widget _buildErrorBanner(String message) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColor.alertErrorBackground,
+        color: AppColor.alertError.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
-        border: Border.all(color: AppColor.alertErrorBorder),
+        border: Border.all(color: AppColor.alertError.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -485,10 +508,7 @@ class _AuthPageState extends State<AuthPage> {
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: AppColor.alertError,
-              ),
+              style: GoogleFonts.inter(fontSize: 13, color: AppColor.alertError),
             ),
           ),
         ],
@@ -583,9 +603,5 @@ class _GoogleLogoPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-
-
-
 
 

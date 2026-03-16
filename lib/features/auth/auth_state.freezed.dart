@@ -321,8 +321,8 @@ class _AuthState implements AuthState {
       {this.loading = false,
       this.oauthLoading = false,
       this.activeTab = AuthTab.signIn,
-      this.obscurePassword = false,
-      this.obscureConfirmPassword = false,
+      this.obscurePassword = true,
+      this.obscureConfirmPassword = true,
       this.errorMessage});
 
   @override

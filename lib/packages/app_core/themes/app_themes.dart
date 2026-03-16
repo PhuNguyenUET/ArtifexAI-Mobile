@@ -12,8 +12,9 @@ class AppTheme {
   }
 
   static ThemeData buildLightTheme() {
-    return ThemeData.light().copyWith(
+    return ThemeData.dark().copyWith(
       primaryColor: AppColor.primary,
+      scaffoldBackgroundColor: AppColor.spaceBg,
       colorScheme: lightColorScheme,
       canvasColor: Colors.transparent,
       extensions: <ThemeExtension>[lightThemeExtension],
@@ -23,19 +24,89 @@ class AppTheme {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
+      // ── Bottom sheets ───────────────────────────────────────────────────
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         modalBackgroundColor: Colors.transparent,
         modalBarrierColor: Colors.transparent,
       ),
-      appBarTheme: AppBarTheme(
-        color: AppColor.primary,
+      // ── App bar ─────────────────────────────────────────────────────────
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColor.spaceCard,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColor.textTitle, size: 24),
-        titleTextStyle: AppTextStyle.heading6,
-        scrolledUnderElevation: 2,
+        iconTheme: IconThemeData(color: AppColor.spaceTextPrimary, size: 24),
+      ),
+      // ── Input fields ─────────────────────────────────────────────────────
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColor.spaceInputFill,
+        hintStyle: const TextStyle(color: AppColor.spaceTextHint),
+        labelStyle: const TextStyle(color: AppColor.spaceTextSecondary),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColor.spaceBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColor.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColor.alertError),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColor.alertError, width: 1.5),
+        ),
+      ),
+      // ── Dialogs ──────────────────────────────────────────────────────────
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColor.spaceCardHigh,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColor.spaceBorder),
+        ),
+        titleTextStyle: const TextStyle(
+          color: AppColor.spaceTextPrimary,
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+        ),
+        contentTextStyle: const TextStyle(
+          color: AppColor.spaceTextSecondary,
+          fontSize: 14,
+        ),
+      ),
+      // ── Date picker ───────────────────────────────────────────────────────
+      datePickerTheme: const DatePickerThemeData(
+        backgroundColor: AppColor.spaceCardHigh,
+        headerBackgroundColor: AppColor.spaceCard,
+        headerForegroundColor: AppColor.spaceTextPrimary,
+        dayForegroundColor: WidgetStatePropertyAll(AppColor.spaceTextPrimary),
+        todayForegroundColor: WidgetStatePropertyAll(AppColor.primary),
+        dayBackgroundColor: WidgetStatePropertyAll(Colors.transparent),
+        todayBackgroundColor: WidgetStatePropertyAll(Colors.transparent),
+        todayBorder: BorderSide(color: AppColor.primary),
+        surfaceTintColor: Colors.transparent,
+        dividerColor: AppColor.spaceBorder,
+      ),
+      // ── Snackbar ──────────────────────────────────────────────────────────
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AppColor.spaceCardHigh,
+        contentTextStyle: const TextStyle(color: AppColor.spaceTextPrimary),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColor.spaceBorder),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+      // ── Progress indicator ────────────────────────────────────────────────
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColor.primary,
+        linearTrackColor: AppColor.spaceBorder,
       ),
       textTheme: AppTextStyle.textTheme,
     );
@@ -78,18 +149,16 @@ const lightColorScheme = ColorScheme(
   errorContainer: AppColor.alertErrorSub,
   onError: AppColor.alertErrorBackground,
   onErrorContainer: AppColor.alertErrorBackground,
-  background: AppColor.backgroundWhite,
-  onBackground: Color(0xFF001C38),
-  surface: AppColor.backgroundLight1,
-  onSurface: Color(0xFF001C38),
-  surfaceVariant: Color(0xFFEFE0CF),
-  onSurfaceVariant: Color(0xFF4F4539),
-  outline: Color(0xFF817567),
+  surface: AppColor.spaceBg,
+  onSurface: AppColor.spaceTextPrimary,
+  surfaceContainerHighest: AppColor.spaceCardHigh,
+  onSurfaceVariant: AppColor.spaceTextSecondary,
+  outline: AppColor.spaceBorder,
   onInverseSurface: Color(0xFFEAF1FF),
   inverseSurface: Color(0xFF00315B),
   inversePrimary: Color(0xFFFFBA45),
   shadow: Color(0xFF000000),
-  surfaceTint: Color(0xFF805600),
+  surfaceTint: Colors.transparent,
 );
 
 const lightThemeExtension = AppThemeExtension(
@@ -190,11 +259,9 @@ const darkColorScheme = ColorScheme(
   errorContainer: Color(0xFF93000A),
   onError: Color(0xFF690005),
   onErrorContainer: Color(0xFFFFDAD6),
-  background: Color(0xFF001C38),
-  onBackground: Color(0xFFD3E4FF),
   surface: Color(0xFF001C38),
   onSurface: Color(0xFFD3E4FF),
-  surfaceVariant: Color(0xFF4F4539),
+  surfaceContainerHighest: Color(0xFF4F4539),
   onSurfaceVariant: Color(0xFFD2C4B4),
   outline: Color(0xFF9B8F80),
   onInverseSurface: Color(0xFF001C38),

@@ -7,3 +7,13 @@ enum MimeType {
   @JsonValue('PNG')
   png,
 }
+
+extension MimeTypeJson on MimeType {
+  String toJson() {
+    const map = {
+      MimeType.jpeg: 'JPEG',
+      MimeType.png:  'PNG',
+    };
+    return map[this]!;
+  }
+}

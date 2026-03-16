@@ -18,3 +18,19 @@ enum ArtStyle {
   @JsonValue('CUSTOM')
   custom,
 }
+
+extension ArtStyleJson on ArtStyle {
+  String toJson() {
+    const map = {
+      ArtStyle.pixelated:      'PIXELATED',
+      ArtStyle.handDrawn:      'HAND_DRAWN',
+      ArtStyle.minimalist:     'MINIMALIST',
+      ArtStyle.anime:          'ANIME',
+      ArtStyle.cartoon:        'CARTOON',
+      ArtStyle.realistic:      'REALISTIC',
+      ArtStyle.hyperRealistic: 'HYPER_REALISTIC',
+      ArtStyle.custom:         'CUSTOM',
+    };
+    return map[this]!;
+  }
+}

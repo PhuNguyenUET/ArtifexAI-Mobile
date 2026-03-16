@@ -3,6 +3,22 @@ import '../../index.dart';
 abstract class Repository {
   static Local get local => Local.instance;
 
+  static NetworkSrc createNetworkSrc({required Local local}) {
+    return NetworkSrc.instance();
+  }
+
+  static Future<Repository> createRepository({
+    required AppEvent appEvent,
+    required Local local,
+  }) async {
+    NetworkSrc networkSrc = createNetworkSrc(local: local);
+
+    final apiService = ApiServiceImpl.instance(networkSrc.dioService,
+        networkSrc.downloadDioService, networkSrc.commonDioService);
+
+    return RepositoryImpl.instance(apiService: apiService);
+  }
+
   // ─── User ────────────────────────────────────────────────────────────────────
   Future<void> editUser({String? firstName, String? lastName, String? dateOfBirth});
   Future<void> changePassword({required String oldPassword, required String newPassword});
@@ -41,6 +57,7 @@ abstract class Repository {
   // ─── User Authentication ──────────────────────────────────────────────────────
   Future<void> register({required String email, required String password});
   Future<String> refreshJwt({required String refreshToken});
+  Future<void> jwtCheck();
   Future<AuthenticationResponseDto> authenticate({required String email, required String password});
   Future<AuthenticationResponseDto> authenticateOAuthGoogle();
   Future<AuthenticationResponseDto> authenticateOAuthGithub();

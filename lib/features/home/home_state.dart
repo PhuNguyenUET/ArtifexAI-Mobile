@@ -10,6 +10,11 @@ abstract class HomeState with _$HomeState {
   const factory HomeState({
     @Default(HomeTab.albums) HomeTab activeTab,
 
+    // Gallery (all user media — shown as pinned card in Albums tab)
+    @Default([]) List<MediaDto> gallery,
+    @Default(false) bool galleryLoading,
+    String? galleryError,
+
     // Albums
     @Default([]) List<AlbumDto> albums,
     @Default(false) bool albumsLoading,

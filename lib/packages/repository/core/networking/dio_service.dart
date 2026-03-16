@@ -44,6 +44,9 @@ class DioService {
     }
   }
 
+  /// Exposes the underlying [Dio] instance (e.g. for interceptors that need it).
+  Dio get dio => _dio;
+
   /// Unwraps the backend envelope `{ code, message, results }`.
   /// Throws [CustomException] if [code] is not 0, 200, or 204.
   /// Returns [results], which may be null for empty responses.
@@ -82,6 +85,26 @@ class DioService {
       );
       final results = _unwrap(response.data);
       return (results as JSON?) ?? {};
+    } on DioException catch (e) {
+      throw CustomException.fromDioException(e);
+    }
+  }
+
+  /// Issues a GET request without envelope unwrapping.
+  /// Throws [CustomException] only on non-2xx HTTP status codes.
+  Future<void> getRaw({
+    required String endpoint,
+    JSON? queryParams,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      await _dio.get<dynamic>(
+        endpoint,
+        queryParameters: queryParams,
+        options: options,
+        cancelToken: cancelToken ?? _cancelToken,
+      );
     } on DioException catch (e) {
       throw CustomException.fromDioException(e);
     }

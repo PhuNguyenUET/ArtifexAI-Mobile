@@ -1,0 +1,461 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:video_player/video_player.dart';
+import '../../packages/index.dart';
+import '../home/home_controller.dart';
+import 'project_state.dart';
+
+class GenerationResultPage extends StatefulWidget {
+  const GenerationResultPage({
+    super.key,
+    required this.result,
+    required this.mode,
+    required this.projectId,
+    required this.homeController,
+    this.videoUrl,
+  });
+
+  final ImageResponseDto result;
+  final GenerationMode   mode;
+  final String           projectId;
+  final HomeController   homeController;
+  final String?          videoUrl;
+
+  @override
+  State<GenerationResultPage> createState() => _GenerationResultPageState();
+}
+
+class _GenerationResultPageState extends State<GenerationResultPage> {
+  int _currentIndex = 0;
+  final CarouselSliderController _carouselCtrl = CarouselSliderController();
+
+  // Video player
+  VideoPlayerController? _videoCtrl;
+  bool _videoInitialized = false;
+
+  bool get _isVideo => widget.videoUrl != null;
+  List<String> get _urls => widget.result.imageUrls ?? [];
+  bool get _single => _urls.length == 1;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isVideo) _initVideo();
+  }
+
+  Future<void> _initVideo() async {
+    _videoCtrl = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl!));
+    await _videoCtrl!.initialize();
+    _videoCtrl!.setLooping(true);
+    _videoCtrl!.play();
+    if (mounted) setState(() => _videoInitialized = true);
+  }
+
+  @override
+  void dispose() {
+    _videoCtrl?.dispose();
+    super.dispose();
+  }
+
+  // ─── Save to gallery ──────────────────────────────────────────────────────
+
+  Future<void> _saveToGallery(String url) async {
+    // The media is already stored server-side; just re-fetch gallery
+    await widget.homeController.fetchGallery();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Row(children: [
+        Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
+        SizedBox(width: 10),
+        Text('Saved to your gallery', style: TextStyle(color: Colors.white)),
+      ]),
+      backgroundColor: const Color(0xFF2ECC71),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.all(16),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const LavaBackground(),
+          SafeArea(
+            child: Column(
+              children: [
+                _buildAppBar(context),
+                Expanded(child: _buildContent()),
+                _buildBottomBar(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── App Bar ──────────────────────────────────────────────────────────────
+
+  Widget _buildAppBar(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(4, 8, 16, 8),
+      decoration: const BoxDecoration(
+        color: AppColor.spaceCard,
+        border: Border(bottom: BorderSide(color: AppColor.spaceBorder)),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${widget.mode.label} Results',
+                  style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+                ),
+                Text(
+                  _isVideo
+                      ? '1 video generated'
+                      : '${_urls.length} image${_urls.length != 1 ? 's' : ''} generated',
+                  style: GoogleFonts.inter(fontSize: 12, color: AppColor.spaceTextSecondary),
+                ),
+              ],
+            ),
+          ),
+          // Dot indicator badge
+          if (!_single)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColor.primaryBackground,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${_currentIndex + 1} / ${_urls.length}',
+                style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColor.primary),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ─── Updated instruction sheet ────────────────────────────────────────────
+
+  void _showInstructionSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => Container(
+        margin: EdgeInsets.fromLTRB(12, 0, 12, MediaQuery.of(context).padding.bottom + 12),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColor.spaceCard,
+          borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+          border: Border.all(color: AppColor.spaceBorder),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: AppColor.spaceBorder,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                const Icon(Icons.tips_and_updates_outlined, size: 18, color: AppColor.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'Updated Instructions',
+                  style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColor.spaceCardHigh,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColor.spaceBorder),
+              ),
+              child: Text(
+                widget.result.updatedInstruction!,
+                style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextPrimary, height: 1.6),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  decoration: BoxDecoration(
+                    color: AppColor.spaceCardHigh,
+                    borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
+                    border: Border.all(color: AppColor.spaceBorder),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Got it',
+                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Main content ─────────────────────────────────────────────────────────
+
+  Widget _buildContent() {
+    // ── Video ──────────────────────────────────────────────────────────────
+    if (_isVideo) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _videoInitialized && _videoCtrl != null
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+                      child: AspectRatio(
+                        aspectRatio: _videoCtrl!.value.aspectRatio,
+                        child: VideoPlayer(_videoCtrl!),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Play / pause toggle
+                    GestureDetector(
+                      onTap: () => setState(() {
+                        _videoCtrl!.value.isPlaying
+                            ? _videoCtrl!.pause()
+                            : _videoCtrl!.play();
+                      }),
+                      child: Container(
+                        width: 52, height: 52,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColor.spaceCardHigh,
+                          border: Border.all(color: AppColor.spaceBorder),
+                        ),
+                        child: Icon(
+                          _videoCtrl!.value.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          color: Colors.white, size: 28,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Container(
+                  height: 220,
+                  decoration: BoxDecoration(
+                    color: AppColor.spaceCardHigh,
+                    borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(color: AppColor.primary, strokeWidth: 2),
+                  ),
+                ),
+        ),
+      );
+    }
+
+    // ── Single image ───────────────────────────────────────────────────────
+    if (_single) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+            child: AppImage(asset: _urls.first, fit: BoxFit.contain, width: double.infinity),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        CarouselSlider.builder(
+          carouselController: _carouselCtrl,
+          itemCount: _urls.length,
+          options: CarouselOptions(
+            height: MediaQuery.of(context).size.height * 0.56,
+            viewportFraction: 0.88,
+            enlargeCenterPage: true,
+            enlargeFactor: 0.22,
+            enableInfiniteScroll: _urls.length > 1,
+            onPageChanged: (i, _) => setState(() => _currentIndex = i),
+          ),
+          itemBuilder: (_, i, __) => ClipRRect(
+            borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+            child: AppImage(asset: _urls[i], fit: BoxFit.cover, width: double.infinity),
+          ),
+        ),
+        const SizedBox(height: 20),
+        // Dot indicator
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_urls.length, (i) {
+            final active = i == _currentIndex;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: active ? 22 : 7,
+              height: 7,
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              decoration: BoxDecoration(
+                color: active ? AppColor.primary : AppColor.spaceBorder,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  // ─── Bottom bar ───────────────────────────────────────────────────────────
+
+  Widget _buildBottomBar(BuildContext context) {
+    final currentUrl = _urls.isNotEmpty ? _urls[_currentIndex] : null;
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 12, 16, MediaQuery.of(context).padding.bottom + 12),
+      decoration: const BoxDecoration(
+        color: AppColor.spaceCard,
+        border: Border(top: BorderSide(color: AppColor.spaceBorder)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.result.updatedInstruction != null) ...[
+            GestureDetector(
+              onTap: _showInstructionSheet,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  color: AppColor.spaceCardHigh,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColor.primary.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.tips_and_updates_outlined, size: 15, color: AppColor.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'AI updated the instructions for better results',
+                        style: GoogleFonts.inter(fontSize: 12, color: AppColor.spaceTextSecondary),
+                      ),
+                    ),
+                    Text(
+                      'See details',
+                      style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColor.primary),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: AppColor.primary),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          Row(
+            children: [
+              if (!_isVideo) ...[
+                // Save current to gallery
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.save_alt_rounded,
+                    label: _single ? 'Save to Gallery' : 'Save This',
+                    gradient: const [AppColor.gradientStart3, AppColor.gradientEnd3],
+                    onTap: currentUrl != null ? () => _saveToGallery(currentUrl) : null,
+                  ),
+                ),
+                if (!_single) ...[
+                  const SizedBox(width: 10),
+                  // Save all
+                  Expanded(
+                    child: _ActionButton(
+                      icon: Icons.save_rounded,
+                      label: 'Save All',
+                      gradient: const [AppColor.gradientStart5, AppColor.gradientEnd5],
+                      onTap: () async {
+                        for (final url in _urls) await _saveToGallery(url);
+                      },
+                    ),
+                  ),
+                ],
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Small action button ──────────────────────────────────────────────────────
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    this.gradient,
+    this.onTap,
+  });
+
+  final IconData          icon;
+  final String            label;
+  final List<Color>?      gradient;
+  final VoidCallback?     onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          gradient: gradient != null
+              ? LinearGradient(colors: gradient!, begin: Alignment.topLeft, end: Alignment.bottomRight)
+              : null,
+          borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: Colors.white),
+            const SizedBox(width: 6),
+            Text(label, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

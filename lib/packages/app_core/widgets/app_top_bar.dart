@@ -96,7 +96,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         Navigator.of(context).pop();
                       },
                   icon: AppImage(
-                    asset: Assets.outlineArrowLeft2,
+                    asset: Assets.icons.outline.arrowLeft2.path,
                     height: 40,
                     width: 40,
                     color: backButtonColor ?? context.color.black,
@@ -117,8 +117,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         child: IconButton(
                           splashRadius: 25,
                           onPressed: navigateSearchPage,
-                          icon: const AppImage(
-                            asset: Assets.customSearchNormal,
+                          icon: AppImage(
+                            asset: Assets.icons.custom.searchNormal.path,
                             width: 24,
                             height: 24,
                           ),
@@ -131,8 +131,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         child: IconButton(
                           splashRadius: 25,
                           onPressed: navigateLiveChat,
-                          icon: const AppImage(
-                            asset: Assets.customZalo,
+                          icon: AppImage(
+                            asset: Assets.icons.custom.zalo.path,
                             width: 40,
                             height: 40,
                             fit: BoxFit.scaleDown,
@@ -164,7 +164,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         Navigator.of(context).pop();
                       },
                   icon: AppImage(
-                    asset: Assets.outlineArrowLeft2,
+                    asset: Assets.icons.outline.arrowLeft2.path,
                     height: 40,
                     width: 40,
                     color: backButtonColor ?? context.color.black,
@@ -185,8 +185,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         child: IconButton(
                           splashRadius: 25,
                           onPressed: navigateSearchPage,
-                          icon: const AppImage(
-                            asset: Assets.customSearchNormal,
+                          icon: AppImage(
+                            asset: Assets.icons.custom.searchNormal.path,
                             width: 24,
                             height: 24,
                           ),
@@ -199,8 +199,8 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                         child: IconButton(
                           splashRadius: 25,
                           onPressed: navigateLiveChat,
-                          icon: const AppImage(
-                            asset: Assets.customZalo,
+                          icon: AppImage(
+                            asset: Assets.icons.custom.zalo.path,
                             width: 40,
                             height: 40,
                             fit: BoxFit.scaleDown,

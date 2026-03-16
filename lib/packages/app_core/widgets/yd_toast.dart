@@ -27,6 +27,21 @@ class YDToast {
     );
   }
 
+  /// Shows a "Session timed out" banner that fades in at the top of the screen
+  /// and auto-dismisses after [duration].
+  static void showSessionExpiredToast({
+    Duration duration = const Duration(milliseconds: 3000),
+  }) {
+    BotToast.showCustomNotification(
+      useSafeArea: true,
+      align: const Alignment(0, -1),
+      duration: duration,
+      animationDuration: const Duration(milliseconds: 350),
+      animationReverseDuration: const Duration(milliseconds: 350),
+      toastBuilder: (_) => const _SessionExpiredBanner(),
+    );
+  }
+
   /// Show loading indicator when called. Usage:
   ///
   /// To show loading: [final cancel = YDToast.showLoadingToast;]
@@ -72,5 +87,54 @@ class YDToast {
     final result = await future;
     cancel();
     return result;
+  }
+}
+
+class _SessionExpiredBanner extends StatelessWidget {
+  const _SessionExpiredBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: AppColor.alertWarningBackground,
+            border: Border.all(color: AppColor.alertWarningBorder),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.lock_clock_outlined,
+                color: AppColor.alertWarning,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'Session timed out',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.alertWarning,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

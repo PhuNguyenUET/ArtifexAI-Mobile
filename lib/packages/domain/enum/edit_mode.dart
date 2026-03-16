@@ -21,3 +21,19 @@ enum EditMode {
   editModeUnspecified,
 }
 
+extension EditModeJson on EditMode {
+  String toJson() {
+    const map = {
+      EditMode.editModeDefault:            'EDIT_MODE_DEFAULT',
+      EditMode.editModeInpaintRemoval:     'EDIT_MODE_INPAINT_REMOVAL',
+      EditMode.editModeInpaintInsertion:   'EDIT_MODE_INPAINT_INSERTION',
+      EditMode.editModeOutpaint:           'EDIT_MODE_OUTPAINT',
+      EditMode.editModeControlledEditing:  'EDIT_MODE_CONTROLLED_EDITING',
+      EditMode.editModeStyle:              'EDIT_MODE_STYLE',
+      EditMode.editModeBgswap:             'EDIT_MODE_BGSWAP',
+      EditMode.editModeProductImage:       'EDIT_MODE_PRODUCT_IMAGE',
+      EditMode.editModeUnspecified:        'EDIT_MODE_UNSPECIFIED',
+    };
+    return map[this]!;
+  }
+}

@@ -9,26 +9,47 @@ void main() async {
 Future<void> _initDependencies() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final accessTokenStorage = AccessTokenStorage();
-  await accessTokenStorage.getAccessToken();
+  AccessTokenStorage accessTokenStorage = AccessTokenStorage();
+  final accessToken = await accessTokenStorage.getAccessToken();
+  Config.accessToken = accessToken;
+
+  final refreshToken = await accessTokenStorage.getRefreshToken();
+  Config.refreshToken = refreshToken;
+
+  // Register AccessTokenStorage in GetIt
   sl.registerSingleton<AccessTokenStorage>(accessTokenStorage);
 
-  await _initDataSource(accessTokenStorage);
+  // Wire the token-refresh interceptor now that the router is available.
+  accessTokenStorage.init(
+    onSessionExpired: () => router.go(AppRouter.auth),
+  );
 
+  await _initDataSource();
   String? countryCode = await _initCountryCode();
-  countryCode ??= Platform.localeName.startsWith('vi') ? 'VN' : 'US';
+  if (countryCode == null) {
+    if (Platform.localeName == 'vi') {
+      countryCode = 'VN';
+    } else {
+      countryCode = 'US';
+    }
+  }
+  Config.countryCode = countryCode;
 }
 
-Future<void> _initDataSource(AccessTokenStorage accessTokenStorage) async {
-  // no-op: AccessTokenStorage already builds the repository internally.
-  // Register it so controllers can resolve it via sl.
+Future<void> _initDataSource() async {
+  sl.registerLazySingleton<AppEvent>(() => AppEvent.instance());
+  sl.registerSingleton(await SharedPreferences.getInstance());
+  sl.registerSingleton<Local>(Repository.local);
+
+  final Repository repository = await Repository.createRepository(
+    appEvent: sl.get<AppEvent>(),
+    local: sl.get<Local>(),
+  );
+
+  sl.registerSingleton<Repository>(repository);
 }
 
 Future<String?> _initCountryCode() async {
-  try {
-    final countryIpResponse = await CountryIp.find();
-    return countryIpResponse?.countryCode;
-  } catch (_) {
-    return null;
-  }
+  final countryIpResponse = await CountryIp.find();
+  return countryIpResponse?.countryCode;
 }

@@ -1,18 +1,49 @@
 import 'package:artifex_ai_mobile/packages/index.dart';
 
 
-class AccessTokenStorage {
+class AccessTokenStorage implements TokenStorage {
   static const storageKey = 'artifex_ai_access_token';
   static const refreshTokenKey = 'artifex_ai_refresh_token';
 
   final _storage = const FlutterSecureStorage();
-  NetworkSrc networkSrc = NetworkSrc();
+  late final NetworkSrc networkSrc;
   late Repository _repository;
+  late TokenRefreshInterceptor _refreshInterceptor;
 
   Repository get repository => _repository;
 
   AccessTokenStorage() {
-    _repository = RepositoryImpl(ApiServiceImpl(networkSrc.dioService, networkSrc.downloadDioService, networkSrc.commonDioService));
+    final refreshInterceptor = TokenRefreshInterceptor(
+      // Placeholder Dio; replaced by the real one when init() is called.
+      primaryDio: Dio(),
+      storage: this,
+      onSessionExpired: () {},
+    );
+
+    networkSrc = NetworkSrc(tokenRefreshInterceptor: refreshInterceptor);
+    _refreshInterceptor = refreshInterceptor;
+
+    _repository = RepositoryImpl(ApiServiceImpl(
+      networkSrc.dioService,
+      networkSrc.downloadDioService,
+      networkSrc.commonDioService,
+    ));
+  }
+
+  /// Must be called once from [main] after the [GoRouter] is created.
+  void init({required VoidCallback onSessionExpired}) {
+    _refreshInterceptor = TokenRefreshInterceptor(
+      primaryDio: networkSrc.dioService.dio,
+      storage: this,
+      onSessionExpired: onSessionExpired,
+    );
+    _replaceRefreshInterceptor(networkSrc.dioService.dio);
+    _replaceRefreshInterceptor(networkSrc.commonDioService.dio);
+  }
+
+  void _replaceRefreshInterceptor(Dio dio) {
+    dio.interceptors.removeWhere((i) => i is TokenRefreshInterceptor);
+    dio.interceptors.add(_refreshInterceptor);
   }
 
   IOSOptions _getIOSOptions() => const IOSOptions();
@@ -28,8 +59,10 @@ class AccessTokenStorage {
         aOptions: _getAndroidOptions());
 
     if (accessToken == null || accessToken.isEmpty) {
+      Config.accessToken = '';
       return '';
     } else {
+      Config.accessToken = accessToken;
       return accessToken;
     }
   }
@@ -46,16 +79,20 @@ class AccessTokenStorage {
     required String accessToken,
     required String refreshToken,
   }) async {
+    final cleanAccessToken = accessToken.replaceFirst('Bearer ', '');
+    final cleanRefreshToken = refreshToken.replaceFirst('Bearer ', '');
     await _storage.write(
         key: storageKey,
-        value: accessToken,
+        value: cleanAccessToken,
         iOptions: _getIOSOptions(),
         aOptions: _getAndroidOptions());
     await _storage.write(
         key: refreshTokenKey,
-        value: refreshToken,
+        value: cleanRefreshToken,
         iOptions: _getIOSOptions(),
         aOptions: _getAndroidOptions());
+    Config.accessToken = cleanAccessToken;
+    Config.refreshToken = cleanRefreshToken;
   }
 
   Future<void> clearTokens() async {
@@ -67,6 +104,8 @@ class AccessTokenStorage {
         key: refreshTokenKey,
         iOptions: _getIOSOptions(),
         aOptions: _getAndroidOptions());
+    Config.accessToken = '';
+    Config.refreshToken = '';
   }
 
   Future<bool> isLoggedIn() async {

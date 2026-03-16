@@ -120,6 +120,9 @@ class RepositoryImpl extends Repository {
       _apiService.refreshJwt(refreshToken: refreshToken);
 
   @override
+  Future<void> jwtCheck() => _apiService.jwtCheck();
+
+  @override
   Future<AuthenticationResponseDto> authenticate({required String email, required String password}) =>
       _apiService.authenticate(email: email, password: password);
 

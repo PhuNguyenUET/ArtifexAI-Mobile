@@ -30,3 +30,4 @@ export 'yd_lazy_loading_widget.dart';
 export 'yd_cupertino_date_picker.dart';
 export 'yd_loading_indicator_widget.dart';
 export 'filter_sliver_persistent_header_delegate.dart';
+export 'lava_background/lava_background.dart';

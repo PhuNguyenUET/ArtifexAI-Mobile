@@ -33,7 +33,7 @@ class AppSearchFormField extends FormField<String> {
     // prefix icon
     bool hasPrefix = true,
     double borderRadius = 40,
-    String prefixIcon = Assets.customSearchNormal,
+    String prefixIcon = 'assets/icons/custom/search_normal.svg',
     double prefixIconSize = 24,
     Color? prefixIconColor,
     TextCapitalization textCapitalization = TextCapitalization.none,
@@ -44,7 +44,7 @@ class AppSearchFormField extends FormField<String> {
             return CupertinoTextField(
               autofocus: autofocus,
               onTap: onTap,
-              cursorColor: field.context.color.textTitle,
+              cursorColor: AppColor.spaceTextPrimary,
               readOnly: readOnly ?? false,
               controller: state.textEditingController,
               textInputAction: TextInputAction.search,
@@ -83,7 +83,7 @@ class AppSearchFormField extends FormField<String> {
                 ),
               ),
               style: field.context.placeholder2.copyWith(
-                color: field.context.color.textTitle,
+                color: AppColor.spaceTextPrimary,
                 height: 1.0,
               ),
               inputFormatters: textInputFormatter,
@@ -114,7 +114,7 @@ class AppSearchFormField extends FormField<String> {
                           child: IconButton(
                             splashRadius: 20,
                             icon: AppImage(
-                              asset: Assets.boldCloseCircle,
+                              asset: Assets.icons.bold.closeCircle.path,
                               width: 20,
                               height: 20,
                               fit: BoxFit.scaleDown,

@@ -100,7 +100,7 @@ class AppTextFormField extends StatelessWidget {
     return TextFormField(
       style: style ??
           context.body3.copyWith(
-            color: enabled ? context.color.textTitle : context.color.gray90,
+            color: enabled ? AppColor.spaceTextPrimary : AppColor.spaceTextHint,
           ),
       textAlignVertical: TextAlignVertical.center,
       controller: controller,

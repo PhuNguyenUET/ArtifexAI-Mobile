@@ -10,3 +10,14 @@ enum VideoLength {
   @JsonValue('LONG')
   long,
 }
+
+extension VideoLengthJson on VideoLength {
+  String toJson() {
+    const map = {
+      VideoLength.short:  'SHORT',
+      VideoLength.medium: 'MEDIUM',
+      VideoLength.long:   'LONG',
+    };
+    return map[this]!;
+  }
+}

@@ -45,8 +45,8 @@ class RequestPermissionDialog extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: const AppImage(
-                    asset: Assets.outlineExit,
+                  child: AppImage(
+                    asset: Assets.icons.outline.exit.path,
                     width: 44,
                     height: 44,
                     fit: BoxFit.scaleDown,
@@ -54,7 +54,7 @@ class RequestPermissionDialog extends StatelessWidget {
                 ),
               ],
             ),
-            AppImage(asset: image ?? Assets.imgLaunch),
+            AppImage(asset: image ?? Assets.img.launch.path),
             context.height40X,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: context.padding40X),

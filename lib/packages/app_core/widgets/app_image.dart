@@ -50,7 +50,7 @@ class AppImage extends StatelessWidget {
 
   Widget _buildLocalImage() {
     return Image.asset(
-      asset.isBlank == true ? Assets.outlineImage : asset,
+      asset.isBlank == true ? Assets.icons.outline.image.path : asset,
       width: width,
       height: height,
       fit: fit,

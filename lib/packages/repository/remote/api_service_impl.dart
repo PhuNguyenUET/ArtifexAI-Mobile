@@ -134,7 +134,7 @@ class ApiServiceImpl extends ApiService {
       endpoint: '/api/project/v1/edit',
       data: {
         'projectName': projectName ?? '',
-        'artStyle': artStyle,
+        'artStyle': artStyle?.toJson(),
       },
     );
   }
@@ -150,7 +150,7 @@ class ApiServiceImpl extends ApiService {
       data: {
         'projectName': projectName,
         'instructions': instructions,
-        'artStyle': artStyle.name,
+        'artStyle': artStyle.toJson(),
       },
     );
     return ProjectDto.fromJson(json);
@@ -280,7 +280,7 @@ class ApiServiceImpl extends ApiService {
         'projectId': projectId,
         'referenceImage': referenceImage?.toJson(),
         'prompt': prompt,
-        'videoLength': videoLength.name,
+        'videoLength': videoLength.toJson(),
       },
     );
     return VideoResponseDto.fromJson(json);
@@ -307,6 +307,13 @@ class ApiServiceImpl extends ApiService {
     return await _dioService.postString(
       endpoint: '/api/user/v1/refresh_jwt',
       data: {'refreshToken': refreshToken},
+    );
+  }
+
+  @override
+  Future<void> jwtCheck() async {
+    await _dioService.getRaw(
+      endpoint: '/jwt_check',
     );
   }
 
@@ -352,7 +359,7 @@ class ApiServiceImpl extends ApiService {
       endpoint: '/api/media/v1/upload_image_client',
       data: {
         'base64': base64,
-        'mimeType': mimeType.name,
+        'mimeType': mimeType.toJson(),
       },
     );
   }
@@ -423,7 +430,7 @@ class ApiServiceImpl extends ApiService {
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),
-        'upscaleFactor': upscaleFactor.name,
+        'upscaleFactor': upscaleFactor.toJson(),
       },
     );
     return ImageResponseDto.fromJson(json);
@@ -442,7 +449,7 @@ class ApiServiceImpl extends ApiService {
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),
-        'targetedStyle': targetedStyle.name,
+        'targetedStyle': targetedStyle.toJson(),
         'additionalPrompts': additionalPrompts,
         'numberOfOutputs': numberOfOutputs,
       },
@@ -505,8 +512,8 @@ class ApiServiceImpl extends ApiService {
         'imageInfo': imageInfo.toJson(),
         'maskImageBase64': maskImageBase64,
         'prompt': prompt,
-        'editMode': editMode.name,
-        'maskReferenceMode': maskReferenceMode.name,
+        'editMode': editMode.toJson(),
+        'maskReferenceMode': maskReferenceMode.toJson(),
         'numberOfOutputs': numberOfOutputs,
       },
     );

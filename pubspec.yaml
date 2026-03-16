@@ -114,6 +114,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.11.1
   intl_utils: ^2.8.14
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   generate: true
@@ -123,6 +124,7 @@ flutter:
     - assets/icons/outline/
     - assets/icons/custom/
     - assets/img/
+    - assets/img/app_icon/
     - assets/img/background/
     - assets/img/color/
     - assets/img/icon/
@@ -149,3 +151,19 @@ flutter_assets_generator:
   class_name: Assets
   # Optional. Sets the filename split pattern for filename split. Default: [-_]
   filename_split_pattern: "[-_]"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/img/app_icon/App_Icon_Background.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  adaptive_icon_background: "#0D0B1E"
+  adaptive_icon_foreground: "assets/img/app_icon/App_Icon_Transparent.png"
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
+

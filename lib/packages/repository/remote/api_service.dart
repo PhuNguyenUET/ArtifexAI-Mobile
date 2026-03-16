@@ -110,6 +110,8 @@ abstract class ApiService {
     required String refreshToken
   });
 
+  Future<void> jwtCheck();
+
   Future<AuthenticationResponseDto> authenticate({
     required String email,
     required String password

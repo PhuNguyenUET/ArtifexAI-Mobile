@@ -7,6 +7,62 @@ class AuthController extends Cubit<AuthState> {
 
   final _storage = sl.get<AccessTokenStorage>();
 
+  // ─── Startup Auth Check ──────────────────────────────────────────────────────
+
+  Future<void> checkAuthOnStartup({
+    required VoidCallback onAuthenticated,
+    required VoidCallback onUnauthenticated,
+  }) async {
+    emit(state.copyWith(loading: true));
+    try {
+      final repo = _storage.repository;
+
+      // 1. Load stored access token — skip everything if none exists.
+      final accessToken = await _storage.getAccessToken();
+      if (accessToken.isEmpty) {
+        onUnauthenticated();
+        return;
+      }
+
+      // 2. Try JWT health check — succeeds if JWT is still active.
+      try {
+        await repo.jwtCheck();
+        onAuthenticated();
+        return;
+      } on CustomException catch (e) {
+        // Only attempt a refresh when the server explicitly rejects the token
+        // (HTTP 401). For network errors, timeouts, etc. we fall through to
+        // the outer catch which routes to unauthenticated.
+        if (e.statusCode != 401) rethrow;
+      }
+
+      // 3. JWT is expired — try refreshing.
+      final refreshToken = await _storage.getRefreshToken();
+      if (refreshToken.isEmpty) {
+        onUnauthenticated();
+        return;
+      }
+
+      try {
+        final newAccessToken = await repo.refreshJwt(refreshToken: refreshToken);
+        await _storage.saveTokens(
+          accessToken: newAccessToken,
+          refreshToken: refreshToken,
+        );
+        onAuthenticated();
+      } on CustomException catch (_) {
+        // Refresh token is expired or rejected by the server.
+        await _storage.clearTokens();
+        onUnauthenticated();
+      }
+    } catch (_) {
+      // Network error, timeout, or any unexpected failure — fall back to login.
+      onUnauthenticated();
+    } finally {
+      emit(state.copyWith(loading: false));
+    }
+  }
+
   // ─── Tab ─────────────────────────────────────────────────────────────────────
 
   void switchTab(AuthTab tab) {

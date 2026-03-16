@@ -13,3 +13,15 @@ enum UpscaleFactor {
   x10,
 }
 
+extension UpscaleFactorJson on UpscaleFactor {
+  String toJson() {
+    const map = {
+      UpscaleFactor.x2:  'X2',
+      UpscaleFactor.x4:  'X4',
+      UpscaleFactor.x6:  'X6',
+      UpscaleFactor.x8:  'X8',
+      UpscaleFactor.x10: 'X10',
+    };
+    return map[this]!;
+  }
+}

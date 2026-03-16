@@ -14,7 +14,11 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$HomeState {
-  HomeTab get activeTab; // Albums
+  HomeTab
+      get activeTab; // Gallery (all user media — shown as pinned card in Albums tab)
+  List<MediaDto> get gallery;
+  bool get galleryLoading;
+  String? get galleryError; // Albums
   List<AlbumDto> get albums;
   bool get albumsLoading;
   String? get albumsError; // Projects
@@ -39,6 +43,11 @@ mixin _$HomeState {
             other is HomeState &&
             (identical(other.activeTab, activeTab) ||
                 other.activeTab == activeTab) &&
+            const DeepCollectionEquality().equals(other.gallery, gallery) &&
+            (identical(other.galleryLoading, galleryLoading) ||
+                other.galleryLoading == galleryLoading) &&
+            (identical(other.galleryError, galleryError) ||
+                other.galleryError == galleryError) &&
             const DeepCollectionEquality().equals(other.albums, albums) &&
             (identical(other.albumsLoading, albumsLoading) ||
                 other.albumsLoading == albumsLoading) &&
@@ -60,6 +69,9 @@ mixin _$HomeState {
   int get hashCode => Object.hash(
       runtimeType,
       activeTab,
+      const DeepCollectionEquality().hash(gallery),
+      galleryLoading,
+      galleryError,
       const DeepCollectionEquality().hash(albums),
       albumsLoading,
       albumsError,
@@ -72,7 +84,7 @@ mixin _$HomeState {
 
   @override
   String toString() {
-    return 'HomeState(activeTab: $activeTab, albums: $albums, albumsLoading: $albumsLoading, albumsError: $albumsError, projects: $projects, projectsLoading: $projectsLoading, projectsError: $projectsError, user: $user, profileLoading: $profileLoading, profileError: $profileError)';
+    return 'HomeState(activeTab: $activeTab, gallery: $gallery, galleryLoading: $galleryLoading, galleryError: $galleryError, albums: $albums, albumsLoading: $albumsLoading, albumsError: $albumsError, projects: $projects, projectsLoading: $projectsLoading, projectsError: $projectsError, user: $user, profileLoading: $profileLoading, profileError: $profileError)';
   }
 }
 
@@ -83,6 +95,9 @@ abstract mixin class $HomeStateCopyWith<$Res> {
   @useResult
   $Res call(
       {HomeTab activeTab,
+      List<MediaDto> gallery,
+      bool galleryLoading,
+      String? galleryError,
       List<AlbumDto> albums,
       bool albumsLoading,
       String? albumsError,
@@ -109,6 +124,9 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
   @override
   $Res call({
     Object? activeTab = null,
+    Object? gallery = null,
+    Object? galleryLoading = null,
+    Object? galleryError = freezed,
     Object? albums = null,
     Object? albumsLoading = null,
     Object? albumsError = freezed,
@@ -124,6 +142,18 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
           ? _self.activeTab
           : activeTab // ignore: cast_nullable_to_non_nullable
               as HomeTab,
+      gallery: null == gallery
+          ? _self.gallery
+          : gallery // ignore: cast_nullable_to_non_nullable
+              as List<MediaDto>,
+      galleryLoading: null == galleryLoading
+          ? _self.galleryLoading
+          : galleryLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      galleryError: freezed == galleryError
+          ? _self.galleryError
+          : galleryError // ignore: cast_nullable_to_non_nullable
+              as String?,
       albums: null == albums
           ? _self.albums
           : albums // ignore: cast_nullable_to_non_nullable
@@ -273,6 +303,9 @@ extension HomeStatePatterns on HomeState {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             HomeTab activeTab,
+            List<MediaDto> gallery,
+            bool galleryLoading,
+            String? galleryError,
             List<AlbumDto> albums,
             bool albumsLoading,
             String? albumsError,
@@ -290,6 +323,9 @@ extension HomeStatePatterns on HomeState {
       case _HomeState() when $default != null:
         return $default(
             _that.activeTab,
+            _that.gallery,
+            _that.galleryLoading,
+            _that.galleryError,
             _that.albums,
             _that.albumsLoading,
             _that.albumsError,
@@ -321,6 +357,9 @@ extension HomeStatePatterns on HomeState {
   TResult when<TResult extends Object?>(
     TResult Function(
             HomeTab activeTab,
+            List<MediaDto> gallery,
+            bool galleryLoading,
+            String? galleryError,
             List<AlbumDto> albums,
             bool albumsLoading,
             String? albumsError,
@@ -337,6 +376,9 @@ extension HomeStatePatterns on HomeState {
       case _HomeState():
         return $default(
             _that.activeTab,
+            _that.gallery,
+            _that.galleryLoading,
+            _that.galleryError,
             _that.albums,
             _that.albumsLoading,
             _that.albumsError,
@@ -367,6 +409,9 @@ extension HomeStatePatterns on HomeState {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             HomeTab activeTab,
+            List<MediaDto> gallery,
+            bool galleryLoading,
+            String? galleryError,
             List<AlbumDto> albums,
             bool albumsLoading,
             String? albumsError,
@@ -383,6 +428,9 @@ extension HomeStatePatterns on HomeState {
       case _HomeState() when $default != null:
         return $default(
             _that.activeTab,
+            _that.gallery,
+            _that.galleryLoading,
+            _that.galleryError,
             _that.albums,
             _that.albumsLoading,
             _that.albumsError,
@@ -403,6 +451,9 @@ extension HomeStatePatterns on HomeState {
 class _HomeState implements HomeState {
   const _HomeState(
       {this.activeTab = HomeTab.albums,
+      final List<MediaDto> gallery = const [],
+      this.galleryLoading = false,
+      this.galleryError,
       final List<AlbumDto> albums = const [],
       this.albumsLoading = false,
       this.albumsError,
@@ -412,12 +463,29 @@ class _HomeState implements HomeState {
       this.user,
       this.profileLoading = false,
       this.profileError})
-      : _albums = albums,
+      : _gallery = gallery,
+        _albums = albums,
         _projects = projects;
 
   @override
   @JsonKey()
   final HomeTab activeTab;
+// Gallery (all user media — shown as pinned card in Albums tab)
+  final List<MediaDto> _gallery;
+// Gallery (all user media — shown as pinned card in Albums tab)
+  @override
+  @JsonKey()
+  List<MediaDto> get gallery {
+    if (_gallery is EqualUnmodifiableListView) return _gallery;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_gallery);
+  }
+
+  @override
+  @JsonKey()
+  final bool galleryLoading;
+  @override
+  final String? galleryError;
 // Albums
   final List<AlbumDto> _albums;
 // Albums
@@ -474,6 +542,11 @@ class _HomeState implements HomeState {
             other is _HomeState &&
             (identical(other.activeTab, activeTab) ||
                 other.activeTab == activeTab) &&
+            const DeepCollectionEquality().equals(other._gallery, _gallery) &&
+            (identical(other.galleryLoading, galleryLoading) ||
+                other.galleryLoading == galleryLoading) &&
+            (identical(other.galleryError, galleryError) ||
+                other.galleryError == galleryError) &&
             const DeepCollectionEquality().equals(other._albums, _albums) &&
             (identical(other.albumsLoading, albumsLoading) ||
                 other.albumsLoading == albumsLoading) &&
@@ -495,6 +568,9 @@ class _HomeState implements HomeState {
   int get hashCode => Object.hash(
       runtimeType,
       activeTab,
+      const DeepCollectionEquality().hash(_gallery),
+      galleryLoading,
+      galleryError,
       const DeepCollectionEquality().hash(_albums),
       albumsLoading,
       albumsError,
@@ -507,7 +583,7 @@ class _HomeState implements HomeState {
 
   @override
   String toString() {
-    return 'HomeState(activeTab: $activeTab, albums: $albums, albumsLoading: $albumsLoading, albumsError: $albumsError, projects: $projects, projectsLoading: $projectsLoading, projectsError: $projectsError, user: $user, profileLoading: $profileLoading, profileError: $profileError)';
+    return 'HomeState(activeTab: $activeTab, gallery: $gallery, galleryLoading: $galleryLoading, galleryError: $galleryError, albums: $albums, albumsLoading: $albumsLoading, albumsError: $albumsError, projects: $projects, projectsLoading: $projectsLoading, projectsError: $projectsError, user: $user, profileLoading: $profileLoading, profileError: $profileError)';
   }
 }
 
@@ -521,6 +597,9 @@ abstract mixin class _$HomeStateCopyWith<$Res>
   @useResult
   $Res call(
       {HomeTab activeTab,
+      List<MediaDto> gallery,
+      bool galleryLoading,
+      String? galleryError,
       List<AlbumDto> albums,
       bool albumsLoading,
       String? albumsError,
@@ -548,6 +627,9 @@ class __$HomeStateCopyWithImpl<$Res> implements _$HomeStateCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? activeTab = null,
+    Object? gallery = null,
+    Object? galleryLoading = null,
+    Object? galleryError = freezed,
     Object? albums = null,
     Object? albumsLoading = null,
     Object? albumsError = freezed,
@@ -563,6 +645,18 @@ class __$HomeStateCopyWithImpl<$Res> implements _$HomeStateCopyWith<$Res> {
           ? _self.activeTab
           : activeTab // ignore: cast_nullable_to_non_nullable
               as HomeTab,
+      gallery: null == gallery
+          ? _self._gallery
+          : gallery // ignore: cast_nullable_to_non_nullable
+              as List<MediaDto>,
+      galleryLoading: null == galleryLoading
+          ? _self.galleryLoading
+          : galleryLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      galleryError: freezed == galleryError
+          ? _self.galleryError
+          : galleryError // ignore: cast_nullable_to_non_nullable
+              as String?,
       albums: null == albums
           ? _self._albums
           : albums // ignore: cast_nullable_to_non_nullable

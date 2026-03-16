@@ -10,8 +10,8 @@ abstract class AuthState with _$AuthState {
     @Default(false) bool loading,
     @Default(false) bool oauthLoading,
     @Default(AuthTab.signIn) AuthTab activeTab,
-    @Default(false) bool obscurePassword,
-    @Default(false) bool obscureConfirmPassword,
+    @Default(true) bool obscurePassword,
+    @Default(true) bool obscureConfirmPassword,
     String? errorMessage,
   }) = _AuthState;
 }

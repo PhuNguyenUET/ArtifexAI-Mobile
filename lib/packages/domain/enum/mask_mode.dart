@@ -15,3 +15,16 @@ enum MaskMode {
   maskReferenceModeUnspecified,
 }
 
+extension MaskModeJson on MaskMode {
+  String toJson() {
+    const map = {
+      MaskMode.maskModeDefault:              'MASK_MODE_DEFAULT',
+      MaskMode.maskModeUserProvided:         'MASK_MODE_USER_PROVIDED',
+      MaskMode.maskModeBackground:           'MASK_MODE_BACKGROUND',
+      MaskMode.maskModeForeground:           'MASK_MODE_FOREGROUND',
+      MaskMode.maskModeSemantic:             'MASK_MODE_SEMANTIC',
+      MaskMode.maskReferenceModeUnspecified: 'MASK_REFERENCE_MODE_UNSPECIFIED',
+    };
+    return map[this]!;
+  }
+}
