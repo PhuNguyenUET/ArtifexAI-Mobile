@@ -351,17 +351,18 @@ class ApiServiceImpl extends ApiService {
   // ─── Media Management ─────────────────────────────────────────────────────────
 
   @override
-  Future<void> uploadClient({
+  Future<MediaDto> uploadClient({
     required String base64,
     required MimeType mimeType,
   }) async {
-    await _dioService.post(
+   final json = await _dioService.post(
       endpoint: '/api/media/v1/upload_image_client',
       data: {
         'base64': base64,
         'mimeType': mimeType.toJson(),
       },
     );
+   return MediaDto.fromJson(json);
   }
 
   @override
@@ -446,7 +447,7 @@ class ApiServiceImpl extends ApiService {
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),
-        'targetedStyle': targetedStyle.toJson(),
+        'targetStyle': targetedStyle.toJson(),
         'additionalPrompts': additionalPrompts,
       },
     );

@@ -1,6 +1,7 @@
 
 import '../../generated/assets.dart';
 import '../../init/routes.dart';
+import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
 import '../album/album_detail/album_detail_page.dart';
 import '../album/album_detail/create_album_sheet.dart';

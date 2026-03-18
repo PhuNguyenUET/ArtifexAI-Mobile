@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import '../../init/access_token_storage.dart';
@@ -28,9 +28,7 @@ class _DrawStroke {
 /// Full-screen page that lets the user paint a mask over an image, choose
 /// [EditMode] / [MaskMode], enter a prompt, and call [imageMaskedEdit].
 ///
-/// * [imageUrl]       – URL of the source image (used for display).
-/// * [imageBase64]    – Optional pre-encoded base64.  Downloaded at submit time
-///                      when null.
+/// * [imageUrl]       – URL / server path of the source image.
 /// * [mimeType]          – MIME type of the image (defaults to JPEG).
 /// * [projectId]         – Pre-selected project.  Required when
 ///                         [showProjectPicker] is false.
@@ -43,16 +41,19 @@ class MaskEditPage extends StatefulWidget {
   const MaskEditPage({
     super.key,
     required this.imageUrl,
-    this.imageBase64,
-    this.mimeType = MimeType.jpeg,
+    this.imagePath,
     this.projectId,
     this.showProjectPicker = false,
     required this.homeController,
   });
 
+  /// Signed URL used only for displaying the image on canvas.
   final String imageUrl;
-  final String? imageBase64;
-  final MimeType mimeType;
+
+  /// Server-side media path (e.g. `server/image_xxx.png`) sent to the API.
+  /// Falls back to [imageUrl] when null.
+  final String? imagePath;
+
   final String? projectId;
   final bool showProjectPicker;
   final HomeController homeController;
@@ -82,17 +83,49 @@ class _MaskEditPageState extends State<MaskEditPage> {
   // ── Generating ───────────────────────────────────────────────────────────
   bool _generating = false;
 
+  /// Original pixel dimensions of the source image, resolved on init.
+  /// Used to capture the mask at the correct size to match the server image.
+  Size? _originalImageSize;
+
   @override
   void initState() {
     super.initState();
     _selectedProjectId = widget.projectId;
     if (widget.showProjectPicker) _loadProjects();
+    _loadImageSize();
   }
 
   @override
   void dispose() {
     _promptCtrl.dispose();
     super.dispose();
+  }
+
+  // ─── Image size resolution ────────────────────────────────────────────────
+
+  Future<void> _loadImageSize() async {
+    if (widget.imageUrl.isEmpty) return;
+    try {
+      final completer = Completer<ui.Image>();
+      final provider = CachedNetworkImageProvider(widget.imageUrl);
+      final stream = provider.resolve(const ImageConfiguration());
+      late ImageStreamListener listener;
+      listener = ImageStreamListener(
+        (info, _) {
+          if (!completer.isCompleted) completer.complete(info.image);
+          stream.removeListener(listener);
+        },
+        onError: (e, _) {
+          if (!completer.isCompleted) completer.completeError(e);
+          stream.removeListener(listener);
+        },
+      );
+      stream.addListener(listener);
+      final img = await completer.future;
+      _originalImageSize = Size(img.width.toDouble(), img.height.toDouble());
+    } catch (_) {
+      // Falls back to canvas size in _captureMask()
+    }
   }
 
   // ─── Project loading ──────────────────────────────────────────────────────
@@ -158,28 +191,52 @@ class _MaskEditPageState extends State<MaskEditPage> {
   // ─── Mask capture via PictureRecorder ────────────────────────────────────
 
   Future<String> _captureMask() async {
+    final Size targetSize;
+    final List<_DrawStroke> strokesToRender;
+
+    if (_originalImageSize != null && _originalImageSize != Size.zero) {
+      // Compute the BoxFit.contain scale used to display the image in the canvas.
+      // renderScale = how many canvas pixels correspond to one image pixel.
+      final double renderScale = math.min(
+        _canvasSize.width / _originalImageSize!.width,
+        _canvasSize.height / _originalImageSize!.height,
+      );
+      // The image is centred inside the canvas — compute the letterbox offsets.
+      final double offsetX =
+          (_canvasSize.width - _originalImageSize!.width * renderScale) / 2;
+      final double offsetY =
+          (_canvasSize.height - _originalImageSize!.height * renderScale) / 2;
+
+      // Transform every stroke point from canvas space → image space.
+      strokesToRender = _allStrokes.map((stroke) {
+        return _DrawStroke(
+          points: stroke.points
+              .map((p) => Offset(
+                    (p.dx - offsetX) / renderScale,
+                    (p.dy - offsetY) / renderScale,
+                  ))
+              .toList(),
+          brushSize: stroke.brushSize / renderScale,
+          isErase: stroke.isErase,
+        );
+      }).toList();
+      targetSize = _originalImageSize!;
+    } else {
+      // Fallback: no size info, use canvas dimensions as before.
+      strokesToRender = _allStrokes;
+      targetSize = _canvasSize;
+    }
+
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    _MaskPainter(strokes: _allStrokes).paint(canvas, _canvasSize);
+    _MaskPainter(strokes: strokesToRender).paint(canvas, targetSize);
     final picture = recorder.endRecording();
     final image = await picture.toImage(
-      _canvasSize.width.round(),
-      _canvasSize.height.round(),
+      targetSize.width.round(),
+      targetSize.height.round(),
     );
-    final byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     return base64Encode(byteData!.buffer.asUint8List());
-  }
-
-  // ─── Image download ───────────────────────────────────────────────────────
-
-  Future<String> _downloadImageBase64(String url) async {
-    final dio = Dio();
-    final response = await dio.get<List<int>>(
-      url,
-      options: Options(responseType: ResponseType.bytes),
-    );
-    return base64Encode(Uint8List.fromList(response.data!));
   }
 
   // ─── Toast ────────────────────────────────────────────────────────────────
@@ -229,10 +286,11 @@ class _MaskEditPageState extends State<MaskEditPage> {
 
     try {
       final maskBase64 = await _captureMask();
-      final imageBase64 =
-          widget.imageBase64 ?? await _downloadImageBase64(widget.imageUrl);
-      final imageInfo =
-          ReferenceImage(imagePath: imageBase64, mimeType: widget.mimeType);
+      final resolvedPath = widget.imagePath ?? widget.imageUrl;
+      final mimeType = resolvedPath.toLowerCase().endsWith('.png')
+          ? MimeType.png
+          : MimeType.jpeg;
+      final imageInfo = ReferenceImage(imagePath: resolvedPath, mimeType: mimeType);
 
       final result = await sl
           .get<AccessTokenStorage>()
@@ -287,24 +345,70 @@ class _MaskEditPageState extends State<MaskEditPage> {
               ],
             ),
           ),
-          if (_generating)
-            Container(
-              color: Colors.black.withValues(alpha: 0.65),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(
-                        color: AppColor.primary, strokeWidth: 2),
-                    const SizedBox(height: 16),
-                    Text('Generating…',
-                        style: GoogleFonts.inter(
-                            fontSize: 14, color: Colors.white)),
-                  ],
+          if (_generating) _buildLoadingOverlay(),
+        ],
+      ),
+    );
+  }
+
+  // ─── Full-screen loading overlay ──────────────────────────────────────────
+
+  Widget _buildLoadingOverlay() {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black.withValues(alpha: 0.82),
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+            decoration: BoxDecoration(
+              color: AppColor.spaceCard,
+              borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+              border: Border.all(color: AppColor.spaceBorder),
+            ),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: 1),
+                duration: const Duration(seconds: 2),
+                builder: (_, t, child) => Transform.rotate(
+                  angle: t * 6.28,
+                  child: child,
+                ),
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [AppColor.gradientStart3, AppColor.gradientEnd3, AppColor.gradientStart5],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.auto_awesome, size: 32, color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-        ],
+              const SizedBox(height: 24),
+              Text(
+                'Generating…',
+                style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'The AI is applying your mask edit.\nThis may take up to a minute.',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextSecondary, height: 1.5),
+              ),
+              const SizedBox(height: 28),
+              const LinearProgressIndicator(
+                color: AppColor.primary,
+                backgroundColor: AppColor.spaceBorder,
+              ),
+            ]),
+          ),
+        ),
       ),
     );
   }
@@ -860,6 +964,3 @@ class _MaskPainter extends CustomPainter {
   @override
   bool shouldRepaint(_MaskPainter old) => old.strokes != strokes;
 }
-
-
-

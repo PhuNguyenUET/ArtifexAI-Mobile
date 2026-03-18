@@ -138,6 +138,7 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
             child: _GalleryActionBar(
               mediaId: _current.id ?? '',
               mediaUrl: _current.mediaUrl,
+              mediaPath: _current.mediaPath,
               onDeleted: _removeCurrentFromList,
             ),
           ),
@@ -154,10 +155,12 @@ class _GalleryActionBar extends StatelessWidget {
     required this.mediaId,
     required this.onDeleted,
     this.mediaUrl,
+    this.mediaPath,
   });
 
   final String mediaId;
   final String? mediaUrl;
+  final String? mediaPath;
   final VoidCallback onDeleted;
 
   @override
@@ -201,6 +204,7 @@ class _GalleryActionBar extends StatelessWidget {
                   ? () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => MaskEditPage(
                           imageUrl: mediaUrl!,
+                          imagePath: mediaPath,
                           homeController:
                               context.read<HomeController>(),
                           showProjectPicker: true,
@@ -652,4 +656,3 @@ class _GalleryActionButton extends StatelessWidget {
     );
   }
 }
-

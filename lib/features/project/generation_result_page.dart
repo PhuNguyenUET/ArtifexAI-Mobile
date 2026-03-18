@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:video_player/video_player.dart';
+import '../../init/access_token_storage.dart';
+import '../../init/sl.dart';
 import '../../packages/index.dart';
 import '../home/home_controller.dart';
 import 'mask_edit_page.dart';
@@ -215,81 +217,184 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
   // ─── Updated instruction sheet ────────────────────────────────────────────
 
   void _showInstructionSheet() {
+    bool adding = false;
+    bool added  = false;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => Container(
-        margin: EdgeInsets.fromLTRB(12, 0, 12, MediaQuery.of(context).padding.bottom + 12),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColor.spaceCard,
-          borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
-          border: Border.all(color: AppColor.spaceBorder),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                width: 40, height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSt) {
+          Future<void> addToProject() async {
+                if (adding || added) return;
+                setSt(() => adding = true);
+                try {
+                  await sl.get<AccessTokenStorage>().repository.addInstructions(
+                        projectId: widget.projectId,
+                        newInstruction: widget.result.updatedInstruction!,
+                      );
+                  setSt(() { adding = false; added = true; });
+                } catch (_) {
+                  setSt(() => adding = false);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+                      icon: Icons.error_outline_rounded,
+                      message: 'Could not add instruction. Please try again.',
+                      color: Colors.redAccent,
+                    ));
+                  }
+                }
+              }
+
+              return Container(
+                margin: EdgeInsets.fromLTRB(
+                    12, 0, 12, MediaQuery.of(context).padding.bottom + 12),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColor.spaceBorder,
-                  borderRadius: BorderRadius.circular(2),
+                  color: AppColor.spaceCard,
+                  borderRadius:
+                      BorderRadius.circular(AppStyleConstant.largeRounding),
+                  border: Border.all(color: AppColor.spaceBorder),
                 ),
-              ),
-            ),
-            Row(
-              children: [
-                const Icon(Icons.tips_and_updates_outlined, size: 18, color: AppColor.primary),
-                const SizedBox(width: 8),
-                Text(
-                  'Updated Instructions',
-                  style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle bar
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: AppColor.spaceBorder,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.tips_and_updates_outlined,
+                            size: 18, color: AppColor.primary),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Updated Instructions',
+                          style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: AppColor.spaceCardHigh,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColor.spaceBorder),
+                      ),
+                      child: Text(
+                        widget.result.updatedInstruction!,
+                        style: GoogleFonts.inter(
+                            fontSize: 13,
+                            color: AppColor.spaceTextPrimary,
+                            height: 1.6),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // ── Add to Project button ──────────────────────────────
+                    GestureDetector(
+                      onTap: added ? null : addToProject,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        decoration: BoxDecoration(
+                          gradient: added
+                              ? null
+                              : const LinearGradient(
+                                  colors: [
+                                    AppColor.gradientStart3,
+                                    AppColor.gradientEnd3
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                          color: added ? AppColor.spaceCardHigh : null,
+                          borderRadius: BorderRadius.circular(
+                              AppStyleConstant.buttonBorderRadius),
+                          border: added
+                              ? Border.all(color: AppColor.spaceBorder)
+                              : null,
+                        ),
+                        alignment: Alignment.center,
+                        child: adding
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    added
+                                        ? Icons.check_circle_outline_rounded
+                                        : Icons.add_rounded,
+                                    size: 16,
+                                    color: added
+                                        ? AppColor.primary
+                                        : Colors.white,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    added
+                                        ? 'Added to Instructions'
+                                        : 'Add to Project Instructions',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: added
+                                          ? AppColor.primary
+                                          : Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // ── Dismiss button ─────────────────────────────────────
+                    GestureDetector(
+                      onTap: () => Navigator.of(ctx).pop(),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        decoration: BoxDecoration(
+                          color: AppColor.spaceCardHigh,
+                          borderRadius: BorderRadius.circular(
+                              AppStyleConstant.buttonBorderRadius),
+                          border: Border.all(color: AppColor.spaceBorder),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Got it',
+                          style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColor.spaceCardHigh,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColor.spaceBorder),
-              ),
-              child: Text(
-                widget.result.updatedInstruction!,
-                style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextPrimary, height: 1.6),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  decoration: BoxDecoration(
-                    color: AppColor.spaceCardHigh,
-                    borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
-                    border: Border.all(color: AppColor.spaceBorder),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Got it',
-                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+              );
+            },
+          ),
+        );
   }
 
   // ─── Main content ─────────────────────────────────────────────────────────

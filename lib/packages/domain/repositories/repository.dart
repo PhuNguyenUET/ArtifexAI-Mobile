@@ -63,7 +63,7 @@ abstract class Repository {
   Future<AuthenticationResponseDto> authenticateOAuthGithub();
 
   // ─── Media Management ─────────────────────────────────────────────────────────
-  Future<void> uploadClient({required String base64, required MimeType mimeType});
+  Future<MediaDto> uploadClient({required String base64, required MimeType mimeType});
   Future<MediaDto> getMediaById({required String id});
   Future<List<MediaDto>> getMediasByAlbum({required String albumId});
   Future<List<MediaDto>> getGallery();

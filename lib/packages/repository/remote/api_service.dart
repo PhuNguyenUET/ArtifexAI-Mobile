@@ -122,7 +122,7 @@ abstract class ApiService {
   Future<AuthenticationResponseDto> authenticateOAuthGithub();
 
   // Media Management
-  Future<void> uploadClient({
+  Future<MediaDto> uploadClient({
     required String base64,
     required MimeType mimeType
   });

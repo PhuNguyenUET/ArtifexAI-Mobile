@@ -130,6 +130,7 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
               mediaId: _current.id ?? '',
               albumId: widget.albumId,
               mediaUrl: _current.mediaUrl,
+              mediaPath: _current.mediaPath,
               homeController: widget.homeController,
             ),
           ),
@@ -141,18 +142,96 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
 
 // ─── Bottom Action Bar ────────────────────────────────────────────────────────
 
-class _BottomActionBar extends StatelessWidget {
+class _BottomActionBar extends StatefulWidget {
   const _BottomActionBar({
     required this.mediaId,
     required this.albumId,
     required this.mediaUrl,
     required this.homeController,
+    this.mediaPath,
   });
 
   final String mediaId;
   final String albumId;
   final String? mediaUrl;
+  final String? mediaPath;
   final HomeController homeController;
+
+  @override
+  State<_BottomActionBar> createState() => _BottomActionBarState();
+}
+
+class _BottomActionBarState extends State<_BottomActionBar> {
+  bool _isSaving = false;
+
+  // ─── Save to phone gallery ────────────────────────────────────────────────
+
+  Future<void> _saveToGallery() async {
+    final url = widget.mediaUrl;
+    if (url == null || _isSaving) return;
+    setState(() => _isSaving = true);
+    try {
+      final permission = await PhotoManager.requestPermissionExtend();
+      if (!permission.hasAccess) {
+        if (!mounted) return;
+        _showSnackBar(
+          icon: Icons.lock_outline_rounded,
+          message: 'Photo library permission denied. Please enable it in Settings.',
+          color: Colors.redAccent,
+        );
+        return;
+      }
+
+      final response = await Dio().get<List<int>>(
+        url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final bytes = Uint8List.fromList(response.data!);
+
+      final fileName = Uri.parse(url).pathSegments.lastWhere(
+            (s) => s.isNotEmpty,
+            orElse: () => 'artifex_${DateTime.now().millisecondsSinceEpoch}.jpg',
+          );
+
+      await PhotoManager.editor.saveImage(bytes, filename: fileName);
+
+      if (!mounted) return;
+      _showSnackBar(
+        icon: Icons.check_circle_outline,
+        message: 'Saved to your phone\'s gallery',
+        color: const Color(0xFF2ECC71),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar(
+        icon: Icons.error_outline_rounded,
+        message: 'Could not save image: ${e.toString()}',
+        color: Colors.redAccent,
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  void _showSnackBar({
+    required IconData icon,
+    required String message,
+    required Color color,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(children: [
+          Icon(icon, color: Colors.white, size: 18),
+          const SizedBox(width: 10),
+          Expanded(child: Text(message, style: const TextStyle(color: Colors.white))),
+        ]),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,44 +252,62 @@ class _BottomActionBar extends StatelessWidget {
           ],
         ),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Remove from album
-          Expanded(
-            child: _ActionButton(
-              icon: Icons.folder_off_outlined,
-              label: 'Remove from Album',
-              color: Colors.white,
-              onTap: () => _confirmRemove(context),
-            ),
+          // ── Row 1: Remove from Album | Save to Gallery ───────────────────
+          Row(
+            children: [
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.folder_off_outlined,
+                  label: 'Remove from Album',
+                  color: Colors.white,
+                  onTap: () => _confirmRemove(context),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionButton(
+                  icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_alt_rounded,
+                  label: 'Save to Gallery',
+                  color: const Color(0xFF2ECC71),
+                  onTap: (!_isSaving && widget.mediaUrl != null) ? _saveToGallery : null,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          // Mask Edit
-          Expanded(
-            child: _ActionButton(
-              icon: Icons.brush_rounded,
-              label: 'Mask Edit',
-              color: AppColor.gradientStart3,
-              onTap: mediaUrl != null
-                  ? () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => MaskEditPage(
-                          imageUrl: mediaUrl!,
-                          homeController: homeController,
-                          showProjectPicker: true,
-                        ),
-                      ))
-                  : null,
-            ),
-          ),
-          const SizedBox(width: 10),
-          // Delete permanently
-          Expanded(
-            child: _ActionButton(
-              icon: Icons.delete_outline_rounded,
-              label: 'Delete Image',
-              color: AppColor.alertError,
-              onTap: () => _confirmDelete(context),
-            ),
+          const SizedBox(height: 10),
+          // ── Row 2: Mask Edit | Delete Image ──────────────────────────────
+          Row(
+            children: [
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.brush_rounded,
+                  label: 'Mask Edit',
+                  color: AppColor.gradientStart3,
+                  onTap: widget.mediaUrl != null
+                      ? () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => MaskEditPage(
+                              imageUrl: widget.mediaUrl!,
+                              imagePath: widget.mediaPath,
+                              homeController: widget.homeController,
+                              showProjectPicker: true,
+                            ),
+                          ))
+                      : null,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionButton(
+                  icon: Icons.delete_outline_rounded,
+                  label: 'Delete Image',
+                  color: AppColor.alertError,
+                  onTap: () => _confirmDelete(context),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -228,8 +325,8 @@ class _BottomActionBar extends StatelessWidget {
       confirmColor: AppColor.alertWarning,
       onConfirm: () {
         context.read<AlbumDetailController>().removeFromAlbum(
-          mediaId: mediaId,
-          albumId: albumId,
+          mediaId: widget.mediaId,
+          albumId: widget.albumId,
           onSuccess: () {
             if (context.mounted) Navigator.of(context).pop();
           },
@@ -256,7 +353,7 @@ class _BottomActionBar extends StatelessWidget {
       confirmColor: AppColor.alertError,
       onConfirm: () {
         context.read<AlbumDetailController>().deleteMedia(
-          mediaId: mediaId,
+          mediaId: widget.mediaId,
           onSuccess: () {
             if (context.mounted) Navigator.of(context).pop();
           },
@@ -417,5 +514,3 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
-
-

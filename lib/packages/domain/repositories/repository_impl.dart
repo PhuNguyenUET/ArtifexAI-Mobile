@@ -137,7 +137,7 @@ class RepositoryImpl extends Repository {
   // ─── Media Management ─────────────────────────────────────────────────────────
 
   @override
-  Future<void> uploadClient({required String base64, required MimeType mimeType}) =>
+  Future<MediaDto> uploadClient({required String base64, required MimeType mimeType}) =>
       _apiService.uploadClient(base64: base64, mimeType: mimeType);
 
   @override

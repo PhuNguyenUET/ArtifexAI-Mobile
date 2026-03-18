@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
+import '../../init/access_token_storage.dart';
+import '../../init/sl.dart';
+import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
 import '../home/home_controller.dart';
 import 'generation_result_page.dart';
@@ -87,11 +88,18 @@ class _ProjectViewState extends State<_ProjectView> {
     );
     if (bytes == null) return null;
 
-    final ext     = file.path.toLowerCase();
+    final ext      = file.path.toLowerCase();
     final mimeType = ext.endsWith('.png') ? MimeType.png : MimeType.jpeg;
     final b64      = base64Encode(bytes);
 
-    return (ReferenceImage(imagePath: b64, mimeType: mimeType), b64);
+    // Upload to server and get back the MediaDto with the server-side path.
+    final mediaDto = await sl.get<AccessTokenStorage>().repository
+        .uploadClient(base64: b64, mimeType: mimeType);
+
+    return (
+      ReferenceImage(imagePath: mediaDto.mediaPath, mimeType: mimeType),
+      b64, // local base64 kept only for preview display
+    );
   }
 
   Future<void> _pickSingleImage() async {
@@ -152,6 +160,18 @@ class _ProjectViewState extends State<_ProjectView> {
       _toast('Please select a reference image.');
       return;
     }
+    if (mode == GenerationMode.variation && _multiImages.isEmpty) {
+      _toast('Please add at least one reference image.');
+      return;
+    }
+    if (mode == GenerationMode.spriteSheet && _charDescCtrl.text.trim().isEmpty) {
+      _toast('Please enter a character description.');
+      return;
+    }
+    if (mode == GenerationMode.spriteSheet && _actionDescCtrl.text.trim().isEmpty) {
+      _toast('Please enter an action description.');
+      return;
+    }
     if (mode == GenerationMode.upscale && _singleImage == null) {
       _toast('Please select an image to upscale.');
       return;
@@ -172,7 +192,7 @@ class _ProjectViewState extends State<_ProjectView> {
       upscaleImage:       _singleImage,
       upscaleFactor:      _upscaleFactor,
       videoPrompt:        _promptCtrl.text.trim(),
-      videoReferenceImage: _multiImages.isNotEmpty ? _multiImages.first : null,
+      videoReferenceImage: _singleImage,
       videoLength:        _videoLength,
       onError: (msg) => _toast(msg, isError: true),
     );
@@ -207,6 +227,8 @@ class _ProjectViewState extends State<_ProjectView> {
         ),
       ));
       ctrl.clearResult();
+    } else if (ctrl.state.error == null && !ctrl.state.generating) {
+      _toast('Something went wrong. Please try again later.', isError: true);
     }
   }
 
@@ -444,7 +466,7 @@ class _ProjectViewState extends State<_ProjectView> {
         maxLines: 4, textCapitalization: TextCapitalization.sentences,
       ),
       const SizedBox(height: 20),
-      _fieldLabel('Reference Images (optional)'),
+      _fieldLabel('Reference Images'),
       const SizedBox(height: 8),
       _buildMultiImagePicker(),
     ]);
@@ -480,7 +502,7 @@ class _ProjectViewState extends State<_ProjectView> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _modeTitle('Sprite Sheet', 'Generate a character sprite sheet with multiple poses'),
       const SizedBox(height: 20),
-      _fieldLabel('Character Description (optional)'),
+      _fieldLabel('Character Description'),
       const SizedBox(height: 8),
       AppTextFormField(
         controller: _charDescCtrl,
@@ -488,7 +510,7 @@ class _ProjectViewState extends State<_ProjectView> {
         maxLines: 3, textCapitalization: TextCapitalization.sentences,
       ),
       const SizedBox(height: 20),
-      _fieldLabel('Action Description (optional)'),
+      _fieldLabel('Action Description'),
       const SizedBox(height: 8),
       AppTextFormField(
         controller: _actionDescCtrl,
@@ -588,7 +610,8 @@ class _ProjectViewState extends State<_ProjectView> {
             borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
             child: Image.memory(
               base64Decode(_singleImagePreview!),
-              height: 200, width: double.infinity, fit: BoxFit.cover,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
           ),
           Positioned(

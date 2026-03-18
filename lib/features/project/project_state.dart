@@ -50,7 +50,10 @@ extension GenerationModeExt on GenerationMode {
 
   bool get requiresPrompt {
     switch (this) {
-      case GenerationMode.upscale: return false;
+      case GenerationMode.upscale:     return false;
+      case GenerationMode.spriteSheet: return false;
+      case GenerationMode.video:       return false;
+      case GenerationMode.styleChange: return false;
       default: return true;
     }
   }
