@@ -21,19 +21,13 @@ class TokenRefreshInterceptor extends Interceptor {
     required Dio primaryDio,
     required TokenStorage storage,
     required VoidCallback onSessionExpired,
-    // Visible for testing: provide a pre-configured Dio to use for the
-    // refresh call instead of creating a fresh one.  Keeps the production
-    // code path identical while allowing full unit-test coverage.
-    Dio? testRefreshDio,
   })  : _primaryDio = primaryDio,
         _storage = storage,
-        _onSessionExpired = onSessionExpired,
-        _testRefreshDio = testRefreshDio;
+        _onSessionExpired = onSessionExpired;
 
   final Dio _primaryDio;
   final TokenStorage _storage;
   final VoidCallback _onSessionExpired;
-  final Dio? _testRefreshDio;
 
   /// Paths that the backend permits without a JWT – mirrors the Spring Security
   /// `.permitAll()` list so we never try to refresh on a public endpoint.
@@ -100,13 +94,12 @@ class TokenRefreshInterceptor extends Interceptor {
       }
 
       // Use a standalone Dio so this call bypasses this interceptor entirely.
-      final refreshDio = _testRefreshDio ??
-          Dio(BaseOptions(
-            baseUrl: _primaryDio.options.baseUrl,
-            contentType: 'application/json',
-            connectTimeout: const Duration(seconds: 30),
-            receiveTimeout: const Duration(seconds: 30),
-          ));
+      final refreshDio = Dio(BaseOptions(
+        baseUrl: _primaryDio.options.baseUrl,
+        contentType: 'application/json',
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ));
 
       final refreshResponse = await refreshDio.post<Map<String, dynamic>>(
         '/api/user/v1/refresh_jwt',
