@@ -9,10 +9,65 @@ class ProjectController extends Cubit<ProjectState> {
   final _storage = sl.get<AccessTokenStorage>();
 
   void setMode(GenerationMode mode) =>
-      emit(ProjectState(mode: mode));
+      emit(ProjectState(mode: mode, instructions: state.instructions));
 
   void clearResult() =>
-      emit(ProjectState(mode: state.mode));
+      emit(ProjectState(mode: state.mode, instructions: state.instructions));
+
+  // ─── Instructions ─────────────────────────────────────────────────────────
+
+  void loadInstructions(List<String> instructions) {
+    emit(state.copyWith(instructions: List.unmodifiable(instructions)));
+  }
+
+  Future<void> deleteInstruction({
+    required String projectId,
+    required int index,
+    void Function(String)? onError,
+  }) async {
+    final updated = List<String>.from(state.instructions)..removeAt(index);
+    emit(state.copyWith(updatingInstructions: true));
+    try {
+      await _storage.repository.updateInstructions(
+        projectId: projectId,
+        instructions: updated,
+      );
+      emit(state.copyWith(instructions: updated, updatingInstructions: false));
+    } on CustomException catch (e) {
+      emit(state.copyWith(updatingInstructions: false));
+      onError?.call(e.message);
+    } catch (_) {
+      emit(state.copyWith(updatingInstructions: false));
+      onError?.call('Failed to delete instruction. Please try again.');
+    }
+  }
+
+  Future<void> addInstruction({
+    required String projectId,
+    required String newInstruction,
+    void Function(String)? onError,
+  }) async {
+    emit(state.copyWith(addingInstruction: true));
+    try {
+      await _storage.repository.addInstructions(
+        projectId: projectId,
+        newInstruction: newInstruction,
+      );
+      // Reload the project to get the AI-updated instruction list
+      final updated = await _storage.repository.getProjectById(projectId: projectId);
+      emit(state.copyWith(
+        addingInstruction: false,
+        instructions: List.unmodifiable(updated.instructions ?? []),
+      ));
+    } on CustomException catch (e) {
+      emit(state.copyWith(addingInstruction: false));
+      onError?.call(e.message);
+    } catch (_) {
+      emit(state.copyWith(addingInstruction: false));
+      onError?.call('Failed to add instruction. Please try again.');
+    }
+  }
+
 
   Future<void> generate({
     required GenerationMode mode,
@@ -32,7 +87,6 @@ class ProjectController extends Cubit<ProjectState> {
     String? videoPrompt,
     ReferenceImage? videoReferenceImage,
     VideoLength videoLength = VideoLength.medium,
-    int numberOfOutputs = 1,
     void Function(String)? onError,
   }) async {
     emit(ProjectState(mode: mode, generating: true));
@@ -54,7 +108,6 @@ class ProjectController extends Cubit<ProjectState> {
           result = await _storage.repository.splashArt(
             projectId: projectId,
             splashDescription: splashDescription ?? '',
-            numberOfOutputs: numberOfOutputs,
           );
           break;
         case GenerationMode.variation:
@@ -62,7 +115,6 @@ class ProjectController extends Cubit<ProjectState> {
             projectId: projectId,
             imageInfos: variationImages ?? [],
             prompt: variationPrompt ?? '',
-            numberOfOutputs: numberOfOutputs,
           );
           break;
         case GenerationMode.styleChange:
@@ -71,7 +123,6 @@ class ProjectController extends Cubit<ProjectState> {
             imageInfo: styleImage!,
             targetedStyle: targetedStyle!,
             additionalPrompts: additionalPrompts ?? '',
-            numberOfOutputs: numberOfOutputs,
           );
           break;
         case GenerationMode.spriteSheet:
@@ -80,7 +131,6 @@ class ProjectController extends Cubit<ProjectState> {
             characterDescription: characterDescription,
             actionDescription: actionDescription,
             imageInfos: spriteImages ?? [],
-            numberOfOutputs: numberOfOutputs,
           );
           break;
         case GenerationMode.upscale:

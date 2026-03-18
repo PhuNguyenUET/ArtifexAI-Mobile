@@ -405,7 +405,6 @@ class ApiServiceImpl extends ApiService {
     required String projectId,
     List<ReferenceImage> imageInfos = const [],
     required String prompt,
-    required int numberOfOutputs,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/variation',
@@ -413,7 +412,6 @@ class ApiServiceImpl extends ApiService {
         'projectId': projectId,
         'imageInfos': imageInfos.map((e) => e.toJson()).toList(),
         'prompt': prompt,
-        'numberOfOutputs': numberOfOutputs,
       },
     );
     return ImageResponseDto.fromJson(json);
@@ -442,7 +440,6 @@ class ApiServiceImpl extends ApiService {
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
-    required int numberOfOutputs,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/style_change',
@@ -451,7 +448,6 @@ class ApiServiceImpl extends ApiService {
         'imageInfo': imageInfo.toJson(),
         'targetedStyle': targetedStyle.toJson(),
         'additionalPrompts': additionalPrompts,
-        'numberOfOutputs': numberOfOutputs,
       },
     );
     return ImageResponseDto.fromJson(json);
@@ -463,7 +459,6 @@ class ApiServiceImpl extends ApiService {
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
-    required int numberOfOutputs,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/sprite_sheet',
@@ -472,7 +467,6 @@ class ApiServiceImpl extends ApiService {
         'characterDescription': characterDescription,
         'actionDescription': actionDescription,
         'imageInfos': imageInfos.map((e) => e.toJson()).toList(),
-        'numberOfOutputs': numberOfOutputs,
       },
     );
     return ImageResponseDto.fromJson(json);
@@ -482,14 +476,12 @@ class ApiServiceImpl extends ApiService {
   Future<ImageResponseDto> splashArt({
     required String projectId,
     required String splashDescription,
-    required int numberOfOutputs,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/splash_art',
       data: {
         'projectId': projectId,
         'splashDescription': splashDescription,
-        'numberOfOutputs': numberOfOutputs,
       },
     );
     return ImageResponseDto.fromJson(json);
@@ -503,7 +495,6 @@ class ApiServiceImpl extends ApiService {
     String? prompt,
     required EditMode editMode,
     required MaskMode maskReferenceMode,
-    required int numberOfOutputs,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/masked_edit',
@@ -514,7 +505,6 @@ class ApiServiceImpl extends ApiService {
         'prompt': prompt,
         'editMode': editMode.toJson(),
         'maskReferenceMode': maskReferenceMode.toJson(),
-        'numberOfOutputs': numberOfOutputs,
       },
     );
     return ImageResponseDto.fromJson(json);

@@ -1256,7 +1256,10 @@ class _AlbumCardState extends State<_AlbumCard>
         onTap: widget.editMode
             ? () => _confirmDelete(context)
             : () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => AlbumDetailPage(album: widget.album),
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<HomeController>(),
+                    child: AlbumDetailPage(album: widget.album),
+                  ),
                 )),
         child: Stack(
           clipBehavior: Clip.none,

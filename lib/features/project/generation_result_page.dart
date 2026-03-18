@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:video_player/video_player.dart';
 import '../../packages/index.dart';
 import '../home/home_controller.dart';
+import 'mask_edit_page.dart';
 import 'project_state.dart';
 
 class GenerationResultPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class GenerationResultPage extends StatefulWidget {
     required this.projectId,
     required this.homeController,
     this.videoUrl,
+    this.customTitle,
   });
 
   final ImageResponseDto result;
@@ -19,6 +21,8 @@ class GenerationResultPage extends StatefulWidget {
   final String           projectId;
   final HomeController   homeController;
   final String?          videoUrl;
+  /// When set, overrides the auto-generated "[mode.label] Results" title.
+  final String?          customTitle;
 
   @override
   State<GenerationResultPage> createState() => _GenerationResultPageState();
@@ -56,23 +60,85 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     super.dispose();
   }
 
-  // ─── Save to gallery ──────────────────────────────────────────────────────
+  // ─── Save to phone gallery ────────────────────────────────────────────────
+
+  bool _isSaving = false;
 
   Future<void> _saveToGallery(String url) async {
-    // The media is already stored server-side; just re-fetch gallery
-    await widget.homeController.fetchGallery();
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Row(children: [
-        Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
-        SizedBox(width: 10),
-        Text('Saved to your gallery', style: TextStyle(color: Colors.white)),
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
+
+    try {
+      // 1. Request permission to write to the device photo library.
+      final permission = await PhotoManager.requestPermissionExtend();
+      if (!permission.hasAccess) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+          icon: Icons.lock_outline_rounded,
+          message: 'Photo library permission denied. Please enable it in Settings.',
+          color: Colors.redAccent,
+        ));
+        return;
+      }
+
+      // 2. Download the image bytes from the remote URL.
+      final response = await Dio().get<List<int>>(
+        url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final bytes = Uint8List.fromList(response.data!);
+
+      // 3. Determine a sensible file name from the URL (fallback to timestamp).
+      final fileName = Uri.parse(url).pathSegments.lastWhere(
+            (s) => s.isNotEmpty,
+            orElse: () => 'artifex_${DateTime.now().millisecondsSinceEpoch}.jpg',
+          );
+
+      // 4. Save bytes directly into the phone's photo library.
+      await PhotoManager.editor.saveImage(
+        bytes,
+        filename: fileName,
+      );
+
+      // 5. Also keep the in-app gallery list up to date.
+      await widget.homeController.fetchGallery();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        icon: Icons.check_circle_outline,
+        message: 'Saved to your phone\'s gallery',
+        color: const Color(0xFF2ECC71),
+      ));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        icon: Icons.error_outline_rounded,
+        message: 'Could not save image: ${e.toString()}',
+        color: Colors.redAccent,
+      ));
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  SnackBar _snackBar({
+    required IconData icon,
+    required String message,
+    required Color color,
+  }) {
+    return SnackBar(
+      content: Row(children: [
+        Icon(icon, color: Colors.white, size: 18),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(message, style: const TextStyle(color: Colors.white)),
+        ),
       ]),
-      backgroundColor: const Color(0xFF2ECC71),
+      backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       margin: const EdgeInsets.all(16),
-    ));
+    );
   }
 
   @override
@@ -116,7 +182,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${widget.mode.label} Results',
+                  widget.customTitle ?? '${widget.mode.label} Results',
                   style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
                 ),
                 Text(
@@ -390,10 +456,10 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                 // Save current to gallery
                 Expanded(
                   child: _ActionButton(
-                    icon: Icons.save_alt_rounded,
+                    icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_alt_rounded,
                     label: _single ? 'Save to Gallery' : 'Save This',
                     gradient: const [AppColor.gradientStart3, AppColor.gradientEnd3],
-                    onTap: currentUrl != null ? () => _saveToGallery(currentUrl) : null,
+                    onTap: (!_isSaving && currentUrl != null) ? () => _saveToGallery(currentUrl) : null,
                   ),
                 ),
                 if (!_single) ...[
@@ -401,15 +467,35 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                   // Save all
                   Expanded(
                     child: _ActionButton(
-                      icon: Icons.save_rounded,
+                      icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_rounded,
                       label: 'Save All',
                       gradient: const [AppColor.gradientStart5, AppColor.gradientEnd5],
-                      onTap: () async {
-                        for (final url in _urls) await _saveToGallery(url);
-                      },
+                      onTap: _isSaving
+                          ? null
+                          : () async {
+                              for (final url in _urls) await _saveToGallery(url);
+                            },
                     ),
                   ),
                 ],
+                const SizedBox(width: 10),
+                // Mask Edit
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.brush_rounded,
+                    label: 'Mask Edit',
+                    gradient: const [Color(0xFFEE85FF), Color(0xFFFF6B6B)],
+                    onTap: currentUrl != null
+                        ? () => Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => MaskEditPage(
+                                imageUrl: currentUrl,
+                                projectId: widget.projectId,
+                                homeController: widget.homeController,
+                              ),
+                            ))
+                        : null,
+                  ),
+                ),
               ],
             ],
           ),

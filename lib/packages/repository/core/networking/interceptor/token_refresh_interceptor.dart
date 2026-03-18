@@ -126,7 +126,9 @@ class TokenRefreshInterceptor extends Interceptor {
           final r = await _primaryDio.fetch<dynamic>(pending.options);
           pending.complete(r);
         } catch (e) {
-          pending.reject(e as Exception);
+          // Safe rejection: e may be an Error (not Exception), so avoid a
+          // bare `e as Exception` cast that would itself throw a TypeError.
+          pending.reject(e is Exception ? e : Exception(e.toString()));
         }
       }
       _queue.clear();
@@ -135,7 +137,12 @@ class TokenRefreshInterceptor extends Interceptor {
       requestOptions.headers['Authorization'] = 'Bearer $newToken';
       final retryResponse = await _primaryDio.fetch<dynamic>(requestOptions);
       return handler.resolve(retryResponse);
-    } on DioException catch (_) {
+    } catch (_) {
+      // Catch ALL exceptions, not just DioException.
+      // A narrow `on DioException` silently swallowed storage failures,
+      // TypeErrors, FormatExceptions, etc. — leaving the handler un-resolved
+      // and _onSessionExpired never called, which is why the 401 was leaking
+      // to the UI without any redirect to the login screen.
       await _onRefreshFailed(err, handler);
     } finally {
       _isRefreshing = false;

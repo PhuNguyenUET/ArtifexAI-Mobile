@@ -74,7 +74,6 @@ abstract class Repository {
     required String projectId,
     List<ReferenceImage> imageInfos,
     required String prompt,
-    required int numberOfOutputs,
   });
   Future<ImageResponseDto> imageUpscale({
     required String projectId,
@@ -86,19 +85,16 @@ abstract class Repository {
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
-    required int numberOfOutputs,
   });
   Future<ImageResponseDto> imageSpriteSheet({
     required String projectId,
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
-    required int numberOfOutputs,
   });
   Future<ImageResponseDto> splashArt({
     required String projectId,
     required String splashDescription,
-    required int numberOfOutputs,
   });
   Future<ImageResponseDto> imageMaskedEdit({
     required String projectId,
@@ -107,6 +103,5 @@ abstract class Repository {
     String? prompt,
     required EditMode editMode,
     required MaskMode maskReferenceMode,
-    required int numberOfOutputs,
   });
 }

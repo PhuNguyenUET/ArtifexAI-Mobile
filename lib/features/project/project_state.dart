@@ -47,15 +47,6 @@ extension GenerationModeExt on GenerationMode {
     }
   }
 
-  bool get supportsMultipleOutputs {
-    switch (this) {
-      case GenerationMode.upscale:
-      case GenerationMode.video:
-        return false;
-      default:
-        return true;
-    }
-  }
 
   bool get requiresPrompt {
     switch (this) {
@@ -88,5 +79,9 @@ abstract class ProjectState with _$ProjectState {
     ImageResponseDto? result,
     VideoResponseDto? videoResult,
     String? error,
+    // ─── Instructions ─────────────────────────────────────────────────────────
+    @Default([]) List<String> instructions,
+    @Default(false) bool addingInstruction,
+    @Default(false) bool updatingInstructions,
   }) = _ProjectState;
 }

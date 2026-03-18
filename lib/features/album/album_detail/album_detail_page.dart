@@ -339,6 +339,7 @@ class _MediaThumbnail extends StatelessWidget {
                       media: allMedia,
                       initialIndex: index,
                       albumId: albumId,
+                      homeController: context.read<HomeController>(),
                     ),
                   ),
                 ),

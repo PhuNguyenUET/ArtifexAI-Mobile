@@ -1,4 +1,6 @@
 import '../../../packages/index.dart';
+import '../../home/home_controller.dart';
+import '../../project/mask_edit_page.dart';
 import '../album_detail/album_detail_controller.dart';
 
 /// Full-screen image viewer with a bottom action bar.
@@ -11,11 +13,13 @@ class MediaViewerPage extends StatefulWidget {
     required this.media,
     required this.initialIndex,
     required this.albumId,
+    required this.homeController,
   });
 
   final List<MediaDto> media;
   final int initialIndex;
   final String albumId;
+  final HomeController homeController;
 
   @override
   State<MediaViewerPage> createState() => _MediaViewerPageState();
@@ -125,6 +129,8 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
             child: _BottomActionBar(
               mediaId: _current.id ?? '',
               albumId: widget.albumId,
+              mediaUrl: _current.mediaUrl,
+              homeController: widget.homeController,
             ),
           ),
         ],
@@ -139,10 +145,14 @@ class _BottomActionBar extends StatelessWidget {
   const _BottomActionBar({
     required this.mediaId,
     required this.albumId,
+    required this.mediaUrl,
+    required this.homeController,
   });
 
   final String mediaId;
   final String albumId;
+  final String? mediaUrl;
+  final HomeController homeController;
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +184,25 @@ class _BottomActionBar extends StatelessWidget {
               onTap: () => _confirmRemove(context),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 10),
+          // Mask Edit
+          Expanded(
+            child: _ActionButton(
+              icon: Icons.brush_rounded,
+              label: 'Mask Edit',
+              color: AppColor.gradientStart3,
+              onTap: mediaUrl != null
+                  ? () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => MaskEditPage(
+                          imageUrl: mediaUrl!,
+                          homeController: homeController,
+                          showProjectPicker: true,
+                        ),
+                      ))
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 10),
           // Delete permanently
           Expanded(
             child: _ActionButton(
@@ -347,13 +375,13 @@ class _ActionButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.color,
-    required this.onTap,
+    this.onTap,
   });
 
   final IconData icon;
   final String label;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -146,7 +146,6 @@ abstract class ApiService {
     required String projectId,
     List<ReferenceImage> imageInfos,
     required String prompt,
-    required int numberOfOutputs
   });
 
   Future<ImageResponseDto> imageUpscale({
@@ -160,7 +159,6 @@ abstract class ApiService {
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
-    required int numberOfOutputs
   });
 
   Future<ImageResponseDto> imageSpriteSheet({
@@ -168,13 +166,11 @@ abstract class ApiService {
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
-    required int numberOfOutputs
   });
 
   Future<ImageResponseDto> splashArt({
     required String projectId,
     required String splashDescription,
-    required int numberOfOutputs
   });
 
   Future<ImageResponseDto> imageMaskedEdit({
@@ -184,6 +180,5 @@ abstract class ApiService {
     String? prompt,
     required EditMode editMode,
     required MaskMode maskReferenceMode,
-    required int numberOfOutputs
   });
 }

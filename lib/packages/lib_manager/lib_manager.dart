@@ -1,6 +1,7 @@
 export 'dart:async';
 export 'dart:developer';
 export 'dart:io';
+export 'dart:typed_data';
 
 // export 'package:appcheck/appcheck.dart';
 export 'package:country_ip/country_ip.dart';
@@ -44,6 +45,7 @@ export 'package:json_annotation/json_annotation.dart';
 export 'package:jwt_decoder/jwt_decoder.dart';
 export 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 export 'package:permission_handler/permission_handler.dart' hide ServiceStatus;
+export 'package:photo_manager/photo_manager.dart' hide LatLng;
 export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 export 'package:pin_code_fields/pin_code_fields.dart';

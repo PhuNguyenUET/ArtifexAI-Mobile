@@ -162,12 +162,10 @@ class RepositoryImpl extends Repository {
     required String projectId,
     List<ReferenceImage> imageInfos = const [],
     required String prompt,
-    required int numberOfOutputs,
   }) => _apiService.imageVariation(
         projectId: projectId,
         imageInfos: imageInfos,
         prompt: prompt,
-        numberOfOutputs: numberOfOutputs,
       );
 
   @override
@@ -187,13 +185,11 @@ class RepositoryImpl extends Repository {
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
-    required int numberOfOutputs,
   }) => _apiService.imageStyleChange(
         projectId: projectId,
         imageInfo: imageInfo,
         targetedStyle: targetedStyle,
         additionalPrompts: additionalPrompts,
-        numberOfOutputs: numberOfOutputs,
       );
 
   @override
@@ -202,24 +198,20 @@ class RepositoryImpl extends Repository {
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
-    required int numberOfOutputs,
   }) => _apiService.imageSpriteSheet(
         projectId: projectId,
         characterDescription: characterDescription,
         actionDescription: actionDescription,
         imageInfos: imageInfos,
-        numberOfOutputs: numberOfOutputs,
       );
 
   @override
   Future<ImageResponseDto> splashArt({
     required String projectId,
     required String splashDescription,
-    required int numberOfOutputs,
   }) => _apiService.splashArt(
         projectId: projectId,
         splashDescription: splashDescription,
-        numberOfOutputs: numberOfOutputs,
       );
 
   @override
@@ -230,7 +222,6 @@ class RepositoryImpl extends Repository {
     String? prompt,
     required EditMode editMode,
     required MaskMode maskReferenceMode,
-    required int numberOfOutputs,
   }) => _apiService.imageMaskedEdit(
         projectId: projectId,
         imageInfo: imageInfo,
@@ -238,6 +229,5 @@ class RepositoryImpl extends Repository {
         prompt: prompt,
         editMode: editMode,
         maskReferenceMode: maskReferenceMode,
-        numberOfOutputs: numberOfOutputs,
       );
 }

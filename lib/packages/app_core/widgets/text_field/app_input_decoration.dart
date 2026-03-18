@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../../../index.dart';
 
 class AppInputDecoration {
@@ -30,12 +29,12 @@ class AppInputDecoration {
 
     return InputDecoration(
       counterText: counterText ?? "",
-      border:              OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: side),
-      enabledBorder:       OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: side),
-      focusedBorder:       OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: focusSide),
-      focusedErrorBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: errorSide),
-      errorBorder:         OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: errorSide),
-      disabledBorder:      OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: disabledSide),
+      border:             OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: side),
+      enabledBorder:      OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: side),
+      focusedBorder:      OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: focusSide),
+      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: errorSide),
+      errorBorder:        OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: errorSide),
+      disabledBorder:     OutlineInputBorder(borderRadius: BorderRadius.circular(br), borderSide: disabledSide),
       labelText: labelText,
       labelStyle: context.label1.copyWith(color: AppColor.spaceTextSecondary),
       helperStyle: helperStyle ?? context.subtitle4.copyWith(color: AppColor.spaceTextHint, height: 1.0),
@@ -58,8 +57,10 @@ class AppInputDecoration {
       suffixIconConstraints: AppStyleConstant.textFieldConstraints,
       icon: icon,
       fillColor: fillColor ?? AppColor.spaceInputFill,
-      filled: true, // always filled on dark theme
+      filled: true,
       enabled: enabled,
     );
   }
 }
+
+

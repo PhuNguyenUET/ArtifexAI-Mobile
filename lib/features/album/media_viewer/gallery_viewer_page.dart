@@ -1,5 +1,6 @@
 import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
+import '../../project/mask_edit_page.dart';
 
 /// Full-screen image viewer opened from the Gallery card.
 /// Bottom bar has: Delete (permanent) + Add to Albums (multi-select picker).
@@ -136,6 +137,7 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
             right: 0,
             child: _GalleryActionBar(
               mediaId: _current.id ?? '',
+              mediaUrl: _current.mediaUrl,
               onDeleted: _removeCurrentFromList,
             ),
           ),
@@ -151,9 +153,11 @@ class _GalleryActionBar extends StatelessWidget {
   const _GalleryActionBar({
     required this.mediaId,
     required this.onDeleted,
+    this.mediaUrl,
   });
 
   final String mediaId;
+  final String? mediaUrl;
   final VoidCallback onDeleted;
 
   @override
@@ -186,7 +190,26 @@ class _GalleryActionBar extends StatelessWidget {
               onTap: () => _showAddToAlbumsSheet(context),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 10),
+          // Mask Edit
+          Expanded(
+            child: _GalleryActionButton(
+              icon: Icons.brush_rounded,
+              label: 'Mask Edit',
+              color: AppColor.gradientStart3,
+              onTap: mediaUrl != null
+                  ? () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => MaskEditPage(
+                          imageUrl: mediaUrl!,
+                          homeController:
+                              context.read<HomeController>(),
+                          showProjectPicker: true,
+                        ),
+                      ))
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 10),
           // Delete permanently
           Expanded(
             child: _GalleryActionButton(
@@ -593,13 +616,13 @@ class _GalleryActionButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.color,
-    required this.onTap,
+    this.onTap,
   });
 
   final IconData icon;
   final String label;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

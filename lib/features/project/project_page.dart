@@ -37,7 +37,6 @@ class _ProjectViewState extends State<_ProjectView> {
   final _additionalCtrl    = TextEditingController();
   final _charDescCtrl      = TextEditingController();
   final _actionDescCtrl    = TextEditingController();
-  int   _numberOfOutputs   = 1;
 
   // ── Single-image modes ────────────────────────────────────────────────────
   ReferenceImage? _singleImage;
@@ -55,6 +54,17 @@ class _ProjectViewState extends State<_ProjectView> {
 
   // ── Video ─────────────────────────────────────────────────────────────────
   VideoLength _videoLength = VideoLength.medium;
+
+  @override
+  void initState() {
+    super.initState();
+    // Seed the cubit with the instructions already on the project DTO.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProjectController>().loadInstructions(
+            widget.project.instructions ?? [],
+          );
+    });
+  }
 
   @override
   void dispose() {
@@ -164,7 +174,6 @@ class _ProjectViewState extends State<_ProjectView> {
       videoPrompt:        _promptCtrl.text.trim(),
       videoReferenceImage: _multiImages.isNotEmpty ? _multiImages.first : null,
       videoLength:        _videoLength,
-      numberOfOutputs:    _numberOfOutputs,
       onError: (msg) => _toast(msg, isError: true),
     );
 
@@ -280,8 +289,41 @@ class _ProjectViewState extends State<_ProjectView> {
               ],
             ),
           ),
+          // Instructions button
+          _buildInstructionsButton(context, state),
+          const SizedBox(width: 8),
           _buildGenerateButton(context, state),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInstructionsButton(BuildContext context, ProjectState state) {
+    return Tooltip(
+      message: 'Instructions',
+      child: GestureDetector(
+        onTap: () {
+          final ctrl = context.read<ProjectController>();
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => BlocProvider.value(
+              value: ctrl,
+              child: _InstructionsSheet(projectId: widget.project.id!),
+            ),
+          );
+        },
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: AppColor.spaceCardHigh,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColor.spaceBorder),
+          ),
+          child: const Icon(Icons.menu_book_rounded, size: 18, color: Colors.white),
+        ),
       ),
     );
   }
@@ -347,7 +389,6 @@ class _ProjectViewState extends State<_ProjectView> {
                       _additionalCtrl.clear();
                       _charDescCtrl.clear();
                       _actionDescCtrl.clear();
-                      _numberOfOutputs = 1;
                       _videoLength = VideoLength.medium;
                     });
                   },
@@ -386,8 +427,6 @@ class _ProjectViewState extends State<_ProjectView> {
         hintText: 'A dragon soaring above a burning castle at sunset…',
         maxLines: 5, textCapitalization: TextCapitalization.sentences,
       ),
-      const SizedBox(height: 24),
-      _outputCountSelector(),
     ]);
   }
 
@@ -408,8 +447,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _fieldLabel('Reference Images (optional)'),
       const SizedBox(height: 8),
       _buildMultiImagePicker(),
-      const SizedBox(height: 24),
-      _outputCountSelector(),
     ]);
   }
 
@@ -434,8 +471,6 @@ class _ProjectViewState extends State<_ProjectView> {
         hintText: 'Add any extra style guidance…',
         maxLines: 3, textCapitalization: TextCapitalization.sentences,
       ),
-      const SizedBox(height: 24),
-      _outputCountSelector(),
     ]);
   }
 
@@ -464,8 +499,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _fieldLabel('Reference Images (optional)'),
       const SizedBox(height: 8),
       _buildMultiImagePicker(),
-      const SizedBox(height: 24),
-      _outputCountSelector(),
     ]);
   }
 
@@ -664,50 +697,6 @@ class _ProjectViewState extends State<_ProjectView> {
     ]);
   }
 
-  // ── Output count selector ──────────────────────────────────────────────────
-
-  Widget _outputCountSelector() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(children: [
-        _fieldLabel('Number of Outputs'),
-        const SizedBox(width: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          decoration: BoxDecoration(
-            color: AppColor.primaryBackground,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text('$_numberOfOutputs', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: AppColor.primary)),
-        ),
-      ]),
-      const SizedBox(height: 12),
-      Row(children: [
-        for (final n in [1, 2, 3, 4]) ...[
-          GestureDetector(
-            onTap: () => setState(() => _numberOfOutputs = n),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              width: 52, height: 44,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                color: _numberOfOutputs == n ? AppColor.primary : AppColor.spaceCardHigh,
-                borderRadius: BorderRadius.circular(AppStyleConstant.smallRounding),
-                border: Border.all(
-                  color: _numberOfOutputs == n ? AppColor.primary : AppColor.spaceBorder,
-                ),
-              ),
-              child: Center(
-                child: Text('$n', style: GoogleFonts.inter(
-                  fontSize: 16, fontWeight: FontWeight.w700,
-                  color: _numberOfOutputs == n ? Colors.white : AppColor.spaceTextSecondary,
-                )),
-              ),
-            ),
-          ),
-        ],
-      ]),
-    ]);
-  }
 
   // ── Style picker ──────────────────────────────────────────────────────────
 
@@ -1094,6 +1083,493 @@ class _ModeBarItemState extends State<_ModeBarItem>
           );
         },
       ),
+    );
+  }
+}
+
+// ─── Instructions Sheet ────────────────────────────────────────────────────────
+
+class _InstructionsSheet extends StatefulWidget {
+  const _InstructionsSheet({required this.projectId});
+  final String projectId;
+
+  @override
+  State<_InstructionsSheet> createState() => _InstructionsSheetState();
+}
+
+class _InstructionsSheetState extends State<_InstructionsSheet> {
+  bool _editMode = false;
+  final _addCtrl = TextEditingController();
+  final _addFocus = FocusNode();
+
+  @override
+  void dispose() {
+    _addCtrl.dispose();
+    _addFocus.dispose();
+    super.dispose();
+  }
+
+  void _toast(String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(children: [
+        Icon(isError ? Icons.error_outline : Icons.info_outline,
+            color: Colors.white, size: 18),
+        const SizedBox(width: 10),
+        Expanded(child: Text(msg, style: const TextStyle(color: Colors.white))),
+      ]),
+      backgroundColor:
+          isError ? AppColor.alertError : AppColor.alertWarning,
+      behavior: SnackBarBehavior.floating,
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.all(16),
+      duration: const Duration(seconds: 3),
+    ));
+  }
+
+  Future<void> _submitAdd(ProjectController ctrl) async {
+    final text = _addCtrl.text.trim();
+    if (text.isEmpty) return;
+    _addFocus.unfocus();
+    await ctrl.addInstruction(
+      projectId: widget.projectId,
+      newInstruction: text,
+      onError: (msg) => _toast(msg, isError: true),
+    );
+    if (!mounted) return;
+    if (!ctrl.state.addingInstruction) {
+      _addCtrl.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProjectController, ProjectState>(
+      builder: (context, state) {
+        final ctrl = context.read<ProjectController>();
+        final instructions = state.instructions;
+        final isAdding = state.addingInstruction;
+        final isUpdating = state.updatingInstructions;
+
+        return Container(
+          decoration: const BoxDecoration(
+            color: AppColor.spaceCard,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Drag handle ─────────────────────────────────────────────
+              const SizedBox(height: 12),
+              Container(
+                width: 38, height: 4,
+                decoration: BoxDecoration(
+                  color: AppColor.spaceBorder,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // ── Header ──────────────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 34, height: 34,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFEE85FF), Color(0xFF89B8FF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: const Icon(Icons.menu_book_rounded,
+                          size: 17, color: Colors.white),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Instructions',
+                        style: GoogleFonts.inter(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    if (instructions.isNotEmpty) ...[
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: isUpdating
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColor.primary,
+                                ),
+                              )
+                            : GestureDetector(
+                                key: ValueKey(_editMode),
+                                onTap: () =>
+                                    setState(() => _editMode = !_editMode),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 7),
+                                  decoration: BoxDecoration(
+                                    color: _editMode
+                                        ? AppColor.primaryBackground
+                                        : AppColor.spaceCardHigh,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: _editMode
+                                          ? AppColor.primary
+                                          : AppColor.spaceBorder,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    _editMode ? 'Done' : 'Edit',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: _editMode
+                                          ? AppColor.primary
+                                          : AppColor.spaceTextPrimary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Divider(color: AppColor.spaceBorder, thickness: 1, height: 24),
+
+              // ── Instruction list ────────────────────────────────────────
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.38,
+                ),
+                child: instructions.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.auto_awesome_outlined,
+                                size: 36,
+                                color: AppColor.spaceTextSecondary
+                                    .withValues(alpha: 0.5)),
+                            const SizedBox(height: 12),
+                            Text(
+                              'No instructions yet',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.spaceTextSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Add your first instruction below and the AI will remember\nyour preferences across all generations.',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: AppColor.spaceTextSecondary
+                                    .withValues(alpha: 0.7),
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: instructions.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: 8),
+                        itemBuilder: (_, i) {
+                          return _InstructionItem(
+                            index: i,
+                            text: instructions[i],
+                            editMode: _editMode,
+                            deleting: isUpdating,
+                            onDelete: () => ctrl.deleteInstruction(
+                              projectId: widget.projectId,
+                              index: i,
+                              onError: (msg) =>
+                                  _toast(msg, isError: true),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+
+              const SizedBox(height: 8),
+              const Divider(color: AppColor.spaceBorder, thickness: 1, height: 1),
+              const SizedBox(height: 12),
+
+              // ── Add instruction field ────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _InstructionAddField(
+                  controller: _addCtrl,
+                  focusNode: _addFocus,
+                  isAdding: isAdding,
+                  onSubmit: () => _submitAdd(ctrl),
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ─── Instruction Item ──────────────────────────────────────────────────────────
+
+class _InstructionItem extends StatelessWidget {
+  const _InstructionItem({
+    required this.index,
+    required this.text,
+    required this.editMode,
+    required this.deleting,
+    required this.onDelete,
+  });
+
+  final int         index;
+  final String      text;
+  final bool        editMode;
+  final bool        deleting;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColor.spaceCardHigh,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: editMode
+              ? AppColor.alertError.withValues(alpha: 0.35)
+              : AppColor.spaceBorder,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Index bubble
+          Container(
+            width: 22, height: 22,
+            margin: const EdgeInsets.only(top: 1),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Color(0xFFEE85FF), Color(0xFF89B8FF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                '${index + 1}',
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: AppColor.spaceTextPrimary,
+                height: 1.45,
+              ),
+            ),
+          ),
+          // Delete button – only in edit mode
+          if (editMode) ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: deleting ? null : onDelete,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                width: 28, height: 28,
+                decoration: BoxDecoration(
+                  color: AppColor.alertError.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColor.alertError.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Icon(
+                  Icons.delete_outline_rounded,
+                  size: 14,
+                  color: AppColor.alertError,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Add-field with shimmer when AI is running ─────────────────────────────────
+
+class _InstructionAddField extends StatefulWidget {
+  const _InstructionAddField({
+    required this.controller,
+    required this.focusNode,
+    required this.isAdding,
+    required this.onSubmit,
+  });
+
+  final TextEditingController controller;
+  final FocusNode             focusNode;
+  final bool                  isAdding;
+  final VoidCallback          onSubmit;
+
+  @override
+  State<_InstructionAddField> createState() => _InstructionAddFieldState();
+}
+
+class _InstructionAddFieldState extends State<_InstructionAddField>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _shimmerCtrl;
+  late final Animation<double>   _shimmer;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    );
+    _shimmer = Tween<double>(begin: -1.5, end: 2.5).animate(
+      CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void didUpdateWidget(_InstructionAddField old) {
+    super.didUpdateWidget(old);
+    if (widget.isAdding && !old.isAdding) {
+      _shimmerCtrl.repeat();
+    } else if (!widget.isAdding && old.isAdding) {
+      _shimmerCtrl.stop();
+      _shimmerCtrl.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _shimmerCtrl.dispose();
+    super.dispose();
+  }
+
+  // ─── Suffix icon: arrow or spinner ────────────────────────────────────────
+  Widget _buildSuffix() {
+    if (widget.isAdding) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 12),
+        child: SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColor.primary,
+          ),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: widget.onSubmit,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+              colors: [Color(0xFFEE85FF), Color(0xFF89B8FF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: const Icon(
+            Icons.arrow_forward_rounded,
+            size: 16,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final field = AppTextFormField(
+      controller: widget.controller,
+      focusNode: widget.focusNode,
+      hintText: 'Add an instruction for the AI…',
+      maxLines: 3,
+      textCapitalization: TextCapitalization.sentences,
+      enabled: !widget.isAdding,
+      suffixIcon: _buildSuffix(),
+    );
+
+    if (!widget.isAdding) return field;
+
+    // Wrap in shimmer overlay while AI is processing
+    return AnimatedBuilder(
+      animation: _shimmer,
+      builder: (_, child) {
+        return ShaderMask(
+          blendMode: BlendMode.srcATop,
+          shaderCallback: (bounds) => LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: const [
+              Colors.transparent,
+              Color(0x55EE85FF),
+              Color(0x88B8AAFF),
+              Color(0x5589B8FF),
+              Colors.transparent,
+            ],
+            stops: [
+              0.0,
+              (_shimmer.value - 0.4).clamp(0.0, 1.0),
+              _shimmer.value.clamp(0.0, 1.0),
+              (_shimmer.value + 0.4).clamp(0.0, 1.0),
+              1.0,
+            ],
+          ).createShader(bounds),
+          child: child,
+        );
+      },
+      child: field,
     );
   }
 }
