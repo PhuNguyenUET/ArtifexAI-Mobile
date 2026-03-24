@@ -8,6 +8,7 @@ import '../album/album_detail/create_album_sheet.dart';
 import '../album/album_detail/gallery_page.dart';
 import '../profile/edit_password_page.dart';
 import '../profile/edit_profile_page.dart';
+import '../profile/email_verification_page.dart';
 import '../project/create_project_sheet.dart';
 import '../project/project_page.dart';
 import 'home_controller.dart';
@@ -191,8 +192,6 @@ class _HomePageState extends State<HomePage>
               CreateProjectSheet.show(context);
             }),
           ],
-          if (state.activeTab == HomeTab.profile)
-            _buildIconButton(Icons.settings_outlined, () {}),
         ],
       ),
     );
@@ -394,7 +393,30 @@ class _HomePageState extends State<HomePage>
                 if (state.user?.emailValidated == true)
                   _buildBadge('Verified', Icons.verified, Colors.white, Colors.white.withValues(alpha: 0.22))
                 else
-                  _buildBadge('Unverified', Icons.warning_amber_outlined, Colors.white, Colors.white.withValues(alpha: 0.22)),
+                  GestureDetector(
+                    onTap: () async {
+                      final ctrl = context.read<HomeController>();
+                      final ok = await ctrl.sendVerificationEmail(
+                        onError: (msg) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(msg),
+                            backgroundColor: AppColor.alertError,
+                            behavior: SnackBarBehavior.floating,
+                          ));
+                        },
+                      );
+                      if (ok && context.mounted) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: ctrl,
+                            child: const EmailVerificationPage(),
+                          ),
+                        ));
+                      }
+                    },
+                    child: _buildBadge('Unverified', Icons.warning_amber_outlined, Colors.white, Colors.white.withValues(alpha: 0.22)),
+                  ),
               ],
             ),
           ),
@@ -511,12 +533,6 @@ class _HomePageState extends State<HomePage>
               ),
             ));
           }),
-          _buildMenuItem(Icons.notifications_outlined, 'Notifications', () {}),
-        ]),
-        const SizedBox(height: 12),
-        _buildMenuGroup([
-          _buildMenuItem(Icons.help_outline, 'Help & Support', () {}),
-          _buildMenuItem(Icons.info_outline, 'About', () {}),
         ]),
         const SizedBox(height: 12),
         _buildMenuGroup([

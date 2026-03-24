@@ -19,7 +19,7 @@ abstract class ApiService {
 
   Future<void> validateEmail();
 
-  Future<void> emailToken();
+  Future<void> emailToken({required String token});
 
   Future<void> createNewPassword({
     required String token,
@@ -179,6 +179,5 @@ abstract class ApiService {
     required String maskImageBase64,
     String? prompt,
     required EditMode editMode,
-    required MaskMode maskReferenceMode,
   });
 }

@@ -256,5 +256,43 @@ class HomeController extends Cubit<HomeState> {
       return false;
     }
   }
+
+  // ─── Email Verification ────────────────────────────────────────────────────
+
+  /// Triggers the server to send a verification e-mail to the current user.
+  Future<bool> sendVerificationEmail({
+    void Function(String)? onError,
+  }) async {
+    try {
+      await _storage.repository.validateEmail();
+      return true;
+    } on CustomException catch (e) {
+      onError?.call(e.message);
+      return false;
+    } catch (_) {
+      onError?.call('Failed to send verification email.');
+      return false;
+    }
+  }
+
+  /// Submits the token the user received by e-mail.
+  /// Returns true and refreshes the user on success.
+  Future<bool> verifyEmailToken({
+    required String token,
+    void Function(String)? onError,
+  }) async {
+    try {
+      await _storage.repository.emailToken(token: token);
+      final updated = await _storage.repository.currentUser();
+      emit(state.copyWith(user: updated));
+      return true;
+    } on CustomException catch (e) {
+      onError?.call(e.message);
+      return false;
+    } catch (_) {
+      onError?.call('Invalid or expired token. Please try again.');
+      return false;
+    }
+  }
 }
 

@@ -26,7 +26,7 @@ class _DrawStroke {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 /// Full-screen page that lets the user paint a mask over an image, choose
-/// [EditMode] / [MaskMode], enter a prompt, and call [imageMaskedEdit].
+/// [EditMode], enter a prompt, and call [imageMaskedEdit].
 ///
 /// * [imageUrl]       – URL / server path of the source image.
 /// * [mimeType]          – MIME type of the image (defaults to JPEG).
@@ -72,7 +72,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
 
   // ── API options ──────────────────────────────────────────────────────────
   EditMode _editMode = EditMode.editModeDefault;
-  MaskMode _maskMode = MaskMode.maskModeUserProvided;
   final _promptCtrl = TextEditingController();
 
   // ── Project selection (when projectId not pre-set) ───────────────────────
@@ -292,7 +291,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
           : MimeType.jpeg;
       final imageInfo = ReferenceImage(imagePath: resolvedPath, mimeType: mimeType);
 
-      final result = await sl
+          final result = await sl
           .get<AccessTokenStorage>()
           .repository
           .imageMaskedEdit(
@@ -303,7 +302,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
                 ? null
                 : _promptCtrl.text.trim(),
             editMode: _editMode,
-            maskReferenceMode: _maskMode,
           );
 
       if (!mounted) return;
@@ -620,15 +618,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
               onSelect: (v) => setState(() => _editMode = v),
             ),
             const SizedBox(height: 14),
-            _label('Mask Reference Mode'),
-            const SizedBox(height: 6),
-            _buildChipSelector<MaskMode>(
-              values: MaskMode.values,
-              selected: _maskMode,
-              labelOf: _maskModeLabel,
-              onSelect: (v) => setState(() => _maskMode = v),
-            ),
-            const SizedBox(height: 14),
             _label('Prompt (optional)'),
             const SizedBox(height: 6),
             TextField(
@@ -796,22 +785,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     }
   }
 
-  String _maskModeLabel(MaskMode mode) {
-    switch (mode) {
-      case MaskMode.maskModeDefault:
-        return 'Default';
-      case MaskMode.maskModeUserProvided:
-        return 'User Provided';
-      case MaskMode.maskModeBackground:
-        return 'Background';
-      case MaskMode.maskModeForeground:
-        return 'Foreground';
-      case MaskMode.maskModeSemantic:
-        return 'Semantic';
-      case MaskMode.maskReferenceModeUnspecified:
-        return 'Unspecified';
-    }
-  }
 }
 
 // ─── _ToolButton ──────────────────────────────────────────────────────────────

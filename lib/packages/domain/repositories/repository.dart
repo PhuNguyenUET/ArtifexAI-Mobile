@@ -24,7 +24,7 @@ abstract class Repository {
   Future<void> changePassword({required String oldPassword, required String newPassword});
   Future<void> forgotPassword({required String email});
   Future<void> validateEmail();
-  Future<void> emailToken();
+  Future<void> emailToken({required String token});
   Future<void> createNewPassword({required String token, required String password});
   Future<UserDto> currentUser();
 
@@ -102,6 +102,5 @@ abstract class Repository {
     required String maskImageBase64,
     String? prompt,
     required EditMode editMode,
-    required MaskMode maskReferenceMode,
   });
 }

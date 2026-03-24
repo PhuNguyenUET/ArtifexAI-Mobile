@@ -24,6 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _firstNameCtrl = TextEditingController(text: user?.firstName ?? '');
     _lastNameCtrl = TextEditingController(text: user?.lastName ?? '');
     _selectedDob = user?.dateOfBirth;
+    _firstNameCtrl.addListener(() => setState(() {}));
   }
 
   @override
@@ -301,14 +302,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _getInitials() {
-    final user = context.read<HomeController>().state.user;
-    final first = user?.firstName?.isNotEmpty == true
-        ? user!.firstName![0].toUpperCase()
-        : '';
-    final last = user?.lastName?.isNotEmpty == true
-        ? user!.lastName![0].toUpperCase()
-        : '';
-    return first.isNotEmpty || last.isNotEmpty ? '$first$last' : '?';
+    final first = _firstNameCtrl.text.trim();
+    return first.isNotEmpty ? first[0].toUpperCase() : '?';
   }
 
   Widget _sectionLabel(String text) {

@@ -1,8 +1,10 @@
 import '../../generated/assets.dart';
 import '../../init/routes.dart';
+ import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
 import 'auth_controller.dart';
 import 'auth_state.dart';
+import 'forgot_password_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -277,7 +279,12 @@ class _AuthPageState extends State<AuthPage> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                // TODO: Navigate to forgot password page
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<AuthController>(),
+                    child: const ForgotPasswordPage(),
+                  ),
+                ));
               },
               child: Text(
                 'Forgot password?',

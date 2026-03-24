@@ -172,5 +172,45 @@ class AuthController extends Cubit<AuthState> {
       emit(state.copyWith(oauthLoading: false));
     }
   }
+
+  // ─── Forgot Password ─────────────────────────────────────────────────────────
+
+  /// Sends a password-reset e-mail to [email].
+  /// Returns true on success, false on failure (error forwarded via [onError]).
+  Future<bool> sendForgotPasswordEmail({
+    required String email,
+    void Function(String)? onError,
+  }) async {
+    try {
+      await _storage.repository.forgotPassword(email: email);
+      return true;
+    } on CustomException catch (e) {
+      onError?.call(e.message);
+      return false;
+    } catch (_) {
+      onError?.call('Failed to send reset email. Please try again.');
+      return false;
+    }
+  }
+
+  /// Submits the reset [token] and [newPassword] to create a new password.
+  /// Returns true on success, false on failure (error forwarded via [onError]).
+  Future<bool> submitNewPassword({
+    required String token,
+    required String newPassword,
+    void Function(String)? onError,
+  }) async {
+    try {
+      await _storage.repository
+          .createNewPassword(token: token, password: newPassword);
+      return true;
+    } on CustomException catch (e) {
+      onError?.call(e.message);
+      return false;
+    } catch (_) {
+      onError?.call('Failed to reset password. Please try again.');
+      return false;
+    }
+  }
 }
 

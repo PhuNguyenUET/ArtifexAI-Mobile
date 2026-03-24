@@ -53,6 +53,7 @@ class ApiServiceImpl extends ApiService {
     await _dioService.post(
       endpoint: '/api/user/v1/forgot_password',
       data: email,
+      options: Options(contentType: 'text/plain; charset=utf-8'),
     );
   }
 
@@ -64,9 +65,11 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<void> emailToken() async {
+  Future<void> emailToken({required String token}) async {
     await _dioService.post(
-      endpoint: '/api/user/v1/email/validate',
+      endpoint: '/api/user/v1/email/token',
+      data: token,
+      options: Options(contentType: 'text/plain; charset=utf-8'),
     );
   }
 
@@ -495,7 +498,6 @@ class ApiServiceImpl extends ApiService {
     required String maskImageBase64,
     String? prompt,
     required EditMode editMode,
-    required MaskMode maskReferenceMode,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/masked_edit',
@@ -505,7 +507,6 @@ class ApiServiceImpl extends ApiService {
         'maskImageBase64': maskImageBase64,
         'prompt': prompt,
         'editMode': editMode.toJson(),
-        'maskReferenceMode': maskReferenceMode.toJson(),
       },
     );
     return ImageResponseDto.fromJson(json);

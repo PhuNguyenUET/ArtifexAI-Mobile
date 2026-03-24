@@ -27,7 +27,8 @@ class RepositoryImpl extends Repository {
   Future<void> validateEmail() => _apiService.validateEmail();
 
   @override
-  Future<void> emailToken() => _apiService.emailToken();
+  Future<void> emailToken({required String token}) =>
+      _apiService.emailToken(token: token);
 
   @override
   Future<void> createNewPassword({required String token, required String password}) =>
@@ -221,13 +222,11 @@ class RepositoryImpl extends Repository {
     required String maskImageBase64,
     String? prompt,
     required EditMode editMode,
-    required MaskMode maskReferenceMode,
   }) => _apiService.imageMaskedEdit(
         projectId: projectId,
         imageInfo: imageInfo,
         maskImageBase64: maskImageBase64,
         prompt: prompt,
         editMode: editMode,
-        maskReferenceMode: maskReferenceMode,
       );
 }
