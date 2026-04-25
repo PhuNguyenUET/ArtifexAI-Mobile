@@ -1148,14 +1148,15 @@ class _AlbumCardState extends State<_AlbumCard>
 
   Future<void> _deleteWithAnimation(BuildContext context) async {
     final homeCtrl = context.read<HomeController>();
-    // Play shrink-out animation first
-    await _exitCtrl.forward();
-    if (!context.mounted) return;
+    // Call the API first — only animate out if deletion actually succeeds.
     homeCtrl.deleteAlbum(
       widget.album.id ?? 0,
+      onSuccess: () async {
+        if (!context.mounted) return;
+        await _exitCtrl.forward();
+      },
       onError: (msg) {
-        // Reverse animation if delete failed
-        _exitCtrl.reverse();
+        // Delete was rejected (e.g. album linked to a project) — no animation.
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
