@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
   bool get loading;
-  bool get oauthLoading;
+  bool get googleLoading;
+  bool get githubLoading;
   AuthTab get activeTab;
   bool get obscurePassword;
   bool get obscureConfirmPassword;
@@ -34,8 +35,10 @@ mixin _$AuthState {
         (other.runtimeType == runtimeType &&
             other is AuthState &&
             (identical(other.loading, loading) || other.loading == loading) &&
-            (identical(other.oauthLoading, oauthLoading) ||
-                other.oauthLoading == oauthLoading) &&
+            (identical(other.googleLoading, googleLoading) ||
+                other.googleLoading == googleLoading) &&
+            (identical(other.githubLoading, githubLoading) ||
+                other.githubLoading == githubLoading) &&
             (identical(other.activeTab, activeTab) ||
                 other.activeTab == activeTab) &&
             (identical(other.obscurePassword, obscurePassword) ||
@@ -47,12 +50,19 @@ mixin _$AuthState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, loading, oauthLoading, activeTab,
-      obscurePassword, obscureConfirmPassword, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      loading,
+      googleLoading,
+      githubLoading,
+      activeTab,
+      obscurePassword,
+      obscureConfirmPassword,
+      errorMessage);
 
   @override
   String toString() {
-    return 'AuthState(loading: $loading, oauthLoading: $oauthLoading, activeTab: $activeTab, obscurePassword: $obscurePassword, obscureConfirmPassword: $obscureConfirmPassword, errorMessage: $errorMessage)';
+    return 'AuthState(loading: $loading, googleLoading: $googleLoading, githubLoading: $githubLoading, activeTab: $activeTab, obscurePassword: $obscurePassword, obscureConfirmPassword: $obscureConfirmPassword, errorMessage: $errorMessage)';
   }
 }
 
@@ -63,7 +73,8 @@ abstract mixin class $AuthStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool loading,
-      bool oauthLoading,
+      bool googleLoading,
+      bool githubLoading,
       AuthTab activeTab,
       bool obscurePassword,
       bool obscureConfirmPassword,
@@ -83,7 +94,8 @@ class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
   @override
   $Res call({
     Object? loading = null,
-    Object? oauthLoading = null,
+    Object? googleLoading = null,
+    Object? githubLoading = null,
     Object? activeTab = null,
     Object? obscurePassword = null,
     Object? obscureConfirmPassword = null,
@@ -94,9 +106,13 @@ class _$AuthStateCopyWithImpl<$Res> implements $AuthStateCopyWith<$Res> {
           ? _self.loading
           : loading // ignore: cast_nullable_to_non_nullable
               as bool,
-      oauthLoading: null == oauthLoading
-          ? _self.oauthLoading
-          : oauthLoading // ignore: cast_nullable_to_non_nullable
+      googleLoading: null == googleLoading
+          ? _self.googleLoading
+          : googleLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      githubLoading: null == githubLoading
+          ? _self.githubLoading
+          : githubLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       activeTab: null == activeTab
           ? _self.activeTab
@@ -213,7 +229,8 @@ extension AuthStatePatterns on AuthState {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             bool loading,
-            bool oauthLoading,
+            bool googleLoading,
+            bool githubLoading,
             AuthTab activeTab,
             bool obscurePassword,
             bool obscureConfirmPassword,
@@ -226,7 +243,8 @@ extension AuthStatePatterns on AuthState {
       case _AuthState() when $default != null:
         return $default(
             _that.loading,
-            _that.oauthLoading,
+            _that.googleLoading,
+            _that.githubLoading,
             _that.activeTab,
             _that.obscurePassword,
             _that.obscureConfirmPassword,
@@ -253,7 +271,8 @@ extension AuthStatePatterns on AuthState {
   TResult when<TResult extends Object?>(
     TResult Function(
             bool loading,
-            bool oauthLoading,
+            bool googleLoading,
+            bool githubLoading,
             AuthTab activeTab,
             bool obscurePassword,
             bool obscureConfirmPassword,
@@ -265,7 +284,8 @@ extension AuthStatePatterns on AuthState {
       case _AuthState():
         return $default(
             _that.loading,
-            _that.oauthLoading,
+            _that.googleLoading,
+            _that.githubLoading,
             _that.activeTab,
             _that.obscurePassword,
             _that.obscureConfirmPassword,
@@ -291,7 +311,8 @@ extension AuthStatePatterns on AuthState {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             bool loading,
-            bool oauthLoading,
+            bool googleLoading,
+            bool githubLoading,
             AuthTab activeTab,
             bool obscurePassword,
             bool obscureConfirmPassword,
@@ -303,7 +324,8 @@ extension AuthStatePatterns on AuthState {
       case _AuthState() when $default != null:
         return $default(
             _that.loading,
-            _that.oauthLoading,
+            _that.googleLoading,
+            _that.githubLoading,
             _that.activeTab,
             _that.obscurePassword,
             _that.obscureConfirmPassword,
@@ -319,7 +341,8 @@ extension AuthStatePatterns on AuthState {
 class _AuthState implements AuthState {
   const _AuthState(
       {this.loading = false,
-      this.oauthLoading = false,
+      this.googleLoading = false,
+      this.githubLoading = false,
       this.activeTab = AuthTab.signIn,
       this.obscurePassword = true,
       this.obscureConfirmPassword = true,
@@ -330,7 +353,10 @@ class _AuthState implements AuthState {
   final bool loading;
   @override
   @JsonKey()
-  final bool oauthLoading;
+  final bool googleLoading;
+  @override
+  @JsonKey()
+  final bool githubLoading;
   @override
   @JsonKey()
   final AuthTab activeTab;
@@ -357,8 +383,10 @@ class _AuthState implements AuthState {
         (other.runtimeType == runtimeType &&
             other is _AuthState &&
             (identical(other.loading, loading) || other.loading == loading) &&
-            (identical(other.oauthLoading, oauthLoading) ||
-                other.oauthLoading == oauthLoading) &&
+            (identical(other.googleLoading, googleLoading) ||
+                other.googleLoading == googleLoading) &&
+            (identical(other.githubLoading, githubLoading) ||
+                other.githubLoading == githubLoading) &&
             (identical(other.activeTab, activeTab) ||
                 other.activeTab == activeTab) &&
             (identical(other.obscurePassword, obscurePassword) ||
@@ -370,12 +398,19 @@ class _AuthState implements AuthState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, loading, oauthLoading, activeTab,
-      obscurePassword, obscureConfirmPassword, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      loading,
+      googleLoading,
+      githubLoading,
+      activeTab,
+      obscurePassword,
+      obscureConfirmPassword,
+      errorMessage);
 
   @override
   String toString() {
-    return 'AuthState(loading: $loading, oauthLoading: $oauthLoading, activeTab: $activeTab, obscurePassword: $obscurePassword, obscureConfirmPassword: $obscureConfirmPassword, errorMessage: $errorMessage)';
+    return 'AuthState(loading: $loading, googleLoading: $googleLoading, githubLoading: $githubLoading, activeTab: $activeTab, obscurePassword: $obscurePassword, obscureConfirmPassword: $obscureConfirmPassword, errorMessage: $errorMessage)';
   }
 }
 
@@ -389,7 +424,8 @@ abstract mixin class _$AuthStateCopyWith<$Res>
   @useResult
   $Res call(
       {bool loading,
-      bool oauthLoading,
+      bool googleLoading,
+      bool githubLoading,
       AuthTab activeTab,
       bool obscurePassword,
       bool obscureConfirmPassword,
@@ -409,7 +445,8 @@ class __$AuthStateCopyWithImpl<$Res> implements _$AuthStateCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? loading = null,
-    Object? oauthLoading = null,
+    Object? googleLoading = null,
+    Object? githubLoading = null,
     Object? activeTab = null,
     Object? obscurePassword = null,
     Object? obscureConfirmPassword = null,
@@ -420,9 +457,13 @@ class __$AuthStateCopyWithImpl<$Res> implements _$AuthStateCopyWith<$Res> {
           ? _self.loading
           : loading // ignore: cast_nullable_to_non_nullable
               as bool,
-      oauthLoading: null == oauthLoading
-          ? _self.oauthLoading
-          : oauthLoading // ignore: cast_nullable_to_non_nullable
+      googleLoading: null == googleLoading
+          ? _self.googleLoading
+          : googleLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      githubLoading: null == githubLoading
+          ? _self.githubLoading
+          : githubLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       activeTab: null == activeTab
           ? _self.activeTab

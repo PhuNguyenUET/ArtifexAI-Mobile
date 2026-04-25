@@ -12,13 +12,13 @@ class NetworkSrc {
     baseUrl: Config.baseUrl,
     contentType: 'application/json',
     connectTimeout: const Duration(seconds: 60),
-    receiveTimeout: const Duration(seconds: 60),
+    receiveTimeout: const Duration(minutes: 5),
   );
   late final _commonOptions = BaseOptions(
     baseUrl: Config.commonUrl,
     contentType: 'application/json',
     connectTimeout: const Duration(seconds: 60),
-    receiveTimeout: const Duration(seconds: 60),
+    receiveTimeout: const Duration(minutes: 5),
   );
   late final _downloadBaseOptions = BaseOptions(
     responseType: ResponseType.bytes,

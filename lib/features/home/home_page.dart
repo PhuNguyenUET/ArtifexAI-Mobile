@@ -1152,7 +1152,7 @@ class _AlbumCardState extends State<_AlbumCard>
     await _exitCtrl.forward();
     if (!context.mounted) return;
     homeCtrl.deleteAlbum(
-      widget.album.id ?? '',
+      widget.album.id ?? 0,
       onError: (msg) {
         // Reverse animation if delete failed
         _exitCtrl.reverse();
@@ -1446,7 +1446,7 @@ class _ProjectCardState extends State<_ProjectCard>
     await _exitCtrl.forward();
     if (!context.mounted) return;
     homeCtrl.deleteProject(
-      widget.project.id ?? '',
+      widget.project.id ?? 0,
       onError: (msg) {
         _exitCtrl.reverse();
         if (!context.mounted) return;

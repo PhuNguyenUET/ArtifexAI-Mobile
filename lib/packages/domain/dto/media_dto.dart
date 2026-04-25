@@ -11,7 +11,7 @@ String? _dateToJson(DateTime? date) => date?.toIso8601String();
 @freezed
 abstract class MediaDto with _$MediaDto {
   factory MediaDto({
-    @JsonKey(name: 'id') String? id,
+    @JsonKey(name: 'id') int? id,
     @JsonKey(name: 'mediaPath') String? mediaPath,
     @JsonKey(name: 'mediaUrl') String? mediaUrl,
     @JsonKey(

@@ -30,71 +30,71 @@ abstract class ApiService {
 
   // Project Management
   Future<void> updateInstructions({
-    required String projectId,
+    required int projectId,
     required List<String> instructions
   });
 
   Future<void> addInstructions({
-    required String projectId,
+    required int projectId,
     required String newInstruction
   });
 
   Future<void> editProject({
-    required String projectId,
+    required int projectId,
     String? projectName,
     ArtStyle? artStyle
   });
 
   Future<ProjectDto> createProject({
     required String projectName,
-    required String? instructions,
+    required String instructions,
     required ArtStyle artStyle,
   });
 
   Future<ProjectDto> getProjectById({
-    required String projectId
+    required int projectId
   });
 
   Future<List<ProjectDto>> getAllProjects();
 
   Future<void> deleteProject({
-    required String projectId
+    required int projectId
   });
 
   // Album Management
   Future<void> editAlbum({
-    required String albumId,
+    required int albumId,
     String? albumName
   });
 
   Future<void> deleteMediaFromAlbum({
-    required String albumId,
-    required String mediaId
+    required int albumId,
+    required int mediaId
   });
 
   Future<void> addMedia({
-    required String albumId,
-    required String mediaId
+    required int albumId,
+    required int mediaId
   });
 
   Future<AlbumDto> createAlbum({
     required String name,
-    required List<String> mediaIds
+    required List<int> mediaIds
   });
 
   Future<AlbumDto> getAlbumById({
-    required String albumId
+    required int albumId
   });
 
   Future<List<AlbumDto>> getAllAlbums();
 
   Future<void> deleteAlbum({
-    required String albumId
+    required int albumId
   });
 
   // Video Generation
   Future<VideoResponseDto> generateVideo({
-    required String projectId,
+    required int projectId,
     ReferenceImage? referenceImage,
     required String prompt,
     required VideoLength videoLength,
@@ -128,53 +128,57 @@ abstract class ApiService {
   });
 
   Future<MediaDto> getMediaById({
-    required String id,
+    required int id,
   });
 
   Future<List<MediaDto>> getMediasByAlbum({
-    required String albumId
+    required int albumId
   });
 
   Future<List<MediaDto>> getGallery();
 
   Future<void> deleteMedia({
-    required String mediaId
+    required int mediaId
   });
 
   // Image generation
   Future<ImageResponseDto> imageVariation({
-    required String projectId,
+    required int projectId,
     List<ReferenceImage> imageInfos,
     required String prompt,
+    GenerationModel model,
   });
 
   Future<ImageResponseDto> imageUpscale({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required UpscaleFactor upscaleFactor
   });
 
   Future<ImageResponseDto> imageStyleChange({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
+    GenerationModel model,
   });
 
   Future<ImageResponseDto> imageSpriteSheet({
-    required String projectId,
+    required int projectId,
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
+    GenerationModel model,
   });
 
   Future<ImageResponseDto> splashArt({
-    required String projectId,
+    required int projectId,
     required String splashDescription,
+    GenerationModel model,
   });
 
   Future<ImageResponseDto> imageMaskedEdit({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required String maskImageBase64,
     String? prompt,

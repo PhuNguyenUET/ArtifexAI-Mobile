@@ -9,10 +9,13 @@ class ProjectController extends Cubit<ProjectState> {
   final _storage = sl.get<AccessTokenStorage>();
 
   void setMode(GenerationMode mode) =>
-      emit(ProjectState(mode: mode, instructions: state.instructions));
+      emit(ProjectState(mode: mode, generationModel: state.generationModel, instructions: state.instructions));
+
+  void setGenerationModel(GenerationModel model) =>
+      emit(state.copyWith(generationModel: model));
 
   void clearResult() =>
-      emit(ProjectState(mode: state.mode, instructions: state.instructions));
+      emit(ProjectState(mode: state.mode, generationModel: state.generationModel, instructions: state.instructions));
 
   // ─── Instructions ─────────────────────────────────────────────────────────
 
@@ -21,7 +24,7 @@ class ProjectController extends Cubit<ProjectState> {
   }
 
   Future<void> deleteInstruction({
-    required String projectId,
+    required int projectId,
     required int index,
     void Function(String)? onError,
   }) async {
@@ -43,7 +46,7 @@ class ProjectController extends Cubit<ProjectState> {
   }
 
   Future<void> addInstruction({
-    required String projectId,
+    required int projectId,
     required String newInstruction,
     void Function(String)? onError,
   }) async {
@@ -71,7 +74,8 @@ class ProjectController extends Cubit<ProjectState> {
 
   Future<void> generate({
     required GenerationMode mode,
-    required String projectId,
+    required int projectId,
+    GenerationModel generationModel = GenerationModel.gemini,
     String? splashDescription,
     String? variationPrompt,
     List<ReferenceImage>? variationImages,
@@ -89,7 +93,7 @@ class ProjectController extends Cubit<ProjectState> {
     VideoLength videoLength = VideoLength.medium,
     void Function(String)? onError,
   }) async {
-    emit(ProjectState(mode: mode, generating: true));
+    emit(ProjectState(mode: mode, generationModel: generationModel, generating: true));
     try {
       if (mode == GenerationMode.video) {
         final videoResult = await _storage.repository.generateVideo(
@@ -98,7 +102,7 @@ class ProjectController extends Cubit<ProjectState> {
           prompt: videoPrompt ?? '',
           videoLength: videoLength,
         );
-        emit(ProjectState(mode: mode, done: true, videoResult: videoResult));
+        emit(ProjectState(mode: mode, generationModel: generationModel, done: true, videoResult: videoResult));
         return;
       }
 
@@ -108,6 +112,7 @@ class ProjectController extends Cubit<ProjectState> {
           result = await _storage.repository.splashArt(
             projectId: projectId,
             splashDescription: splashDescription ?? '',
+            model: generationModel,
           );
           break;
         case GenerationMode.variation:
@@ -115,6 +120,7 @@ class ProjectController extends Cubit<ProjectState> {
             projectId: projectId,
             imageInfos: variationImages ?? [],
             prompt: variationPrompt ?? '',
+            model: generationModel,
           );
           break;
         case GenerationMode.styleChange:
@@ -123,6 +129,7 @@ class ProjectController extends Cubit<ProjectState> {
             imageInfo: styleImage!,
             targetedStyle: targetedStyle!,
             additionalPrompts: additionalPrompts ?? '',
+            model: generationModel,
           );
           break;
         case GenerationMode.spriteSheet:
@@ -131,6 +138,7 @@ class ProjectController extends Cubit<ProjectState> {
             characterDescription: characterDescription,
             actionDescription: actionDescription,
             imageInfos: spriteImages ?? [],
+            model: generationModel,
           );
           break;
         case GenerationMode.upscale:
@@ -143,13 +151,13 @@ class ProjectController extends Cubit<ProjectState> {
         case GenerationMode.video:
           break; // handled above
       }
-      emit(ProjectState(mode: mode, done: true, result: result));
+      emit(ProjectState(mode: mode, generationModel: generationModel, done: true, result: result));
     } on CustomException catch (e) {
-      emit(ProjectState(mode: mode, error: e.message));
+      emit(ProjectState(mode: mode, generationModel: generationModel, error: e.message));
       onError?.call(e.message);
     } catch (_) {
       const msg = 'Generation failed. Please try again.';
-      emit(ProjectState(mode: mode, error: msg));
+      emit(ProjectState(mode: mode, generationModel: generationModel, error: msg));
       onError?.call(msg);
     }
   }

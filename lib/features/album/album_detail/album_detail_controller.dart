@@ -33,7 +33,7 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
   /// Permanently deletes [mediaId] from the server and removes it from the
   /// local album state.
   Future<void> deleteMedia({
-    required String mediaId,
+    required int mediaId,
     VoidCallback? onSuccess,
     void Function(String)? onError,
   }) async {
@@ -53,8 +53,8 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
 
   /// Removes [mediaId] from this album only (does not delete the media itself).
   Future<void> removeFromAlbum({
-    required String mediaId,
-    required String albumId,
+    required int mediaId,
+    required int albumId,
     VoidCallback? onSuccess,
     void Function(String)? onError,
   }) async {
@@ -77,21 +77,20 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-  void _markPending(String id) {
+  void _markPending(int id) {
     emit(state.copyWith(pendingMediaIds: {...state.pendingMediaIds, id}));
   }
 
-  void _unmarkPending(String id) {
+  void _unmarkPending(int id) {
     emit(state.copyWith(
       pendingMediaIds: state.pendingMediaIds.where((e) => e != id).toSet(),
     ));
   }
 
-  void _removeMedia(String id) {
+  void _removeMedia(int id) {
     final updated = state.album?.mediaList?.where((m) => m.id != id).toList();
     emit(state.copyWith(
       album: state.album?.copyWith(mediaList: updated ?? []),
     ));
   }
 }
-

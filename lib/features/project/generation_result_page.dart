@@ -20,7 +20,7 @@ class GenerationResultPage extends StatefulWidget {
 
   final ImageResponseDto result;
   final GenerationMode   mode;
-  final String           projectId;
+  final int           projectId;
   final HomeController   homeController;
   final String?          videoUrl;
   /// When set, overrides the auto-generated "[mode.label] Results" title.
@@ -226,13 +226,23 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
       isScrollControlled: true,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setSt) {
-          Future<void> addToProject() async {
+          Future<void> removeFromProject() async {
                 if (adding || added) return;
                 setSt(() => adding = true);
                 try {
-                  await sl.get<AccessTokenStorage>().repository.addInstructions(
+                  final project = await sl
+                      .get<AccessTokenStorage>()
+                      .repository
+                      .getProjectById(projectId: widget.projectId);
+                  final updatedList = (project.instructions ?? [])
+                      .where((i) => i != widget.result.updatedInstruction!)
+                      .toList();
+                  await sl
+                      .get<AccessTokenStorage>()
+                      .repository
+                      .updateInstructions(
                         projectId: widget.projectId,
-                        newInstruction: widget.result.updatedInstruction!,
+                        instructions: updatedList,
                       );
                   setSt(() { adding = false; added = true; });
                 } catch (_) {
@@ -240,7 +250,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(_snackBar(
                       icon: Icons.error_outline_rounded,
-                      message: 'Could not add instruction. Please try again.',
+                      message: 'Could not remove instruction. Please try again.',
                       color: Colors.redAccent,
                     ));
                   }
@@ -305,9 +315,9 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // ── Add to Project button ──────────────────────────────
+                    // ── Remove from Project button ─────────────────────────
                     GestureDetector(
-                      onTap: added ? null : addToProject,
+                      onTap: added ? null : removeFromProject,
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 13),
@@ -343,7 +353,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                                   Icon(
                                     added
                                         ? Icons.check_circle_outline_rounded
-                                        : Icons.add_rounded,
+                                        : Icons.remove_circle_outline_rounded,
                                     size: 16,
                                     color: added
                                         ? AppColor.primary
@@ -352,8 +362,8 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                                   const SizedBox(width: 6),
                                   Text(
                                     added
-                                        ? 'Added to Instructions'
-                                        : 'Add to Project Instructions',
+                                        ? 'Removed from Instructions'
+                                        : 'Remove from Project Instructions',
                                     style: GoogleFonts.inter(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -594,6 +604,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                         ? () => Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => MaskEditPage(
                                 imageUrl: currentUrl,
+                                imagePath: null,
                                 projectId: widget.projectId,
                                 homeController: widget.homeController,
                               ),

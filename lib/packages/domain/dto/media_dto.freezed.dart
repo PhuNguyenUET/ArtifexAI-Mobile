@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MediaDto {
   @JsonKey(name: 'id')
-  String? get id;
+  int? get id;
   @JsonKey(name: 'mediaPath')
   String? get mediaPath;
   @JsonKey(name: 'mediaUrl')
@@ -64,7 +64,7 @@ abstract mixin class $MediaDtoCopyWith<$Res> {
       _$MediaDtoCopyWithImpl;
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'mediaPath') String? mediaPath,
       @JsonKey(name: 'mediaUrl') String? mediaUrl,
       @JsonKey(
@@ -93,7 +93,7 @@ class _$MediaDtoCopyWithImpl<$Res> implements $MediaDtoCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       mediaPath: freezed == mediaPath
           ? _self.mediaPath
           : mediaPath // ignore: cast_nullable_to_non_nullable
@@ -204,7 +204,7 @@ extension MediaDtoPatterns on MediaDto {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'mediaPath') String? mediaPath,
             @JsonKey(name: 'mediaUrl') String? mediaUrl,
             @JsonKey(
@@ -241,7 +241,7 @@ extension MediaDtoPatterns on MediaDto {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'mediaPath') String? mediaPath,
             @JsonKey(name: 'mediaUrl') String? mediaUrl,
             @JsonKey(
@@ -276,7 +276,7 @@ extension MediaDtoPatterns on MediaDto {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'mediaPath') String? mediaPath,
             @JsonKey(name: 'mediaUrl') String? mediaUrl,
             @JsonKey(
@@ -312,7 +312,7 @@ class _MediaDto implements MediaDto {
 
   @override
   @JsonKey(name: 'id')
-  final String? id;
+  final int? id;
   @override
   @JsonKey(name: 'mediaPath')
   final String? mediaPath;
@@ -371,7 +371,7 @@ abstract mixin class _$MediaDtoCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'mediaPath') String? mediaPath,
       @JsonKey(name: 'mediaUrl') String? mediaUrl,
       @JsonKey(
@@ -400,7 +400,7 @@ class __$MediaDtoCopyWithImpl<$Res> implements _$MediaDtoCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       mediaPath: freezed == mediaPath
           ? _self.mediaPath
           : mediaPath // ignore: cast_nullable_to_non_nullable

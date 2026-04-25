@@ -29,26 +29,26 @@ abstract class Repository {
   Future<UserDto> currentUser();
 
   // ─── Project Management ───────────────────────────────────────────────────────
-  Future<void> updateInstructions({required String projectId, required List<String> instructions});
-  Future<void> addInstructions({required String projectId, required String newInstruction});
-  Future<void> editProject({required String projectId, String? projectName, ArtStyle? artStyle});
-  Future<ProjectDto> createProject({required String projectName, required String? instructions, required ArtStyle artStyle});
-  Future<ProjectDto> getProjectById({required String projectId});
+  Future<void> updateInstructions({required int projectId, required List<String> instructions});
+  Future<void> addInstructions({required int projectId, required String newInstruction});
+  Future<void> editProject({required int projectId, String? projectName, ArtStyle? artStyle});
+  Future<ProjectDto> createProject({required String projectName, required String instructions, required ArtStyle artStyle});
+  Future<ProjectDto> getProjectById({required int projectId});
   Future<List<ProjectDto>> getAllProjects();
-  Future<void> deleteProject({required String projectId});
+  Future<void> deleteProject({required int projectId});
 
   // ─── Album Management ─────────────────────────────────────────────────────────
-  Future<void> editAlbum({required String albumId, String? albumName});
-  Future<void> deleteMediaFromAlbum({required String albumId, required String mediaId});
-  Future<void> addMedia({required String albumId, required String mediaId});
-  Future<AlbumDto> createAlbum({required String name, required List<String> mediaIds});
-  Future<AlbumDto> getAlbumById({required String albumId});
+  Future<void> editAlbum({required int albumId, String? albumName});
+  Future<void> deleteMediaFromAlbum({required int albumId, required int mediaId});
+  Future<void> addMedia({required int albumId, required int mediaId});
+  Future<AlbumDto> createAlbum({required String name, required List<int> mediaIds});
+  Future<AlbumDto> getAlbumById({required int albumId});
   Future<List<AlbumDto>> getAllAlbums();
-  Future<void> deleteAlbum({required String albumId});
+  Future<void> deleteAlbum({required int albumId});
 
   // ─── Video Generation ─────────────────────────────────────────────────────────
   Future<VideoResponseDto> generateVideo({
-    required String projectId,
+    required int projectId,
     ReferenceImage? referenceImage,
     required String prompt,
     required VideoLength videoLength,
@@ -64,40 +64,44 @@ abstract class Repository {
 
   // ─── Media Management ─────────────────────────────────────────────────────────
   Future<MediaDto> uploadClient({required String base64, required MimeType mimeType});
-  Future<MediaDto> getMediaById({required String id});
-  Future<List<MediaDto>> getMediasByAlbum({required String albumId});
+  Future<MediaDto> getMediaById({required int id});
+  Future<List<MediaDto>> getMediasByAlbum({required int albumId});
   Future<List<MediaDto>> getGallery();
-  Future<void> deleteMedia({required String mediaId});
+  Future<void> deleteMedia({required int mediaId});
 
   // ─── Image Generation ─────────────────────────────────────────────────────────
   Future<ImageResponseDto> imageVariation({
-    required String projectId,
+    required int projectId,
     List<ReferenceImage> imageInfos,
     required String prompt,
+    GenerationModel model,
   });
   Future<ImageResponseDto> imageUpscale({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required UpscaleFactor upscaleFactor,
   });
   Future<ImageResponseDto> imageStyleChange({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
+    GenerationModel model,
   });
   Future<ImageResponseDto> imageSpriteSheet({
-    required String projectId,
+    required int projectId,
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
+    GenerationModel model,
   });
   Future<ImageResponseDto> splashArt({
-    required String projectId,
+    required int projectId,
     required String splashDescription,
+    GenerationModel model,
   });
   Future<ImageResponseDto> imageMaskedEdit({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required String maskImageBase64,
     String? prompt,

@@ -136,7 +136,7 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
             left: 0,
             right: 0,
             child: _GalleryActionBar(
-              mediaId: _current.id ?? '',
+              mediaId: _current.id ?? 0,
               mediaUrl: _current.mediaUrl,
               mediaPath: _current.mediaPath,
               onDeleted: _removeCurrentFromList,
@@ -158,7 +158,7 @@ class _GalleryActionBar extends StatelessWidget {
     this.mediaPath,
   });
 
-  final String mediaId;
+  final int mediaId;
   final String? mediaUrl;
   final String? mediaPath;
   final VoidCallback onDeleted;
@@ -380,7 +380,7 @@ class _AddToAlbumsSheet extends StatefulWidget {
     required this.homeController,
   });
 
-  final String mediaId;
+  final int mediaId;
   final List<AlbumDto> albums;
   final HomeController homeController;
 
@@ -389,7 +389,7 @@ class _AddToAlbumsSheet extends StatefulWidget {
 }
 
 class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
-  final Set<String> _selected = {};
+  final Set<int> _selected = {};
   bool _loading = false;
 
   Future<void> _submit() async {
@@ -505,7 +505,7 @@ class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
                         height: 1, indent: 72, color: AppColor.spaceBorder),
                     itemBuilder: (_, i) {
                       final album = widget.albums[i];
-                      final id = album.id ?? '';
+                      final id = album.id ?? 0;
                       final isSelected = _selected.contains(id);
                       final thumb = album.mediaList?.isNotEmpty == true
                           ? album.mediaList!.first.mediaUrl

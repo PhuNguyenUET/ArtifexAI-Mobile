@@ -7,7 +7,7 @@ part of 'media_dto.dart';
 // **************************************************************************
 
 _MediaDto _$MediaDtoFromJson(Map<String, dynamic> json) => _MediaDto(
-      id: json['id'] as String?,
+      id: (json['id'] as num?)?.toInt(),
       mediaPath: json['mediaPath'] as String?,
       mediaUrl: json['mediaUrl'] as String?,
       createdDate: _dateFromJson(json['createdDate'] as String?),

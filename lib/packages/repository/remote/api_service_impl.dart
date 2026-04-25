@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '../../index.dart';
 
 class ApiServiceImpl extends ApiService {
@@ -15,6 +17,11 @@ class ApiServiceImpl extends ApiService {
   final DioService _dioService;
   final DioService _downloadService;
   final DioService _commonService;
+
+  static final _aiOptions = Options(
+    receiveTimeout: const Duration(minutes: 10),
+    sendTimeout: const Duration(minutes: 2),
+  );
 
   // ─── User ────────────────────────────────────────────────────────────────────
 
@@ -99,7 +106,7 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<void> updateInstructions({
-    required String projectId,
+    required int projectId,
     required List<String> instructions,
   }) async {
     await _dioService.put(
@@ -107,36 +114,35 @@ class ApiServiceImpl extends ApiService {
       data: {
         'projectId': projectId,
         'instructions': instructions,
-        'newInstruction': ''
       },
     );
   }
 
   @override
   Future<void> addInstructions({
-    required String projectId,
+    required int projectId,
     required String newInstruction,
   }) async {
     await _dioService.put(
       endpoint: '/api/project/v1/add_instructions',
       data: {
         'projectId': projectId,
-        'instruction': [],
-        'newInstruction': newInstruction
+        'newInstruction': newInstruction,
       },
     );
   }
 
   @override
   Future<void> editProject({
-    required String projectId,
+    required int projectId,
     String? projectName,
     ArtStyle? artStyle,
   }) async {
     await _dioService.put(
       endpoint: '/api/project/v1/edit',
       data: {
-        'projectName': projectName ?? '',
+        'projectId': projectId,
+        'projectName': projectName,
         'artStyle': artStyle?.toJson(),
       },
     );
@@ -145,7 +151,7 @@ class ApiServiceImpl extends ApiService {
   @override
   Future<ProjectDto> createProject({
     required String projectName,
-    required String? instructions,
+    required String instructions,
     required ArtStyle artStyle,
   }) async {
     final json = await _dioService.post(
@@ -160,7 +166,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<ProjectDto> getProjectById({required String projectId}) async {
+  Future<ProjectDto> getProjectById({required int projectId}) async {
     final json = await _dioService.get(
       endpoint: '/api/project/v1/get_by_id',
       queryParams: {'projectId': projectId},
@@ -177,7 +183,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<void> deleteProject({required String projectId}) async {
+  Future<void> deleteProject({required int projectId}) async {
     await _dioService.delete(
       endpoint: '/api/project/v1/delete',
       queryParams: {'projectId': projectId},
@@ -188,42 +194,42 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<void> editAlbum({
-    required String albumId,
+    required int albumId,
     String? albumName,
   }) async {
     await _dioService.put(
       endpoint: '/api/album/v1/edit',
       data: {
         'albumId': albumId,
-        'albumName': albumName
+        'name': albumName,
       },
     );
   }
 
   @override
   Future<void> deleteMediaFromAlbum({
-    required String albumId,
-    required String mediaId,
+    required int albumId,
+    required int mediaId,
   }) async {
     await _dioService.put(
       endpoint: '/api/album/v1/delete_image',
       data: {
         'albumId': albumId,
-        'mediaId': mediaId
+        'mediaId': mediaId,
       },
     );
   }
 
   @override
   Future<void> addMedia({
-    required String albumId,
-    required String mediaId,
+    required int albumId,
+    required int mediaId,
   }) async {
     await _dioService.put(
       endpoint: '/api/album/v1/add_image',
       data: {
         'albumId': albumId,
-        'mediaId': mediaId
+        'mediaId': mediaId,
       },
     );
   }
@@ -231,7 +237,7 @@ class ApiServiceImpl extends ApiService {
   @override
   Future<AlbumDto> createAlbum({
     required String name,
-    required List<String> mediaIds,
+    required List<int> mediaIds,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/album/v1/create',
@@ -244,7 +250,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<AlbumDto> getAlbumById({required String albumId}) async {
+  Future<AlbumDto> getAlbumById({required int albumId}) async {
     final json = await _dioService.get(
       endpoint: '/api/album/v1/get_by_id',
       queryParams: {'albumId': albumId},
@@ -261,7 +267,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<void> deleteAlbum({required String albumId}) async {
+  Future<void> deleteAlbum({required int albumId}) async {
     await _dioService.delete(
       endpoint: '/api/album/v1/delete',
       queryParams: {'albumId': albumId},
@@ -272,7 +278,7 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<VideoResponseDto> generateVideo({
-    required String projectId,
+    required int projectId,
     ReferenceImage? referenceImage,
     required String prompt,
     required VideoLength videoLength,
@@ -307,9 +313,10 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<String> refreshJwt({required String refreshToken}) async {
-    return await _dioService.postString(
+    return await _dioService.postGetMessage(
       endpoint: '/api/user/v1/refresh_jwt',
-      data: {'refreshToken': refreshToken},
+      data: refreshToken,
+      options: Options(contentType: 'text/plain; charset=utf-8'),
     );
   }
 
@@ -336,19 +343,47 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<AuthenticationResponseDto> authenticateOAuthGoogle() async {
-    final json = await _dioService.post(
-      endpoint: '/api/user/v1/oauth/google',
-    );
-    return AuthenticationResponseDto.fromJson(json);
-  }
+  Future<AuthenticationResponseDto> authenticateOAuthGoogle() =>
+      _performOAuth2Login(
+        url: '${Config.baseUrl}oauth2/authorization/google',
+      );
 
   @override
-  Future<AuthenticationResponseDto> authenticateOAuthGithub() async {
-    final json = await _dioService.post(
-      endpoint: '/api/user/v1/oauth/github',
-    );
-    return AuthenticationResponseDto.fromJson(json);
+  Future<AuthenticationResponseDto> authenticateOAuthGithub() =>
+      _performOAuth2Login(
+        url: '${Config.baseUrl}oauth2/authorization/github',
+      );
+
+  /// Opens the device browser to the server's OAuth2 entry URL, waits for the
+  /// deep-link callback `artifexai://oauth2/callback?jwt=...&refresh=...`, and
+  /// returns the parsed tokens as [AuthenticationResponseDto].
+  Future<AuthenticationResponseDto> _performOAuth2Login({
+    required String url,
+  }) async {
+    try {
+      final result = await FlutterWebAuth2.authenticate(
+        url: url,
+        callbackUrlScheme: 'artifexai',
+      );
+
+      final uri = Uri.parse(result);
+      final jwt = uri.queryParameters['jwt'];
+      final refresh = uri.queryParameters['refresh'];
+
+      if (jwt == null || refresh == null) {
+        throw CustomException(
+          message: 'OAuth2 login failed: missing tokens in callback',
+        );
+      }
+
+      return AuthenticationResponseDto(jwtToken: jwt, refreshToken: refresh);
+    } on PlatformException {
+      // User closed the browser or cancelled – signal this to the caller.
+      throw CustomException(
+        message: 'cancelled',
+        exceptionType: ExceptionType.cancelException,
+      );
+    }
   }
 
   // ─── Media Management ─────────────────────────────────────────────────────────
@@ -369,7 +404,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<MediaDto> getMediaById({required String id}) async {
+  Future<MediaDto> getMediaById({required int id}) async {
     final json = await _dioService.get(
       endpoint: '/api/media/v1/get_by_id',
       queryParams: {'mediaId': id},
@@ -378,7 +413,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<List<MediaDto>> getMediasByAlbum({required String albumId}) async {
+  Future<List<MediaDto>> getMediasByAlbum({required int albumId}) async {
     final list = await _dioService.getList(
       endpoint: '/api/media/v1/get_by_album',
       queryParams: {'albumId': albumId},
@@ -395,7 +430,7 @@ class ApiServiceImpl extends ApiService {
   }
 
   @override
-  Future<void> deleteMedia({required String mediaId}) async {
+  Future<void> deleteMedia({required int mediaId}) async {
     await _dioService.delete(
       endpoint: '/api/media/v1/delete',
       queryParams: {'mediaId': mediaId},
@@ -406,12 +441,14 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> imageVariation({
-    required String projectId,
+    required int projectId,
     List<ReferenceImage> imageInfos = const [],
     required String prompt,
+    GenerationModel model = GenerationModel.gemini,
   }) async {
     final json = await _dioService.post(
-      endpoint: '/api/image_generation/v1/variation',
+      endpoint: model.buildEndpoint('variation'),
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'imageInfos': imageInfos.map((e) => e.toJson()).toList(),
@@ -423,12 +460,13 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> imageUpscale({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required UpscaleFactor upscaleFactor,
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/upscale',
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),
@@ -440,13 +478,15 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> imageStyleChange({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
+    GenerationModel model = GenerationModel.gemini,
   }) async {
     final json = await _dioService.post(
-      endpoint: '/api/image_generation/v1/style_change',
+      endpoint: model.buildEndpoint('style_change'),
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),
@@ -459,13 +499,15 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> imageSpriteSheet({
-    required String projectId,
+    required int projectId,
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
+    GenerationModel model = GenerationModel.gemini,
   }) async {
     final json = await _dioService.post(
-      endpoint: '/api/image_generation/v1/sprite_sheet',
+      endpoint: model.buildEndpoint('sprite_sheet'),
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'characterDescription': characterDescription,
@@ -478,11 +520,13 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> splashArt({
-    required String projectId,
+    required int projectId,
     required String splashDescription,
+    GenerationModel model = GenerationModel.gemini,
   }) async {
     final json = await _dioService.post(
-      endpoint: '/api/image_generation/v1/splash_art',
+      endpoint: model.buildEndpoint('splash_art'),
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'splashDescription': splashDescription,
@@ -493,7 +537,7 @@ class ApiServiceImpl extends ApiService {
 
   @override
   Future<ImageResponseDto> imageMaskedEdit({
-    required String projectId,
+    required int projectId,
     required ReferenceImage imageInfo,
     required String maskImageBase64,
     String? prompt,
@@ -501,6 +545,7 @@ class ApiServiceImpl extends ApiService {
   }) async {
     final json = await _dioService.post(
       endpoint: '/api/image_generation/v1/masked_edit',
+      options: _aiOptions,
       data: {
         'projectId': projectId,
         'imageInfo': imageInfo.toJson(),

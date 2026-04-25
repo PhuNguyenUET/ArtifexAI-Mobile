@@ -20,6 +20,11 @@ class $AssetsIconsGen {
   final $AssetsBoldGen bold = const $AssetsBoldGen();
   final $AssetsCustomGen custom = const $AssetsCustomGen();
   final $AssetsOutlineGen outline = const $AssetsOutlineGen();
+  final AssetGenImage githubIcon =
+      const AssetGenImage(
+          'assets/icons/github_icon.png');
+  final AssetGenImage googleIcon =
+      const AssetGenImage('assets/icons/google_icon.png');
 }
 
 class $AssetsBoldGen {

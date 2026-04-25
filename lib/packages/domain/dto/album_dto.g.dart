@@ -7,7 +7,7 @@ part of 'album_dto.dart';
 // **************************************************************************
 
 _AlbumDto _$AlbumDtoFromJson(Map<String, dynamic> json) => _AlbumDto(
-      id: json['id'] as String?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       mediaList: (json['mediaList'] as List<dynamic>?)
           ?.map((e) => MediaDto.fromJson(e as Map<String, dynamic>))

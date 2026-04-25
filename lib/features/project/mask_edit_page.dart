@@ -54,7 +54,7 @@ class MaskEditPage extends StatefulWidget {
   /// Falls back to [imageUrl] when null.
   final String? imagePath;
 
-  final String? projectId;
+  final int? projectId;
   final bool showProjectPicker;
   final HomeController homeController;
 
@@ -75,7 +75,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
   final _promptCtrl = TextEditingController();
 
   // ── Project selection (when projectId not pre-set) ───────────────────────
-  String? _selectedProjectId;
+  int? _selectedProjectId;
   List<ProjectDto> _projects = [];
   bool _projectsLoading = false;
 
@@ -696,7 +696,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
             AppStyleConstant.textFieldBorderRadius),
         border: Border.all(color: AppColor.spaceBorder),
       ),
-      child: DropdownButton<String>(
+      child: DropdownButton<int?>(
         value: _selectedProjectId,
         isExpanded: true,
         dropdownColor: AppColor.spaceCard,
@@ -709,7 +709,7 @@ class _MaskEditPageState extends State<MaskEditPage> {
         items: _projects
             .map((p) => DropdownMenuItem(
                   value: p.id,
-                  child: Text(p.projectName ?? p.id ?? '',
+                  child: Text(p.projectName ?? p.id?.toString() ?? '',
                       overflow: TextOverflow.ellipsis),
                 ))
             .toList(),

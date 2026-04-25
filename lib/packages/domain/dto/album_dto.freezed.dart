@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AlbumDto {
   @JsonKey(name: 'id')
-  String? get id;
+  int? get id;
   @JsonKey(name: 'name')
   String? get name;
   @JsonKey(name: 'mediaList')
@@ -71,7 +71,7 @@ abstract mixin class $AlbumDtoCopyWith<$Res> {
       _$AlbumDtoCopyWithImpl;
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'name') String? name,
       @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
       @JsonKey(
@@ -104,7 +104,7 @@ class _$AlbumDtoCopyWithImpl<$Res> implements $AlbumDtoCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       name: freezed == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -219,7 +219,7 @@ extension AlbumDtoPatterns on AlbumDto {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'name') String? name,
             @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
             @JsonKey(
@@ -261,7 +261,7 @@ extension AlbumDtoPatterns on AlbumDto {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'name') String? name,
             @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
             @JsonKey(
@@ -301,7 +301,7 @@ extension AlbumDtoPatterns on AlbumDto {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'name') String? name,
             @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
             @JsonKey(
@@ -346,7 +346,7 @@ class _AlbumDto implements AlbumDto {
 
   @override
   @JsonKey(name: 'id')
-  final String? id;
+  final int? id;
   @override
   @JsonKey(name: 'name')
   final String? name;
@@ -422,7 +422,7 @@ abstract mixin class _$AlbumDtoCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'name') String? name,
       @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
       @JsonKey(
@@ -455,7 +455,7 @@ class __$AlbumDtoCopyWithImpl<$Res> implements _$AlbumDtoCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       name: freezed == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable

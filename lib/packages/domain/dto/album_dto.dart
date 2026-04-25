@@ -12,7 +12,7 @@ String? _dateToJson(DateTime? date) => date?.toIso8601String();
 @freezed
 abstract class AlbumDto with _$AlbumDto {
   factory AlbumDto({
-    @JsonKey(name: 'id') String? id,
+    @JsonKey(name: 'id') int? id,
     @JsonKey(name: 'name') String? name,
     @JsonKey(name: 'mediaList') List<MediaDto>? mediaList,
     @JsonKey(

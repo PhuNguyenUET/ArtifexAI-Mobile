@@ -102,6 +102,12 @@ class AppTextFormField extends StatelessWidget {
           context.body3.copyWith(
             color: enabled ? AppColor.spaceTextPrimary : AppColor.spaceTextHint,
           ),
+      strutStyle: const StrutStyle(
+        fontSize: 14,
+        height: 22 / 14,
+        forceStrutHeight: true,
+        leading: 0,
+      ),
       textAlignVertical: TextAlignVertical.center,
       controller: controller,
       autofocus: autofocus,
@@ -134,7 +140,7 @@ class AppTextFormField extends StatelessWidget {
       textInputAction: textInputAction,
       initialValue: initialValue,
       obscureText: obscureText,
-      obscuringCharacter: obscuringCharacter ?? "*",
+      obscuringCharacter: obscuringCharacter ?? '•',
       maxLength: maxLength,
       onChanged: onChanged,
       onTap: onTap,

@@ -106,6 +106,8 @@ dependencies:
   image: ^4.1.7
   lottie: ^3.1.0
   country_ip: ^3.0.0
+  flutter_web_auth_2: ^5.0.2
+  marquee: ^2.3.0
 
 
 dev_dependencies:

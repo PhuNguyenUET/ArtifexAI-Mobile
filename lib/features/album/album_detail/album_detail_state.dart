@@ -11,7 +11,7 @@ abstract class AlbumDetailState with _$AlbumDetailState {
     String? error,
     // Tracks media IDs currently being deleted/removed so the UI can show
     // per-item loading indicators.
-    @Default({}) Set<String> pendingMediaIds,
+    @Default({}) Set<int> pendingMediaIds,
   }) = _AlbumDetailState;
 }
 

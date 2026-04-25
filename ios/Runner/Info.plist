@@ -4,6 +4,17 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>artifexai</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>ArtifexAI needs access to save generated images to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

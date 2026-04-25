@@ -77,6 +77,7 @@ extension GenerationModeExt on GenerationMode {
 abstract class ProjectState with _$ProjectState {
   const factory ProjectState({
     @Default(GenerationMode.splashArt) GenerationMode mode,
+    @Default(GenerationModel.gemini) GenerationModel generationModel,
     @Default(false) bool generating,
     @Default(false) bool done,
     ImageResponseDto? result,

@@ -60,7 +60,7 @@ class HomeController extends Cubit<HomeState> {
 
   /// Permanently deletes a media item and removes it from the gallery list.
   Future<void> deleteGalleryMedia({
-    required String mediaId,
+    required int mediaId,
     VoidCallback? onSuccess,
     void Function(String)? onError,
   }) async {
@@ -79,8 +79,8 @@ class HomeController extends Cubit<HomeState> {
 
   /// Adds a media item to a single album. Returns true on success.
   Future<bool> addMediaToAlbum({
-    required String mediaId,
-    required String albumId,
+    required int mediaId,
+    required int albumId,
   }) async {
     try {
       await _storage.repository.addMedia(albumId: albumId, mediaId: mediaId);
@@ -93,7 +93,7 @@ class HomeController extends Cubit<HomeState> {
   }
 
   Future<void> deleteAlbum(
-    String albumId, {
+    int albumId, {
     VoidCallback? onSuccess,
     void Function(String)? onError,
   }) async {
@@ -114,7 +114,7 @@ class HomeController extends Cubit<HomeState> {
   /// null on failure (error is returned via [onError]).
   Future<AlbumDto?> createAlbum({
     required String name,
-    required List<String> mediaIds,
+    required List<int> mediaIds,
     void Function(String)? onError,
   }) async {
     try {
@@ -150,7 +150,7 @@ class HomeController extends Cubit<HomeState> {
   }
 
   Future<void> deleteProject(
-    String projectId, {
+    int projectId, {
     VoidCallback? onSuccess,
     void Function(String)? onError,
   }) async {
@@ -178,7 +178,7 @@ class HomeController extends Cubit<HomeState> {
       final project = await _storage.repository.createProject(
         projectName: projectName,
         artStyle: artStyle,
-        instructions: instructions.isNotEmpty ? instructions.join('\n') : null,
+        instructions: instructions.isNotEmpty ? instructions.join('\n') : '',
       );
       emit(state.copyWith(projects: [project, ...state.projects]));
       return project;

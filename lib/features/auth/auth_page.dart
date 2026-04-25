@@ -1,6 +1,5 @@
 import '../../generated/assets.dart';
 import '../../init/routes.dart';
- import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
 import 'auth_controller.dart';
 import 'auth_state.dart';
@@ -423,22 +422,23 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildOAuthButtons(BuildContext context, AuthState state) {
+    final anyOAuthLoading = state.googleLoading || state.githubLoading;
     return Column(
       children: [
         _buildOAuthButton(
           context: context,
           label: 'Continue with Google',
           iconWidget: _buildGoogleIcon(),
-          onPressed: state.oauthLoading ? null : () => _onGoogleSignIn(context),
-          isLoading: state.oauthLoading,
+          onPressed: anyOAuthLoading ? null : () => _onGoogleSignIn(context),
+          isLoading: state.googleLoading,
         ),
         const SizedBox(height: 12),
         _buildOAuthButton(
           context: context,
           label: 'Continue with GitHub',
           iconWidget: _buildGithubIcon(),
-          onPressed: state.oauthLoading ? null : () => _onGithubSignIn(context),
-          isLoading: state.oauthLoading,
+          onPressed: anyOAuthLoading ? null : () => _onGithubSignIn(context),
+          isLoading: state.githubLoading,
         ),
       ],
     );
@@ -488,16 +488,19 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildGoogleIcon() {
-    return Container(
+    return Assets.icons.googleIcon.image(
       width: 20,
       height: 20,
-      decoration: const BoxDecoration(shape: BoxShape.circle),
-      child: CustomPaint(painter: _GoogleLogoPainter()),
+      fit: BoxFit.contain,
     );
   }
 
   Widget _buildGithubIcon() {
-    return const Icon(Icons.code, size: 20, color: AppColor.spaceTextPrimary);
+    return Assets.icons.githubIcon.image(
+      width: 20,
+      height: 20,
+      fit: BoxFit.contain,
+    );
   }
 
   Widget _buildErrorBanner(String message) {
@@ -573,42 +576,7 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-// ─── Google Logo CustomPainter ────────────────────────────────────────────────
 
-class _GoogleLogoPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
 
-    // Background circle (white)
-    canvas.drawCircle(center, radius, Paint()..color = Colors.white);
-
-    // Simplified Google 'G' color segments using arcs
-    const double sweepAngle = 2 * 3.14159265358979 / 4;
-    final colors = [
-      const Color(0xFF4285F4), // Blue
-      const Color(0xFF34A853), // Green
-      const Color(0xFFFBBC05), // Yellow
-      const Color(0xFFEA4335), // Red
-    ];
-    for (int i = 0; i < 4; i++) {
-      final paint = Paint()
-        ..color = colors[i]
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = size.width * 0.22;
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius * 0.65),
-        i * sweepAngle - 3.14159265358979 / 2,
-        sweepAngle,
-        false,
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 

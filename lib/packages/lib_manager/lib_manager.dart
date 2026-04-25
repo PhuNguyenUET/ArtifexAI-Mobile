@@ -55,6 +55,7 @@ export 'package:tiengviet/tiengviet.dart';
 export 'package:timeago/timeago.dart';
 export 'package:tuple/tuple.dart';
 export 'package:url_launcher/url_launcher.dart';
+export 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 export 'package:video_player/video_player.dart';
 export 'package:volume_controller/volume_controller.dart';
 export 'package:cloud_firestore/cloud_firestore.dart' hide Query, Index;

@@ -18,7 +18,7 @@ class MediaViewerPage extends StatefulWidget {
 
   final List<MediaDto> media;
   final int initialIndex;
-  final String albumId;
+  final int albumId;
   final HomeController homeController;
 
   @override
@@ -127,7 +127,7 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
             left: 0,
             right: 0,
             child: _BottomActionBar(
-              mediaId: _current.id ?? '',
+              mediaId: _current.id ?? 0,
               albumId: widget.albumId,
               mediaUrl: _current.mediaUrl,
               mediaPath: _current.mediaPath,
@@ -151,8 +151,8 @@ class _BottomActionBar extends StatefulWidget {
     this.mediaPath,
   });
 
-  final String mediaId;
-  final String albumId;
+  final int mediaId;
+  final int albumId;
   final String? mediaUrl;
   final String? mediaPath;
   final HomeController homeController;

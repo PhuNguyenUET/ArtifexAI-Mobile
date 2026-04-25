@@ -67,7 +67,7 @@ class _CreateAlbumBody extends StatefulWidget {
 
 class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
   final _nameController = TextEditingController();
-  final Set<String> _selectedIds = {};
+  final Set<int> _selectedIds = {};
   bool _submitting = false;
 
   @override
@@ -124,7 +124,7 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
     if (mounted) Navigator.of(context).pop();
   }
 
-  void _toggle(String id) {
+  void _toggle(int id) {
     setState(() {
       if (_selectedIds.contains(id)) {
         _selectedIds.remove(id);
@@ -201,7 +201,7 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
                           _selectedIds.addAll(
                             widget.gallery
                                 .map((m) => m.id)
-                                .whereType<String>(),
+                                .whereType<int>(),
                           );
                         }
                       });
@@ -364,7 +364,7 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
       itemCount: widget.gallery.length,
       itemBuilder: (context, i) {
         final item = widget.gallery[i];
-        final id = item.id ?? '';
+        final id = item.id ?? 0;
         final isSelected = _selectedIds.contains(id);
 
         return GestureDetector(

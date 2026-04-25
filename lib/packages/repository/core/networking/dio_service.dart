@@ -220,8 +220,31 @@ class DioService {
     }
   }
 
-  Future<String> postString({
+  /// Like [post] but returns the `message` field of the envelope instead of
+  /// `results`. Used by endpoints such as `refresh_jwt` where the payload
+  /// is carried in `message`.
+  Future<String> postGetMessage({
     required String endpoint,
+    dynamic data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      final response = await _dio.post<JSON>(
+        endpoint,
+        data: data,
+        options: options,
+        cancelToken: cancelToken ?? _cancelToken,
+      );
+      final envelope = response.data;
+      if (envelope == null) throw CustomException(message: 'Response data is null');
+      return (envelope['message'] as String?) ?? '';
+    } on DioException catch (e) {
+      throw CustomException.fromDioException(e);
+    }
+  }
+
+  Future<String> postString({    required String endpoint,
     dynamic data,
     Options? options,
     CancelToken? cancelToken,

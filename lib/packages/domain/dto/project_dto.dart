@@ -13,7 +13,7 @@ String? _dateToJson(DateTime? date) => date?.toIso8601String();
 @freezed
 abstract class ProjectDto with _$ProjectDto {
   factory ProjectDto({
-    @JsonKey(name: 'id') String? id,
+    @JsonKey(name: 'id') int? id,
     @JsonKey(name: 'projectName') String? projectName,
     @JsonKey(name: 'instructions') List<String>? instructions,
     @JsonKey(name: 'artStyle') ArtStyle? artStyle,

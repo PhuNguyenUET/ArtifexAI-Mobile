@@ -96,7 +96,7 @@ class _AlbumDetailView extends StatelessWidget {
 
   void _confirmDeleteAlbum(BuildContext context, AlbumDetailState state) {
     final homeCtrl = context.read<HomeController>();
-    final albumId = state.album?.id ?? '';
+    final albumId = state.album?.id ?? 0;
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColor.spaceCard,
@@ -322,7 +322,7 @@ class _MediaThumbnail extends StatelessWidget {
 
   final MediaDto media;
   final bool isPending;
-  final String albumId;
+  final int albumId;
   final List<MediaDto> allMedia;
   final int index;
 

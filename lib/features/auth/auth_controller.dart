@@ -133,7 +133,7 @@ class AuthController extends Cubit<AuthState> {
     required BuildContext context,
     required VoidCallback onSuccess,
   }) async {
-    emit(state.copyWith(oauthLoading: true, errorMessage: null));
+    emit(state.copyWith(googleLoading: true, errorMessage: null));
     try {
       final repo = _storage.repository;
       final response = await repo.authenticateOAuthGoogle();
@@ -143,11 +143,13 @@ class AuthController extends Cubit<AuthState> {
       );
       onSuccess();
     } on CustomException catch (e) {
+      // User cancelled the browser — return silently.
+      if (e.exceptionType == ExceptionType.cancelException) return;
       emit(state.copyWith(errorMessage: e.message));
     } catch (_) {
       emit(state.copyWith(errorMessage: 'Google sign-in failed.'));
     } finally {
-      emit(state.copyWith(oauthLoading: false));
+      emit(state.copyWith(googleLoading: false));
     }
   }
 
@@ -155,7 +157,7 @@ class AuthController extends Cubit<AuthState> {
     required BuildContext context,
     required VoidCallback onSuccess,
   }) async {
-    emit(state.copyWith(oauthLoading: true, errorMessage: null));
+    emit(state.copyWith(githubLoading: true, errorMessage: null));
     try {
       final repo = _storage.repository;
       final response = await repo.authenticateOAuthGithub();
@@ -165,11 +167,13 @@ class AuthController extends Cubit<AuthState> {
       );
       onSuccess();
     } on CustomException catch (e) {
+      // User cancelled the browser — return silently.
+      if (e.exceptionType == ExceptionType.cancelException) return;
       emit(state.copyWith(errorMessage: e.message));
     } catch (_) {
       emit(state.copyWith(errorMessage: 'GitHub sign-in failed.'));
     } finally {
-      emit(state.copyWith(oauthLoading: false));
+      emit(state.copyWith(githubLoading: false));
     }
   }
 

@@ -15,6 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectState {
   GenerationMode get mode;
+  GenerationModel get generationModel;
   bool get generating;
   bool get done;
   ImageResponseDto? get result;
@@ -39,6 +40,8 @@ mixin _$ProjectState {
         (other.runtimeType == runtimeType &&
             other is ProjectState &&
             (identical(other.mode, mode) || other.mode == mode) &&
+            (identical(other.generationModel, generationModel) ||
+                other.generationModel == generationModel) &&
             (identical(other.generating, generating) ||
                 other.generating == generating) &&
             (identical(other.done, done) || other.done == done) &&
@@ -58,6 +61,7 @@ mixin _$ProjectState {
   int get hashCode => Object.hash(
       runtimeType,
       mode,
+      generationModel,
       generating,
       done,
       result,
@@ -69,7 +73,7 @@ mixin _$ProjectState {
 
   @override
   String toString() {
-    return 'ProjectState(mode: $mode, generating: $generating, done: $done, result: $result, videoResult: $videoResult, error: $error, instructions: $instructions, addingInstruction: $addingInstruction, updatingInstructions: $updatingInstructions)';
+    return 'ProjectState(mode: $mode, generationModel: $generationModel, generating: $generating, done: $done, result: $result, videoResult: $videoResult, error: $error, instructions: $instructions, addingInstruction: $addingInstruction, updatingInstructions: $updatingInstructions)';
   }
 }
 
@@ -81,6 +85,7 @@ abstract mixin class $ProjectStateCopyWith<$Res> {
   @useResult
   $Res call(
       {GenerationMode mode,
+      GenerationModel generationModel,
       bool generating,
       bool done,
       ImageResponseDto? result,
@@ -107,6 +112,7 @@ class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
   @override
   $Res call({
     Object? mode = null,
+    Object? generationModel = null,
     Object? generating = null,
     Object? done = null,
     Object? result = freezed,
@@ -121,6 +127,10 @@ class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
           ? _self.mode
           : mode // ignore: cast_nullable_to_non_nullable
               as GenerationMode,
+      generationModel: null == generationModel
+          ? _self.generationModel
+          : generationModel // ignore: cast_nullable_to_non_nullable
+              as GenerationModel,
       generating: null == generating
           ? _self.generating
           : generating // ignore: cast_nullable_to_non_nullable
@@ -280,6 +290,7 @@ extension ProjectStatePatterns on ProjectState {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             GenerationMode mode,
+            GenerationModel generationModel,
             bool generating,
             bool done,
             ImageResponseDto? result,
@@ -296,6 +307,7 @@ extension ProjectStatePatterns on ProjectState {
       case _ProjectState() when $default != null:
         return $default(
             _that.mode,
+            _that.generationModel,
             _that.generating,
             _that.done,
             _that.result,
@@ -326,6 +338,7 @@ extension ProjectStatePatterns on ProjectState {
   TResult when<TResult extends Object?>(
     TResult Function(
             GenerationMode mode,
+            GenerationModel generationModel,
             bool generating,
             bool done,
             ImageResponseDto? result,
@@ -341,6 +354,7 @@ extension ProjectStatePatterns on ProjectState {
       case _ProjectState():
         return $default(
             _that.mode,
+            _that.generationModel,
             _that.generating,
             _that.done,
             _that.result,
@@ -370,6 +384,7 @@ extension ProjectStatePatterns on ProjectState {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             GenerationMode mode,
+            GenerationModel generationModel,
             bool generating,
             bool done,
             ImageResponseDto? result,
@@ -385,6 +400,7 @@ extension ProjectStatePatterns on ProjectState {
       case _ProjectState() when $default != null:
         return $default(
             _that.mode,
+            _that.generationModel,
             _that.generating,
             _that.done,
             _that.result,
@@ -404,6 +420,7 @@ extension ProjectStatePatterns on ProjectState {
 class _ProjectState implements ProjectState {
   const _ProjectState(
       {this.mode = GenerationMode.splashArt,
+      this.generationModel = GenerationModel.gemini,
       this.generating = false,
       this.done = false,
       this.result,
@@ -417,6 +434,9 @@ class _ProjectState implements ProjectState {
   @override
   @JsonKey()
   final GenerationMode mode;
+  @override
+  @JsonKey()
+  final GenerationModel generationModel;
   @override
   @JsonKey()
   final bool generating;
@@ -461,6 +481,8 @@ class _ProjectState implements ProjectState {
         (other.runtimeType == runtimeType &&
             other is _ProjectState &&
             (identical(other.mode, mode) || other.mode == mode) &&
+            (identical(other.generationModel, generationModel) ||
+                other.generationModel == generationModel) &&
             (identical(other.generating, generating) ||
                 other.generating == generating) &&
             (identical(other.done, done) || other.done == done) &&
@@ -480,6 +502,7 @@ class _ProjectState implements ProjectState {
   int get hashCode => Object.hash(
       runtimeType,
       mode,
+      generationModel,
       generating,
       done,
       result,
@@ -491,7 +514,7 @@ class _ProjectState implements ProjectState {
 
   @override
   String toString() {
-    return 'ProjectState(mode: $mode, generating: $generating, done: $done, result: $result, videoResult: $videoResult, error: $error, instructions: $instructions, addingInstruction: $addingInstruction, updatingInstructions: $updatingInstructions)';
+    return 'ProjectState(mode: $mode, generationModel: $generationModel, generating: $generating, done: $done, result: $result, videoResult: $videoResult, error: $error, instructions: $instructions, addingInstruction: $addingInstruction, updatingInstructions: $updatingInstructions)';
   }
 }
 
@@ -505,6 +528,7 @@ abstract mixin class _$ProjectStateCopyWith<$Res>
   @useResult
   $Res call(
       {GenerationMode mode,
+      GenerationModel generationModel,
       bool generating,
       bool done,
       ImageResponseDto? result,
@@ -534,6 +558,7 @@ class __$ProjectStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? mode = null,
+    Object? generationModel = null,
     Object? generating = null,
     Object? done = null,
     Object? result = freezed,
@@ -548,6 +573,10 @@ class __$ProjectStateCopyWithImpl<$Res>
           ? _self.mode
           : mode // ignore: cast_nullable_to_non_nullable
               as GenerationMode,
+      generationModel: null == generationModel
+          ? _self.generationModel
+          : generationModel // ignore: cast_nullable_to_non_nullable
+              as GenerationModel,
       generating: null == generating
           ? _self.generating
           : generating // ignore: cast_nullable_to_non_nullable

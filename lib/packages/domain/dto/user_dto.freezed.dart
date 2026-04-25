@@ -15,33 +15,17 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDto {
   @JsonKey(name: 'id')
-  String? get id;
+  int? get id;
   @JsonKey(name: 'email')
   String? get email;
-  @JsonKey(name: 'password')
-  String? get password;
   @JsonKey(name: 'authProvider')
   String? get authProvider;
-  @JsonKey(name: 'role')
-  String? get role;
-  @JsonKey(name: 'active')
-  bool? get active;
   @JsonKey(name: 'firstName')
   String? get firstName;
   @JsonKey(name: 'lastName')
   String? get lastName;
   @JsonKey(name: 'dateOfBirth', fromJson: _dateFromJson, toJson: _dateToJson)
   DateTime? get dateOfBirth;
-  @JsonKey(name: 'failedAttempt')
-  int? get failedAttempt;
-  @JsonKey(name: 'resetPasswordToken')
-  String? get resetPasswordToken;
-  @JsonKey(name: 'resetPasswordTokenExpire')
-  int? get resetPasswordTokenExpire;
-  @JsonKey(name: 'confirmEmailToken')
-  String? get confirmEmailToken;
-  @JsonKey(name: 'confirmEmailTokenExpire')
-  int? get confirmEmailTokenExpire;
   @JsonKey(name: 'emailValidated')
   bool? get emailValidated;
 
@@ -62,57 +46,26 @@ mixin _$UserDto {
             other is UserDto &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
             (identical(other.authProvider, authProvider) ||
                 other.authProvider == authProvider) &&
-            (identical(other.role, role) || other.role == role) &&
-            (identical(other.active, active) || other.active == active) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
             (identical(other.dateOfBirth, dateOfBirth) ||
                 other.dateOfBirth == dateOfBirth) &&
-            (identical(other.failedAttempt, failedAttempt) ||
-                other.failedAttempt == failedAttempt) &&
-            (identical(other.resetPasswordToken, resetPasswordToken) ||
-                other.resetPasswordToken == resetPasswordToken) &&
-            (identical(
-                    other.resetPasswordTokenExpire, resetPasswordTokenExpire) ||
-                other.resetPasswordTokenExpire == resetPasswordTokenExpire) &&
-            (identical(other.confirmEmailToken, confirmEmailToken) ||
-                other.confirmEmailToken == confirmEmailToken) &&
-            (identical(
-                    other.confirmEmailTokenExpire, confirmEmailTokenExpire) ||
-                other.confirmEmailTokenExpire == confirmEmailTokenExpire) &&
             (identical(other.emailValidated, emailValidated) ||
                 other.emailValidated == emailValidated));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      email,
-      password,
-      authProvider,
-      role,
-      active,
-      firstName,
-      lastName,
-      dateOfBirth,
-      failedAttempt,
-      resetPasswordToken,
-      resetPasswordTokenExpire,
-      confirmEmailToken,
-      confirmEmailTokenExpire,
-      emailValidated);
+  int get hashCode => Object.hash(runtimeType, id, email, authProvider,
+      firstName, lastName, dateOfBirth, emailValidated);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, email: $email, password: $password, authProvider: $authProvider, role: $role, active: $active, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, failedAttempt: $failedAttempt, resetPasswordToken: $resetPasswordToken, resetPasswordTokenExpire: $resetPasswordTokenExpire, confirmEmailToken: $confirmEmailToken, confirmEmailTokenExpire: $confirmEmailTokenExpire, emailValidated: $emailValidated)';
+    return 'UserDto(id: $id, email: $email, authProvider: $authProvider, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, emailValidated: $emailValidated)';
   }
 }
 
@@ -122,22 +75,14 @@ abstract mixin class $UserDtoCopyWith<$Res> {
       _$UserDtoCopyWithImpl;
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'email') String? email,
-      @JsonKey(name: 'password') String? password,
       @JsonKey(name: 'authProvider') String? authProvider,
-      @JsonKey(name: 'role') String? role,
-      @JsonKey(name: 'active') bool? active,
       @JsonKey(name: 'firstName') String? firstName,
       @JsonKey(name: 'lastName') String? lastName,
       @JsonKey(
           name: 'dateOfBirth', fromJson: _dateFromJson, toJson: _dateToJson)
       DateTime? dateOfBirth,
-      @JsonKey(name: 'failedAttempt') int? failedAttempt,
-      @JsonKey(name: 'resetPasswordToken') String? resetPasswordToken,
-      @JsonKey(name: 'resetPasswordTokenExpire') int? resetPasswordTokenExpire,
-      @JsonKey(name: 'confirmEmailToken') String? confirmEmailToken,
-      @JsonKey(name: 'confirmEmailTokenExpire') int? confirmEmailTokenExpire,
       @JsonKey(name: 'emailValidated') bool? emailValidated});
 }
 
@@ -155,45 +100,25 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? email = freezed,
-    Object? password = freezed,
     Object? authProvider = freezed,
-    Object? role = freezed,
-    Object? active = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
     Object? dateOfBirth = freezed,
-    Object? failedAttempt = freezed,
-    Object? resetPasswordToken = freezed,
-    Object? resetPasswordTokenExpire = freezed,
-    Object? confirmEmailToken = freezed,
-    Object? confirmEmailTokenExpire = freezed,
     Object? emailValidated = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      password: freezed == password
-          ? _self.password
-          : password // ignore: cast_nullable_to_non_nullable
               as String?,
       authProvider: freezed == authProvider
           ? _self.authProvider
           : authProvider // ignore: cast_nullable_to_non_nullable
               as String?,
-      role: freezed == role
-          ? _self.role
-          : role // ignore: cast_nullable_to_non_nullable
-              as String?,
-      active: freezed == active
-          ? _self.active
-          : active // ignore: cast_nullable_to_non_nullable
-              as bool?,
       firstName: freezed == firstName
           ? _self.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -206,26 +131,6 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.dateOfBirth
           : dateOfBirth // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      failedAttempt: freezed == failedAttempt
-          ? _self.failedAttempt
-          : failedAttempt // ignore: cast_nullable_to_non_nullable
-              as int?,
-      resetPasswordToken: freezed == resetPasswordToken
-          ? _self.resetPasswordToken
-          : resetPasswordToken // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resetPasswordTokenExpire: freezed == resetPasswordTokenExpire
-          ? _self.resetPasswordTokenExpire
-          : resetPasswordTokenExpire // ignore: cast_nullable_to_non_nullable
-              as int?,
-      confirmEmailToken: freezed == confirmEmailToken
-          ? _self.confirmEmailToken
-          : confirmEmailToken // ignore: cast_nullable_to_non_nullable
-              as String?,
-      confirmEmailTokenExpire: freezed == confirmEmailTokenExpire
-          ? _self.confirmEmailTokenExpire
-          : confirmEmailTokenExpire // ignore: cast_nullable_to_non_nullable
-              as int?,
       emailValidated: freezed == emailValidated
           ? _self.emailValidated
           : emailValidated // ignore: cast_nullable_to_non_nullable
@@ -328,12 +233,9 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'email') String? email,
-            @JsonKey(name: 'password') String? password,
             @JsonKey(name: 'authProvider') String? authProvider,
-            @JsonKey(name: 'role') String? role,
-            @JsonKey(name: 'active') bool? active,
             @JsonKey(name: 'firstName') String? firstName,
             @JsonKey(name: 'lastName') String? lastName,
             @JsonKey(
@@ -341,13 +243,6 @@ extension UserDtoPatterns on UserDto {
                 fromJson: _dateFromJson,
                 toJson: _dateToJson)
             DateTime? dateOfBirth,
-            @JsonKey(name: 'failedAttempt') int? failedAttempt,
-            @JsonKey(name: 'resetPasswordToken') String? resetPasswordToken,
-            @JsonKey(name: 'resetPasswordTokenExpire')
-            int? resetPasswordTokenExpire,
-            @JsonKey(name: 'confirmEmailToken') String? confirmEmailToken,
-            @JsonKey(name: 'confirmEmailTokenExpire')
-            int? confirmEmailTokenExpire,
             @JsonKey(name: 'emailValidated') bool? emailValidated)?
         $default, {
     required TResult orElse(),
@@ -358,18 +253,10 @@ extension UserDtoPatterns on UserDto {
         return $default(
             _that.id,
             _that.email,
-            _that.password,
             _that.authProvider,
-            _that.role,
-            _that.active,
             _that.firstName,
             _that.lastName,
             _that.dateOfBirth,
-            _that.failedAttempt,
-            _that.resetPasswordToken,
-            _that.resetPasswordTokenExpire,
-            _that.confirmEmailToken,
-            _that.confirmEmailTokenExpire,
             _that.emailValidated);
       case _:
         return orElse();
@@ -392,12 +279,9 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'email') String? email,
-            @JsonKey(name: 'password') String? password,
             @JsonKey(name: 'authProvider') String? authProvider,
-            @JsonKey(name: 'role') String? role,
-            @JsonKey(name: 'active') bool? active,
             @JsonKey(name: 'firstName') String? firstName,
             @JsonKey(name: 'lastName') String? lastName,
             @JsonKey(
@@ -405,13 +289,6 @@ extension UserDtoPatterns on UserDto {
                 fromJson: _dateFromJson,
                 toJson: _dateToJson)
             DateTime? dateOfBirth,
-            @JsonKey(name: 'failedAttempt') int? failedAttempt,
-            @JsonKey(name: 'resetPasswordToken') String? resetPasswordToken,
-            @JsonKey(name: 'resetPasswordTokenExpire')
-            int? resetPasswordTokenExpire,
-            @JsonKey(name: 'confirmEmailToken') String? confirmEmailToken,
-            @JsonKey(name: 'confirmEmailTokenExpire')
-            int? confirmEmailTokenExpire,
             @JsonKey(name: 'emailValidated') bool? emailValidated)
         $default,
   ) {
@@ -421,18 +298,10 @@ extension UserDtoPatterns on UserDto {
         return $default(
             _that.id,
             _that.email,
-            _that.password,
             _that.authProvider,
-            _that.role,
-            _that.active,
             _that.firstName,
             _that.lastName,
             _that.dateOfBirth,
-            _that.failedAttempt,
-            _that.resetPasswordToken,
-            _that.resetPasswordTokenExpire,
-            _that.confirmEmailToken,
-            _that.confirmEmailTokenExpire,
             _that.emailValidated);
       case _:
         throw StateError('Unexpected subclass');
@@ -454,12 +323,9 @@ extension UserDtoPatterns on UserDto {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            @JsonKey(name: 'id') String? id,
+            @JsonKey(name: 'id') int? id,
             @JsonKey(name: 'email') String? email,
-            @JsonKey(name: 'password') String? password,
             @JsonKey(name: 'authProvider') String? authProvider,
-            @JsonKey(name: 'role') String? role,
-            @JsonKey(name: 'active') bool? active,
             @JsonKey(name: 'firstName') String? firstName,
             @JsonKey(name: 'lastName') String? lastName,
             @JsonKey(
@@ -467,13 +333,6 @@ extension UserDtoPatterns on UserDto {
                 fromJson: _dateFromJson,
                 toJson: _dateToJson)
             DateTime? dateOfBirth,
-            @JsonKey(name: 'failedAttempt') int? failedAttempt,
-            @JsonKey(name: 'resetPasswordToken') String? resetPasswordToken,
-            @JsonKey(name: 'resetPasswordTokenExpire')
-            int? resetPasswordTokenExpire,
-            @JsonKey(name: 'confirmEmailToken') String? confirmEmailToken,
-            @JsonKey(name: 'confirmEmailTokenExpire')
-            int? confirmEmailTokenExpire,
             @JsonKey(name: 'emailValidated') bool? emailValidated)?
         $default,
   ) {
@@ -483,18 +342,10 @@ extension UserDtoPatterns on UserDto {
         return $default(
             _that.id,
             _that.email,
-            _that.password,
             _that.authProvider,
-            _that.role,
-            _that.active,
             _that.firstName,
             _that.lastName,
             _that.dateOfBirth,
-            _that.failedAttempt,
-            _that.resetPasswordToken,
-            _that.resetPasswordTokenExpire,
-            _that.confirmEmailToken,
-            _that.confirmEmailTokenExpire,
             _that.emailValidated);
       case _:
         return null;
@@ -508,42 +359,25 @@ class _UserDto implements UserDto {
   _UserDto(
       {@JsonKey(name: 'id') this.id,
       @JsonKey(name: 'email') this.email,
-      @JsonKey(name: 'password') this.password,
       @JsonKey(name: 'authProvider') this.authProvider,
-      @JsonKey(name: 'role') this.role,
-      @JsonKey(name: 'active') this.active,
       @JsonKey(name: 'firstName') this.firstName,
       @JsonKey(name: 'lastName') this.lastName,
       @JsonKey(
           name: 'dateOfBirth', fromJson: _dateFromJson, toJson: _dateToJson)
       this.dateOfBirth,
-      @JsonKey(name: 'failedAttempt') this.failedAttempt,
-      @JsonKey(name: 'resetPasswordToken') this.resetPasswordToken,
-      @JsonKey(name: 'resetPasswordTokenExpire') this.resetPasswordTokenExpire,
-      @JsonKey(name: 'confirmEmailToken') this.confirmEmailToken,
-      @JsonKey(name: 'confirmEmailTokenExpire') this.confirmEmailTokenExpire,
       @JsonKey(name: 'emailValidated') this.emailValidated});
   factory _UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
 
   @override
   @JsonKey(name: 'id')
-  final String? id;
+  final int? id;
   @override
   @JsonKey(name: 'email')
   final String? email;
   @override
-  @JsonKey(name: 'password')
-  final String? password;
-  @override
   @JsonKey(name: 'authProvider')
   final String? authProvider;
-  @override
-  @JsonKey(name: 'role')
-  final String? role;
-  @override
-  @JsonKey(name: 'active')
-  final bool? active;
   @override
   @JsonKey(name: 'firstName')
   final String? firstName;
@@ -553,21 +387,6 @@ class _UserDto implements UserDto {
   @override
   @JsonKey(name: 'dateOfBirth', fromJson: _dateFromJson, toJson: _dateToJson)
   final DateTime? dateOfBirth;
-  @override
-  @JsonKey(name: 'failedAttempt')
-  final int? failedAttempt;
-  @override
-  @JsonKey(name: 'resetPasswordToken')
-  final String? resetPasswordToken;
-  @override
-  @JsonKey(name: 'resetPasswordTokenExpire')
-  final int? resetPasswordTokenExpire;
-  @override
-  @JsonKey(name: 'confirmEmailToken')
-  final String? confirmEmailToken;
-  @override
-  @JsonKey(name: 'confirmEmailTokenExpire')
-  final int? confirmEmailTokenExpire;
   @override
   @JsonKey(name: 'emailValidated')
   final bool? emailValidated;
@@ -594,57 +413,26 @@ class _UserDto implements UserDto {
             other is _UserDto &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.password, password) ||
-                other.password == password) &&
             (identical(other.authProvider, authProvider) ||
                 other.authProvider == authProvider) &&
-            (identical(other.role, role) || other.role == role) &&
-            (identical(other.active, active) || other.active == active) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
             (identical(other.dateOfBirth, dateOfBirth) ||
                 other.dateOfBirth == dateOfBirth) &&
-            (identical(other.failedAttempt, failedAttempt) ||
-                other.failedAttempt == failedAttempt) &&
-            (identical(other.resetPasswordToken, resetPasswordToken) ||
-                other.resetPasswordToken == resetPasswordToken) &&
-            (identical(
-                    other.resetPasswordTokenExpire, resetPasswordTokenExpire) ||
-                other.resetPasswordTokenExpire == resetPasswordTokenExpire) &&
-            (identical(other.confirmEmailToken, confirmEmailToken) ||
-                other.confirmEmailToken == confirmEmailToken) &&
-            (identical(
-                    other.confirmEmailTokenExpire, confirmEmailTokenExpire) ||
-                other.confirmEmailTokenExpire == confirmEmailTokenExpire) &&
             (identical(other.emailValidated, emailValidated) ||
                 other.emailValidated == emailValidated));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      email,
-      password,
-      authProvider,
-      role,
-      active,
-      firstName,
-      lastName,
-      dateOfBirth,
-      failedAttempt,
-      resetPasswordToken,
-      resetPasswordTokenExpire,
-      confirmEmailToken,
-      confirmEmailTokenExpire,
-      emailValidated);
+  int get hashCode => Object.hash(runtimeType, id, email, authProvider,
+      firstName, lastName, dateOfBirth, emailValidated);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, email: $email, password: $password, authProvider: $authProvider, role: $role, active: $active, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, failedAttempt: $failedAttempt, resetPasswordToken: $resetPasswordToken, resetPasswordTokenExpire: $resetPasswordTokenExpire, confirmEmailToken: $confirmEmailToken, confirmEmailTokenExpire: $confirmEmailTokenExpire, emailValidated: $emailValidated)';
+    return 'UserDto(id: $id, email: $email, authProvider: $authProvider, firstName: $firstName, lastName: $lastName, dateOfBirth: $dateOfBirth, emailValidated: $emailValidated)';
   }
 }
 
@@ -655,22 +443,14 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'id') String? id,
+      {@JsonKey(name: 'id') int? id,
       @JsonKey(name: 'email') String? email,
-      @JsonKey(name: 'password') String? password,
       @JsonKey(name: 'authProvider') String? authProvider,
-      @JsonKey(name: 'role') String? role,
-      @JsonKey(name: 'active') bool? active,
       @JsonKey(name: 'firstName') String? firstName,
       @JsonKey(name: 'lastName') String? lastName,
       @JsonKey(
           name: 'dateOfBirth', fromJson: _dateFromJson, toJson: _dateToJson)
       DateTime? dateOfBirth,
-      @JsonKey(name: 'failedAttempt') int? failedAttempt,
-      @JsonKey(name: 'resetPasswordToken') String? resetPasswordToken,
-      @JsonKey(name: 'resetPasswordTokenExpire') int? resetPasswordTokenExpire,
-      @JsonKey(name: 'confirmEmailToken') String? confirmEmailToken,
-      @JsonKey(name: 'confirmEmailTokenExpire') int? confirmEmailTokenExpire,
       @JsonKey(name: 'emailValidated') bool? emailValidated});
 }
 
@@ -688,45 +468,25 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? email = freezed,
-    Object? password = freezed,
     Object? authProvider = freezed,
-    Object? role = freezed,
-    Object? active = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
     Object? dateOfBirth = freezed,
-    Object? failedAttempt = freezed,
-    Object? resetPasswordToken = freezed,
-    Object? resetPasswordTokenExpire = freezed,
-    Object? confirmEmailToken = freezed,
-    Object? confirmEmailTokenExpire = freezed,
     Object? emailValidated = freezed,
   }) {
     return _then(_UserDto(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      password: freezed == password
-          ? _self.password
-          : password // ignore: cast_nullable_to_non_nullable
               as String?,
       authProvider: freezed == authProvider
           ? _self.authProvider
           : authProvider // ignore: cast_nullable_to_non_nullable
               as String?,
-      role: freezed == role
-          ? _self.role
-          : role // ignore: cast_nullable_to_non_nullable
-              as String?,
-      active: freezed == active
-          ? _self.active
-          : active // ignore: cast_nullable_to_non_nullable
-              as bool?,
       firstName: freezed == firstName
           ? _self.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
@@ -739,26 +499,6 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
           ? _self.dateOfBirth
           : dateOfBirth // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      failedAttempt: freezed == failedAttempt
-          ? _self.failedAttempt
-          : failedAttempt // ignore: cast_nullable_to_non_nullable
-              as int?,
-      resetPasswordToken: freezed == resetPasswordToken
-          ? _self.resetPasswordToken
-          : resetPasswordToken // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resetPasswordTokenExpire: freezed == resetPasswordTokenExpire
-          ? _self.resetPasswordTokenExpire
-          : resetPasswordTokenExpire // ignore: cast_nullable_to_non_nullable
-              as int?,
-      confirmEmailToken: freezed == confirmEmailToken
-          ? _self.confirmEmailToken
-          : confirmEmailToken // ignore: cast_nullable_to_non_nullable
-              as String?,
-      confirmEmailTokenExpire: freezed == confirmEmailTokenExpire
-          ? _self.confirmEmailTokenExpire
-          : confirmEmailTokenExpire // ignore: cast_nullable_to_non_nullable
-              as int?,
       emailValidated: freezed == emailValidated
           ? _self.emailValidated
           : emailValidated // ignore: cast_nullable_to_non_nullable
