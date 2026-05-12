@@ -420,7 +420,7 @@ extension ProjectStatePatterns on ProjectState {
 class _ProjectState implements ProjectState {
   const _ProjectState(
       {this.mode = GenerationMode.splashArt,
-      this.generationModel = GenerationModel.gemini,
+      this.generationModel = GenerationModel.gpt,
       this.generating = false,
       this.done = false,
       this.result,

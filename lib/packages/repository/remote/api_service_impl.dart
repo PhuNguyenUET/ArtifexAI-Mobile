@@ -444,7 +444,7 @@ class ApiServiceImpl extends ApiService {
     required int projectId,
     List<ReferenceImage> imageInfos = const [],
     required String prompt,
-    GenerationModel model = GenerationModel.gemini,
+    GenerationModel model = GenerationModel.gpt,
   }) async {
     final json = await _dioService.post(
       endpoint: model.buildEndpoint('variation'),
@@ -482,7 +482,7 @@ class ApiServiceImpl extends ApiService {
     required ReferenceImage imageInfo,
     required ArtStyle targetedStyle,
     required String additionalPrompts,
-    GenerationModel model = GenerationModel.gemini,
+    GenerationModel model = GenerationModel.gpt,
   }) async {
     final json = await _dioService.post(
       endpoint: model.buildEndpoint('style_change'),
@@ -503,7 +503,7 @@ class ApiServiceImpl extends ApiService {
     String? characterDescription,
     String? actionDescription,
     required List<ReferenceImage> imageInfos,
-    GenerationModel model = GenerationModel.gemini,
+    GenerationModel model = GenerationModel.gpt,
   }) async {
     final json = await _dioService.post(
       endpoint: model.buildEndpoint('sprite_sheet'),
@@ -522,7 +522,7 @@ class ApiServiceImpl extends ApiService {
   Future<ImageResponseDto> splashArt({
     required int projectId,
     required String splashDescription,
-    GenerationModel model = GenerationModel.gemini,
+    GenerationModel model = GenerationModel.gpt,
   }) async {
     final json = await _dioService.post(
       endpoint: model.buildEndpoint('splash_art'),

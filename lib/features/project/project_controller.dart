@@ -75,7 +75,7 @@ class ProjectController extends Cubit<ProjectState> {
   Future<void> generate({
     required GenerationMode mode,
     required int projectId,
-    GenerationModel generationModel = GenerationModel.gemini,
+    GenerationModel generationModel = GenerationModel.gpt,
     String? splashDescription,
     String? variationPrompt,
     List<ReferenceImage>? variationImages,

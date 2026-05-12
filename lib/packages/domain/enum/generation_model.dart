@@ -1,9 +1,9 @@
 /// The AI model used for image generation.
 enum GenerationModel {
+  gpt('gpt', 'ChatGPT', 'GPT-Image-2 · Natural language'),
   gemini('', 'Gemini', 'Best quality · Multi-image'),
   flux2('flux2', 'Flux-2', 'Photorealistic · Cinematic'),
-  qwen('qwen', 'Qwen', 'Precise prompts · Detail'),
-  firered('firered', 'FireRed', 'Edit & style transfer');
+  qwen('qwen', 'Qwen', 'Precise prompts · Detail');
 
   /// The URL path segment inserted between the base path and the operation.
   /// Empty string means no prefix (Gemini — existing behaviour).
@@ -27,10 +27,10 @@ extension GenerationModelExt on GenerationModel {
   }
 
   /// Whether this model supports splash art (text-to-image).
-  bool get supportsSplashArt => this != GenerationModel.firered;
+  bool get supportsSplashArt => true;
 
   /// Whether this model requires at least one reference image for edit
   /// operations (variation, sprite sheet, style change).
-  bool get requiresReferenceImage => this == GenerationModel.firered;
+  bool get requiresReferenceImage => false;
 }
 

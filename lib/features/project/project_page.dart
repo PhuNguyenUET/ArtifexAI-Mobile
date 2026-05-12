@@ -126,25 +126,27 @@ class _ProjectViewState extends State<_ProjectView> {
       _multiImages.removeAt(index);
       _multiImagePreviews.removeAt(index);
     });
-    // When no images remain, non-Gemini models become locked → reset to Gemini.
+    // When no images remain, non-GPT/Gemini models become locked → reset to GPT.
     if (_multiImages.isEmpty) {
       final ctrl = context.read<ProjectController>();
-      if (ctrl.state.generationModel != GenerationModel.gemini) {
-        ctrl.setGenerationModel(GenerationModel.gemini);
+      final m = ctrl.state.generationModel;
+      if (m != GenerationModel.gpt && m != GenerationModel.gemini) {
+        ctrl.setGenerationModel(GenerationModel.gpt);
       }
     }
   }
 
-  /// Clears the single reference image and resets the model to Gemini if a
-  /// non-Gemini model is selected (those require an image to operate).
+  /// Clears the single reference image and resets the model to GPT if a
+  /// model that requires an image is selected.
   void _clearSingleImage() {
     setState(() {
       _singleImage = null;
       _singleImagePreview = null;
     });
     final ctrl = context.read<ProjectController>();
-    if (ctrl.state.generationModel != GenerationModel.gemini) {
-      ctrl.setGenerationModel(GenerationModel.gemini);
+    final m = ctrl.state.generationModel;
+    if (m != GenerationModel.gpt && m != GenerationModel.gemini) {
+      ctrl.setGenerationModel(GenerationModel.gpt);
     }
   }
 
@@ -182,11 +184,12 @@ class _ProjectViewState extends State<_ProjectView> {
       _toast('Please select a reference image.');
       return;
     }
-    // Gemini variation is text-optional. Flux-2 / Qwen / FireRed variation is
+    // GPT and Gemini variation are text-optional. Flux-2 / Qwen variation is
     // strictly image-to-image — the API will reject requests without an image.
     if (mode == GenerationMode.variation &&
         _multiImages.isEmpty &&
-        genModel != GenerationModel.gemini) {
+        genModel != GenerationModel.gemini &&
+        genModel != GenerationModel.gpt) {
       _toast('${genModel.displayName} requires at least one reference image for Variation.',
           isError: true);
       return;
@@ -205,9 +208,9 @@ class _ProjectViewState extends State<_ProjectView> {
     }
 
     // ── Model × image safety net ─────────────────────────────────────────────
-    // Non-Gemini models are image-to-image only for variation / sprite / style.
+    // Flux-2 and Qwen are image-to-image only for variation / sprite / style.
     // The UI already locks them, but guard here in case of any bypass.
-    if (genModel != GenerationModel.gemini) {
+    if (genModel != GenerationModel.gemini && genModel != GenerationModel.gpt) {
       final bool missingImage;
       switch (mode) {
         case GenerationMode.variation:
@@ -225,7 +228,7 @@ class _ProjectViewState extends State<_ProjectView> {
       if (missingImage) {
         _toast(
           '${genModel.displayName} requires a reference image. '
-          'Add one or switch to Gemini.',
+          'Add one or switch to GPT-Image-2.',
           isError: true,
         );
         return;
@@ -471,9 +474,10 @@ class _ProjectViewState extends State<_ProjectView> {
                   onTap: () {
                     if (selected) return;
                     ctrl.setMode(mode);
-                    // Clearing images → non-Gemini models require images → reset to Gemini.
-                    if (ctrl.state.generationModel != GenerationModel.gemini) {
-                      ctrl.setGenerationModel(GenerationModel.gemini);
+                    // Clearing images → Flux-2/Qwen require images → reset to GPT.
+                    if (ctrl.state.generationModel != GenerationModel.gemini &&
+                        ctrl.state.generationModel != GenerationModel.gpt) {
+                      ctrl.setGenerationModel(GenerationModel.gpt);
                     }
                     setState(() {
                       _singleImage = null;
@@ -539,7 +543,8 @@ class _ProjectViewState extends State<_ProjectView> {
   Widget _buildVariationForm() {
     return BlocBuilder<ProjectController, ProjectState>(
       builder: (context, state) {
-        final isGemini = state.generationModel == GenerationModel.gemini;
+        final isLlmModel = state.generationModel == GenerationModel.gemini ||
+            state.generationModel == GenerationModel.gpt;
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           _modeTitle('Variation', 'Generate new variations from a prompt or reference images'),
           const SizedBox(height: 20),
@@ -565,20 +570,20 @@ class _ProjectViewState extends State<_ProjectView> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: isGemini
+                  color: isLlmModel
                       ? AppColor.spaceCardHigh
                       : AppColor.primaryBackground,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isGemini ? AppColor.spaceBorder : AppColor.primary,
+                    color: isLlmModel ? AppColor.spaceBorder : AppColor.primary,
                   ),
                 ),
                 child: Text(
-                  isGemini ? 'optional' : 'required',
+                  isLlmModel ? 'optional' : 'required',
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: isGemini ? AppColor.spaceTextSecondary : AppColor.primary,
+                    color: isLlmModel ? AppColor.spaceTextSecondary : AppColor.primary,
                   ),
                 ),
               ),
@@ -630,7 +635,7 @@ class _ProjectViewState extends State<_ProjectView> {
     return BlocBuilder<ProjectController, ProjectState>(
       builder: (context, state) {
         final imageRequired = state.generationModel == GenerationModel.qwen ||
-            state.generationModel == GenerationModel.firered;
+            state.generationModel == GenerationModel.flux2;
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           _modeTitle('Sprite Sheet', 'Generate a character sprite sheet with multiple poses'),
           const SizedBox(height: 20),
@@ -959,6 +964,10 @@ class _ProjectViewState extends State<_ProjectView> {
         final String title;
         final String subtitle;
         switch (model) {
+          case GenerationModel.gpt:
+            title = 'Generating with ChatGPT…';
+            subtitle = 'GPT-Image-2 is crafting your image.\nThis may take a moment.';
+            break;
           case GenerationModel.gemini:
             title = 'Generating with Gemini…';
             subtitle = 'The AI is working its magic.\nThis may take up to a minute.';
@@ -970,10 +979,6 @@ class _ProjectViewState extends State<_ProjectView> {
           case GenerationModel.qwen:
             title = 'Generating with Qwen…';
             subtitle = 'This may take a moment while the model renders.';
-            break;
-          case GenerationModel.firered:
-            title = 'Applying edits with FireRed…';
-            subtitle = 'Preserving your subject while applying changes.';
             break;
         }
         return Positioned.fill(
@@ -1793,8 +1798,7 @@ class _InstructionAddFieldState extends State<_InstructionAddField>
 // ─── Model Selector ────────────────────────────────────────────────────────────
 
 /// Displays a horizontal row of model option cards for the given [mode].
-/// Automatically hides FireRed for splash art, and dims/disables it for
-/// variation / sprite sheet / style change when no reference image is present.
+/// GPT-Image-2 is listed first and pre-selected by default.
 class _ModelSelector extends StatelessWidget {
   const _ModelSelector({
     required this.mode,
@@ -1809,29 +1813,29 @@ class _ModelSelector extends StatelessWidget {
   final ValueChanged<GenerationModel> onChanged;
 
   static const _modelColors = {
+    GenerationModel.gpt:     [Color(0xFF10A37F), Color(0xFF1A7F64)],
     GenerationModel.gemini:  [Color(0xFF4285F4), Color(0xFFEA4335)],
     GenerationModel.flux2:   [Color(0xFFFF6B35), Color(0xFFFFD93D)],
     GenerationModel.qwen:    [Color(0xFF11998E), Color(0xFF38EF7D)],
-    GenerationModel.firered: [Color(0xFFFF416C), Color(0xFFFF4B2B)],
   };
 
   static const _modelIcons = {
+    GenerationModel.gpt:     Icons.chat_rounded,
     GenerationModel.gemini:  Icons.auto_awesome_rounded,
     GenerationModel.flux2:   Icons.camera_rounded,
     GenerationModel.qwen:    Icons.psychology_rounded,
-    GenerationModel.firered: Icons.local_fire_department_rounded,
   };
 
   @override
   Widget build(BuildContext context) {
-    final models = GenerationModel.values.where((m) {
-      if (mode == GenerationMode.splashArt && m == GenerationModel.firered) return false;
-      return true;
-    }).toList();
+    final models = GenerationModel.values.toList();
 
-    final showFireRedHint = selected == GenerationModel.firered &&
-        !hasReferenceImage &&
-        mode != GenerationMode.splashArt;
+    // Non-GPT/Gemini models need a reference image for non-splash-art modes.
+    final isLocked = (GenerationModel model) =>
+        model != GenerationModel.gpt &&
+        model != GenerationModel.gemini &&
+        mode != GenerationMode.splashArt &&
+        !hasReferenceImage;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1855,17 +1859,15 @@ class _ModelSelector extends StatelessWidget {
               final colors = _modelColors[model]!;
               final icon = _modelIcons[model]!;
 
-              // Non-Gemini models are image-to-image only on image-based modes.
+              // Flux-2 and Qwen are image-to-image only on image-based modes.
               // Lock them until the user adds a reference image.
-              final isLocked = model != GenerationModel.gemini &&
-                  mode != GenerationMode.splashArt &&
-                  !hasReferenceImage;
+              final locked = isLocked(model);
 
               return Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: GestureDetector(
                   onTap: () {
-                    if (isLocked) {
+                    if (locked) {
                       ScaffoldMessenger.of(context)
                         ..clearSnackBars()
                         ..showSnackBar(SnackBar(
@@ -1897,7 +1899,7 @@ class _ModelSelector extends StatelessWidget {
                     width: 116,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: isLocked
+                      color: locked
                           ? AppColor.spaceCard
                           : isSelected
                               ? AppColor.spaceCardHigh
@@ -1905,14 +1907,14 @@ class _ModelSelector extends StatelessWidget {
                       borderRadius:
                           BorderRadius.circular(AppStyleConstant.mediumRounding),
                       border: Border.all(
-                        color: isLocked
+                        color: locked
                             ? AppColor.spaceBorder.withValues(alpha: 0.4)
                             : isSelected
                                 ? colors.first
                                 : AppColor.spaceBorder,
-                        width: isSelected && !isLocked ? 1.5 : 1,
+                        width: isSelected && !locked ? 1.5 : 1,
                       ),
-                      boxShadow: isSelected && !isLocked
+                      boxShadow: isSelected && !locked
                           ? [
                               BoxShadow(
                                   color: colors.first.withValues(alpha: 0.25),
@@ -1922,7 +1924,7 @@ class _ModelSelector extends StatelessWidget {
                           : null,
                     ),
                     child: Opacity(
-                      opacity: isLocked ? 0.35 : 1.0,
+                      opacity: locked ? 0.35 : 1.0,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 8),
@@ -1942,7 +1944,7 @@ class _ModelSelector extends StatelessWidget {
                                       Icon(icon, size: 18, color: Colors.white),
                                 ),
                                 const Spacer(),
-                                if (isLocked)
+                                if (locked)
                                   const Icon(Icons.lock_rounded,
                                       size: 11,
                                       color: AppColor.spaceTextSecondary)
@@ -1963,10 +1965,10 @@ class _ModelSelector extends StatelessWidget {
                               model.displayName,
                               style: GoogleFonts.inter(
                                 fontSize: 12,
-                                fontWeight: isSelected && !isLocked
+                                fontWeight: isSelected && !locked
                                     ? FontWeight.w700
                                     : FontWeight.w500,
-                                color: isSelected && !isLocked
+                                color: isSelected && !locked
                                     ? Colors.white
                                     : AppColor.spaceTextSecondary,
                               ),
@@ -1981,19 +1983,6 @@ class _ModelSelector extends StatelessWidget {
             }).toList(),
           ),
         ),
-        if (showFireRedHint) ...[
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const Icon(Icons.info_outline_rounded, size: 13, color: Color(0xFFFF416C)),
-              const SizedBox(width: 5),
-              Text(
-                'FireRed works best with a reference image.',
-                style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFFFF416C)),
-              ),
-            ],
-          ),
-        ],
       ],
     );
   }
