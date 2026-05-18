@@ -1,14 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../index.dart';
 
 class YDButtonStyle with MaterialColorMixin {
   const YDButtonStyle._();
 
-  /// Default style for YDSolidButton, contains style config for multiple states
-  /// such as [active], [pressed], and [disabled].
-  ///
-  /// Tip: to disable a button, set onPressed to null.
   static final defaultSolidStyle = ButtonStyle(
     textStyle: MaterialStatePropertyAll(AppTextStyle.button1),
     backgroundColor: MaterialColorMixin.getMaterialProps(
@@ -36,10 +32,6 @@ class YDButtonStyle with MaterialColorMixin {
         EdgeInsets.symmetric(horizontal: YDSpacing.padding12X)),
   );
 
-  /// Default style for YDOutlinedButton, contains style config for multiple states
-  /// such as [active], [pressed], and [disabled].
-  ///
-  /// Tip: to disable a button, set onPressed to null.
   static final defaultOutlinedStyle = ButtonStyle(
     textStyle: MaterialStatePropertyAll(AppTextStyle.button1),
     backgroundColor: MaterialColorMixin.getMaterialProps(
@@ -87,10 +79,6 @@ class YDButtonStyle with MaterialColorMixin {
         EdgeInsets.symmetric(horizontal: YDSpacing.padding12X)),
   );
 
-  /// Default style for YDTextButton, contains style config for multiple states
-  /// such as [active], [pressed], and [disabled].
-  ///
-  /// Tip: to disable a button, set onPressed to null.
   static final defaultTextStyle = ButtonStyle(
     textStyle: MaterialStatePropertyAll(AppTextStyle.button1),
     backgroundColor: MaterialColorMixin.getMaterialProps(

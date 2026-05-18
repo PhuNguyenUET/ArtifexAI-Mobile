@@ -1,9 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'project_dto.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
 // **************************************************************************
 
 _ProjectDto _$ProjectDtoFromJson(Map<String, dynamic> json) => _ProjectDto(

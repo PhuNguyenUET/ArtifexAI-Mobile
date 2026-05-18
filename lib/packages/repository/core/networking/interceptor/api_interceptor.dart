@@ -1,10 +1,8 @@
-import '../../../../index.dart';
+﻿import '../../../../index.dart';
 
 class ApiInterceptor extends Interceptor {
   ApiInterceptor() : super();
 
-  /// Paths that the backend permits without a JWT.
-  /// Matches against [RequestOptions.path] using `contains`.
   static const _publicPaths = [
     '/authenticate',
     '/refresh_jwt',

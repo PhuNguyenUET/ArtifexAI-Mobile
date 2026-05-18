@@ -1,4 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+﻿import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../packages/domain/index.dart';
 
 part 'album_detail_state.freezed.dart';
@@ -9,8 +9,6 @@ abstract class AlbumDetailState with _$AlbumDetailState {
     AlbumDto? album,
     @Default(false) bool loading,
     String? error,
-    // Tracks media IDs currently being deleted/removed so the UI can show
-    // per-item loading indicators.
     @Default({}) Set<int> pendingMediaIds,
   }) = _AlbumDetailState;
 }

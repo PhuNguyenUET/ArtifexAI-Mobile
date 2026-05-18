@@ -1,4 +1,4 @@
-import 'package:flutter_localizations/flutter_localizations.dart';
+﻿import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../generated/index.dart';
 import '../packages/index.dart';

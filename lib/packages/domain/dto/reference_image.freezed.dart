@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,28 +6,23 @@
 part of 'reference_image.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$ReferenceImage {
   @JsonKey(name: 'imagePath')
   String? get imagePath;
   @JsonKey(name: 'mimeType')
   MimeType? get mimeType;
 
-  /// Create a copy of ReferenceImage
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ReferenceImageCopyWith<ReferenceImage> get copyWith =>
       _$ReferenceImageCopyWithImpl<ReferenceImage>(
           this as ReferenceImage, _$identity);
 
-  /// Serializes this ReferenceImage to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
@@ -51,7 +46,6 @@ mixin _$ReferenceImage {
   }
 }
 
-/// @nodoc
 abstract mixin class $ReferenceImageCopyWith<$Res> {
   factory $ReferenceImageCopyWith(
           ReferenceImage value, $Res Function(ReferenceImage) _then) =
@@ -62,7 +56,6 @@ abstract mixin class $ReferenceImageCopyWith<$Res> {
       @JsonKey(name: 'mimeType') MimeType? mimeType});
 }
 
-/// @nodoc
 class _$ReferenceImageCopyWithImpl<$Res>
     implements $ReferenceImageCopyWith<$Res> {
   _$ReferenceImageCopyWithImpl(this._self, this._then);
@@ -70,8 +63,6 @@ class _$ReferenceImageCopyWithImpl<$Res>
   final ReferenceImage _self;
   final $Res Function(ReferenceImage) _then;
 
-  /// Create a copy of ReferenceImage
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,19 +82,7 @@ class _$ReferenceImageCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [ReferenceImage].
 extension ReferenceImagePatterns on ReferenceImage {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -119,19 +98,6 @@ extension ReferenceImagePatterns on ReferenceImage {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_ReferenceImage value) $default,
@@ -145,18 +111,6 @@ extension ReferenceImagePatterns on ReferenceImage {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_ReferenceImage value)? $default,
@@ -169,18 +123,6 @@ extension ReferenceImagePatterns on ReferenceImage {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -198,19 +140,6 @@ extension ReferenceImagePatterns on ReferenceImage {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(@JsonKey(name: 'imagePath') String? imagePath,
@@ -225,18 +154,6 @@ extension ReferenceImagePatterns on ReferenceImage {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -254,7 +171,6 @@ extension ReferenceImagePatterns on ReferenceImage {
   }
 }
 
-/// @nodoc
 @JsonSerializable()
 class _ReferenceImage implements ReferenceImage {
   _ReferenceImage(
@@ -270,8 +186,6 @@ class _ReferenceImage implements ReferenceImage {
   @JsonKey(name: 'mimeType')
   final MimeType? mimeType;
 
-  /// Create a copy of ReferenceImage
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -306,7 +220,6 @@ class _ReferenceImage implements ReferenceImage {
   }
 }
 
-/// @nodoc
 abstract mixin class _$ReferenceImageCopyWith<$Res>
     implements $ReferenceImageCopyWith<$Res> {
   factory _$ReferenceImageCopyWith(
@@ -319,7 +232,6 @@ abstract mixin class _$ReferenceImageCopyWith<$Res>
       @JsonKey(name: 'mimeType') MimeType? mimeType});
 }
 
-/// @nodoc
 class __$ReferenceImageCopyWithImpl<$Res>
     implements _$ReferenceImageCopyWith<$Res> {
   __$ReferenceImageCopyWithImpl(this._self, this._then);
@@ -327,8 +239,6 @@ class __$ReferenceImageCopyWithImpl<$Res>
   final _ReferenceImage _self;
   final $Res Function(_ReferenceImage) _then;
 
-  /// Create a copy of ReferenceImage
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({

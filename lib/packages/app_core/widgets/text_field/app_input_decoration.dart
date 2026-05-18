@@ -1,4 +1,4 @@
-import '../../../index.dart';
+﻿import '../../../index.dart';
 
 class AppInputDecoration {
   static InputDecoration normal(
@@ -7,7 +7,6 @@ class AppInputDecoration {
     String? labelText,
     Widget? prefixIcon,
     Widget? suffixIcon,
-    // Icon before and outside of the TextFormField border
     Widget? icon,
     EdgeInsets? contentPadding,
     bool enabled = true,
@@ -62,5 +61,4 @@ class AppInputDecoration {
     );
   }
 }
-
 

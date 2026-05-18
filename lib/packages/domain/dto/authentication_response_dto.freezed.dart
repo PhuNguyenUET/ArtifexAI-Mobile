@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,28 +6,23 @@
 part of 'authentication_response_dto.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$AuthenticationResponseDto {
   @JsonKey(name: 'jwtToken')
   String? get jwtToken;
   @JsonKey(name: 'refreshToken')
   String? get refreshToken;
 
-  /// Create a copy of AuthenticationResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $AuthenticationResponseDtoCopyWith<AuthenticationResponseDto> get copyWith =>
       _$AuthenticationResponseDtoCopyWithImpl<AuthenticationResponseDto>(
           this as AuthenticationResponseDto, _$identity);
 
-  /// Serializes this AuthenticationResponseDto to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
@@ -51,7 +46,6 @@ mixin _$AuthenticationResponseDto {
   }
 }
 
-/// @nodoc
 abstract mixin class $AuthenticationResponseDtoCopyWith<$Res> {
   factory $AuthenticationResponseDtoCopyWith(AuthenticationResponseDto value,
           $Res Function(AuthenticationResponseDto) _then) =
@@ -62,7 +56,6 @@ abstract mixin class $AuthenticationResponseDtoCopyWith<$Res> {
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
 
-/// @nodoc
 class _$AuthenticationResponseDtoCopyWithImpl<$Res>
     implements $AuthenticationResponseDtoCopyWith<$Res> {
   _$AuthenticationResponseDtoCopyWithImpl(this._self, this._then);
@@ -70,8 +63,6 @@ class _$AuthenticationResponseDtoCopyWithImpl<$Res>
   final AuthenticationResponseDto _self;
   final $Res Function(AuthenticationResponseDto) _then;
 
-  /// Create a copy of AuthenticationResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,19 +82,7 @@ class _$AuthenticationResponseDtoCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [AuthenticationResponseDto].
 extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -119,19 +98,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_AuthenticationResponseDto value) $default,
@@ -145,18 +111,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_AuthenticationResponseDto value)? $default,
@@ -169,18 +123,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -198,19 +140,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(@JsonKey(name: 'jwtToken') String? jwtToken,
@@ -225,18 +154,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -254,7 +171,6 @@ extension AuthenticationResponseDtoPatterns on AuthenticationResponseDto {
   }
 }
 
-/// @nodoc
 @JsonSerializable()
 class _AuthenticationResponseDto implements AuthenticationResponseDto {
   _AuthenticationResponseDto(
@@ -270,8 +186,6 @@ class _AuthenticationResponseDto implements AuthenticationResponseDto {
   @JsonKey(name: 'refreshToken')
   final String? refreshToken;
 
-  /// Create a copy of AuthenticationResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -308,7 +222,6 @@ class _AuthenticationResponseDto implements AuthenticationResponseDto {
   }
 }
 
-/// @nodoc
 abstract mixin class _$AuthenticationResponseDtoCopyWith<$Res>
     implements $AuthenticationResponseDtoCopyWith<$Res> {
   factory _$AuthenticationResponseDtoCopyWith(_AuthenticationResponseDto value,
@@ -321,7 +234,6 @@ abstract mixin class _$AuthenticationResponseDtoCopyWith<$Res>
       @JsonKey(name: 'refreshToken') String? refreshToken});
 }
 
-/// @nodoc
 class __$AuthenticationResponseDtoCopyWithImpl<$Res>
     implements _$AuthenticationResponseDtoCopyWith<$Res> {
   __$AuthenticationResponseDtoCopyWithImpl(this._self, this._then);
@@ -329,8 +241,6 @@ class __$AuthenticationResponseDtoCopyWithImpl<$Res>
   final _AuthenticationResponseDto _self;
   final $Res Function(_AuthenticationResponseDto) _then;
 
-  /// Create a copy of AuthenticationResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({

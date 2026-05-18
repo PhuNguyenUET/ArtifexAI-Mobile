@@ -1,4 +1,4 @@
-import '../../generated/assets.dart';
+﻿import '../../generated/assets.dart';
 import '../../init/routes.dart';
 import '../../packages/index.dart';
 import 'auth_controller.dart';
@@ -15,12 +15,10 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   late final AuthController _controller;
 
-  // Sign-in fields
   final _signInFormKey = GlobalKey<FormState>();
   final _signInEmailCtrl = TextEditingController();
   final _signInPasswordCtrl = TextEditingController();
 
-  // Sign-up fields
   final _signUpFormKey = GlobalKey<FormState>();
   final _signUpEmailCtrl = TextEditingController();
   final _signUpPasswordCtrl = TextEditingController();
@@ -85,8 +83,6 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  // ─── Header ──────────────────────────────────────────────────────────────────
-
   Widget _buildHeader(BuildContext context) {
     return Column(
       children: [
@@ -132,8 +128,6 @@ class _AuthPageState extends State<AuthPage> {
       ],
     );
   }
-
-  // ─── Tab Bar ──────────────────────────────────────────────────────────────────
 
   Widget _buildTabBar(BuildContext context, AuthState state) {
     return Container(
@@ -200,8 +194,6 @@ class _AuthPageState extends State<AuthPage> {
       ),
     );
   }
-
-  // ─── Sign In Form ─────────────────────────────────────────────────────────────
 
   Widget _buildSignInForm(BuildContext context, AuthState state) {
     return Form(
@@ -299,8 +291,6 @@ class _AuthPageState extends State<AuthPage> {
       ),
     );
   }
-
-  // ─── Sign Up Form ─────────────────────────────────────────────────────────────
 
   Widget _buildSignUpForm(BuildContext context, AuthState state) {
     return Form(
@@ -402,8 +392,6 @@ class _AuthPageState extends State<AuthPage> {
       ),
     );
   }
-
-  // ─── OAuth Buttons ────────────────────────────────────────────────────────────
 
   Widget _buildDivider(BuildContext context) {
     return Row(
@@ -526,8 +514,6 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  // ─── Actions ──────────────────────────────────────────────────────────────────
-
   void _onSignIn(BuildContext context) {
     FocusScope.of(context).unfocus();
     if (_signInFormKey.currentState?.validate() != true) return;
@@ -549,7 +535,6 @@ class _AuthPageState extends State<AuthPage> {
           email: _signUpEmailCtrl.text.trim(),
           password: _signUpPasswordCtrl.text,
           onSuccess: () {
-            // Navigate to sign-in after successful registration
             context.read<AuthController>().switchTab(AuthTab.signIn);
           },
         );
@@ -575,8 +560,4 @@ class _AuthPageState extends State<AuthPage> {
         );
   }
 }
-
-
-
-
 

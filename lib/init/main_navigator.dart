@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 class MainNavigator extends StatefulWidget {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey();

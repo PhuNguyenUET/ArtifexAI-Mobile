@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+﻿import 'package:flutter/services.dart';
 
 import '../../index.dart';
 
@@ -22,8 +22,6 @@ class ApiServiceImpl extends ApiService {
     receiveTimeout: const Duration(minutes: 10),
     sendTimeout: const Duration(minutes: 2),
   );
-
-  // ─── User ────────────────────────────────────────────────────────────────────
 
   @override
   Future<void> editUser({
@@ -101,8 +99,6 @@ class ApiServiceImpl extends ApiService {
     );
     return UserDto.fromJson(userDto);
   }
-
-  // ─── Project Management ───────────────────────────────────────────────────────
 
   @override
   Future<void> updateInstructions({
@@ -190,8 +186,6 @@ class ApiServiceImpl extends ApiService {
     );
   }
 
-  // ─── Album Management ─────────────────────────────────────────────────────────
-
   @override
   Future<void> editAlbum({
     required int albumId,
@@ -274,8 +268,6 @@ class ApiServiceImpl extends ApiService {
     );
   }
 
-  // ─── Video Generation ─────────────────────────────────────────────────────────
-
   @override
   Future<VideoResponseDto> generateVideo({
     required int projectId,
@@ -294,8 +286,6 @@ class ApiServiceImpl extends ApiService {
     );
     return VideoResponseDto.fromJson(json);
   }
-
-  // ─── User Authentication ──────────────────────────────────────────────────────
 
   @override
   Future<void> register({
@@ -354,9 +344,6 @@ class ApiServiceImpl extends ApiService {
         url: '${Config.baseUrl}oauth2/authorization/github',
       );
 
-  /// Opens the device browser to the server's OAuth2 entry URL, waits for the
-  /// deep-link callback `artifexai://oauth2/callback?jwt=...&refresh=...`, and
-  /// returns the parsed tokens as [AuthenticationResponseDto].
   Future<AuthenticationResponseDto> _performOAuth2Login({
     required String url,
   }) async {
@@ -378,15 +365,12 @@ class ApiServiceImpl extends ApiService {
 
       return AuthenticationResponseDto(jwtToken: jwt, refreshToken: refresh);
     } on PlatformException {
-      // User closed the browser or cancelled – signal this to the caller.
       throw CustomException(
         message: 'cancelled',
         exceptionType: ExceptionType.cancelException,
       );
     }
   }
-
-  // ─── Media Management ─────────────────────────────────────────────────────────
 
   @override
   Future<MediaDto> uploadClient({
@@ -436,8 +420,6 @@ class ApiServiceImpl extends ApiService {
       queryParams: {'mediaId': mediaId},
     );
   }
-
-  // ─── Image Generation ─────────────────────────────────────────────────────────
 
   @override
   Future<ImageResponseDto> imageVariation({

@@ -1,21 +1,9 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 
 import '../../../../index.dart';
 import 'token_storage.dart';
 
-/// Intercepts every 401 response.
-///
-/// • If the body message contains "JWT expired", it tries to get a new access
-///   token via [POST /api/user/v1/refresh_jwt].
-///   - On success  → updates [Config] + [AccessTokenStorage], retries the
-///                   original request with the new token.
-///   - On failure  → clears stored tokens and calls [onSessionExpired].
-///
-/// • Any other 401 (e.g. wrong password) is passed through untouched.
-///
-/// A dedicated [Dio] instance is used for the refresh call so it never
-/// re-enters this interceptor and cannot cause an infinite loop.
 class TokenRefreshInterceptor extends Interceptor {
   TokenRefreshInterceptor({
     required Dio primaryDio,
@@ -29,8 +17,6 @@ class TokenRefreshInterceptor extends Interceptor {
   final TokenStorage _storage;
   final VoidCallback _onSessionExpired;
 
-  /// Paths that the backend permits without a JWT – mirrors the Spring Security
-  /// `.permitAll()` list so we never try to refresh on a public endpoint.
   static const _publicPaths = [
     '/authenticate',
     '/refresh_jwt',
@@ -47,8 +33,6 @@ class TokenRefreshInterceptor extends Interceptor {
   static bool _isPublic(String path) =>
       _publicPaths.any((p) => path.contains(p));
 
-  /// Guards against concurrent refresh attempts: if multiple requests 401 at
-  /// the same time only one refresh call is made.
   bool _isRefreshing = false;
   final List<_PendingRequest> _queue = [];
 
@@ -59,20 +43,16 @@ class TokenRefreshInterceptor extends Interceptor {
   ) async {
     final response = err.response;
 
-    // Only handle 401s that look like an expired JWT.
     if (response?.statusCode != 401 || !_isJwtExpired(response)) {
       return handler.next(err);
     }
 
-    // Never attempt a token refresh for public endpoints — they issue tokens
-    // themselves and must never be retried via a refresh flow.
     if (_isPublic(err.requestOptions.path)) {
       return handler.next(err);
     }
 
     final requestOptions = err.requestOptions;
 
-    // If a refresh is already in progress, queue this request.
     if (_isRefreshing) {
       final pending = _PendingRequest(requestOptions);
       _queue.add(pending);
@@ -93,7 +73,6 @@ class TokenRefreshInterceptor extends Interceptor {
         return;
       }
 
-      // Use a standalone Dio so this call bypasses this interceptor entirely.
       final refreshDio = Dio(BaseOptions(
         baseUrl: _primaryDio.options.baseUrl,
         contentType: 'application/json',
@@ -113,45 +92,32 @@ class TokenRefreshInterceptor extends Interceptor {
         return;
       }
 
-      // Persist and update the in-memory token.
       await _storage.saveTokens(
         accessToken: newToken,
         refreshToken: refreshToken,
       );
 
-      // Retry all queued requests with the new token.
       for (final pending in _queue) {
         pending.options.headers['Authorization'] = 'Bearer $newToken';
         try {
           final r = await _primaryDio.fetch<dynamic>(pending.options);
           pending.complete(r);
         } catch (e) {
-          // Safe rejection: e may be an Error (not Exception), so avoid a
-          // bare `e as Exception` cast that would itself throw a TypeError.
           pending.reject(e is Exception ? e : Exception(e.toString()));
         }
       }
       _queue.clear();
 
-      // Retry the original failed request.
       requestOptions.headers['Authorization'] = 'Bearer $newToken';
       final retryResponse = await _primaryDio.fetch<dynamic>(requestOptions);
       return handler.resolve(retryResponse);
     } catch (_) {
-      // Catch ALL exceptions, not just DioException.
-      // A narrow `on DioException` silently swallowed storage failures,
-      // TypeErrors, FormatExceptions, etc. — leaving the handler un-resolved
-      // and _onSessionExpired never called, which is why the 401 was leaking
-      // to the UI without any redirect to the login screen.
       await _onRefreshFailed(err, handler);
     } finally {
       _isRefreshing = false;
     }
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
-
-  /// Returns true when the 401 body says the JWT is expired.
   bool _isJwtExpired(Response? response) {
     if (response == null) return false;
     try {
@@ -172,17 +138,13 @@ class TokenRefreshInterceptor extends Interceptor {
     }
   }
 
-  /// Extracts the new access token from the refresh endpoint envelope.
   String? _extractToken(Map<String, dynamic>? data) {
     if (data == null) return null;
-    // Envelope: { code, message, results: "<token>" }
     final results = data['results'];
     if (results is String && results.isNotEmpty) return results;
-    // Fallback: flat { jwtToken: "..." }
     return results?['jwtToken'] as String?;
   }
 
-  /// Clears tokens, rejects pending queue, and fires the session-expired callback.
   Future<void> _onRefreshFailed(
     DioException err,
     ErrorInterceptorHandler handler,
@@ -199,7 +161,6 @@ class TokenRefreshInterceptor extends Interceptor {
   }
 }
 
-/// Holds a queued request and its completer while a token refresh is in flight.
 class _PendingRequest {
   _PendingRequest(this.options);
 

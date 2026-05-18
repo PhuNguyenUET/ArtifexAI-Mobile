@@ -1,9 +1,7 @@
-import '../../../packages/index.dart';
+﻿import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
 import '../../project/mask_edit_page.dart';
 
-/// Full-screen image viewer opened from the Gallery card.
-/// Bottom bar has: Delete (permanent) + Add to Albums (multi-select picker).
 class GalleryViewerPage extends StatefulWidget {
   const GalleryViewerPage({
     super.key,
@@ -46,11 +44,9 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
         Navigator.of(context).pop();
         return;
       }
-      // Keep index in bounds after removal
       if (_currentIndex >= _media.length) {
         _currentIndex = _media.length - 1;
       }
-      // Rebuild controller for the new list
       _pageController.jumpToPage(_currentIndex);
     });
   }
@@ -63,11 +59,8 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // ── Space background ──────────────────────────────────────────────
           const LavaBackground(),
-          // Dark scrim so the image reads clearly against the background
           Container(color: Colors.black.withValues(alpha: 0.55)),
-          // ── Full-screen pager ──────────────────────────────────────────────
           PageView.builder(
             controller: _pageController,
             itemCount: _media.length,
@@ -87,7 +80,6 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
             },
           ),
 
-          // ── Top bar ────────────────────────────────────────────────────────
           Positioned(
             top: 0,
             left: 0,
@@ -130,7 +122,6 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
             ),
           ),
 
-          // ── Bottom action bar ──────────────────────────────────────────────
           Positioned(
             bottom: 0,
             left: 0,
@@ -147,8 +138,6 @@ class _GalleryViewerPageState extends State<GalleryViewerPage> {
     );
   }
 }
-
-// ─── Gallery Action Bar ───────────────────────────────────────────────────────
 
 class _GalleryActionBar extends StatelessWidget {
   const _GalleryActionBar({
@@ -184,7 +173,6 @@ class _GalleryActionBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Add to Albums
           Expanded(
             child: _GalleryActionButton(
               icon: Icons.add_to_photos_outlined,
@@ -194,7 +182,6 @@ class _GalleryActionBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          // Mask Edit
           Expanded(
             child: _GalleryActionButton(
               icon: Icons.brush_rounded,
@@ -214,7 +201,6 @@ class _GalleryActionBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          // Delete permanently
           Expanded(
             child: _GalleryActionButton(
               icon: Icons.delete_outline_rounded,
@@ -227,8 +213,6 @@ class _GalleryActionBar extends StatelessWidget {
       ),
     );
   }
-
-  // ─── Delete ─────────────────────────────────────────────────────────────────
 
   void _confirmDelete(BuildContext context) {
     showModalBottomSheet(
@@ -260,10 +244,7 @@ class _GalleryActionBar extends StatelessWidget {
     );
   }
 
-  // ─── Add to Albums ──────────────────────────────────────────────────────────
-
   void _showAddToAlbumsSheet(BuildContext context) {
-    // Capture the HomeController before going into the sheet's builder context.
     final homeCtrl = context.read<HomeController>();
     final albums = homeCtrl.state.albums;
 
@@ -285,8 +266,6 @@ class _GalleryActionBar extends StatelessWidget {
   }
 }
 
-// ─── Confirm Delete Sheet ─────────────────────────────────────────────────────
-
 class _ConfirmDeleteSheet extends StatelessWidget {
   const _ConfirmDeleteSheet({required this.onConfirm});
 
@@ -300,7 +279,6 @@ class _ConfirmDeleteSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Drag handle
           Container(
             width: 40, height: 4,
             decoration: BoxDecoration(
@@ -370,8 +348,6 @@ class _ConfirmDeleteSheet extends StatelessWidget {
     );
   }
 }
-
-// ─── Add to Albums Sheet ──────────────────────────────────────────────────────
 
 class _AddToAlbumsSheet extends StatefulWidget {
   const _AddToAlbumsSheet({
@@ -443,12 +419,10 @@ class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
       expand: false,
       builder: (_, scrollController) => Column(
         children: [
-          // ── Header ────────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
             child: Column(
               children: [
-                // Drag handle
                 Container(
                   width: 40, height: 4,
                   decoration: BoxDecoration(
@@ -490,7 +464,6 @@ class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
             ),
           ),
 
-          // ── Album list ────────────────────────────────────────────────────
           Expanded(
             child: widget.albums.isEmpty
                 ? Center(
@@ -585,7 +558,6 @@ class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
                   ),
           ),
 
-          // ── Done button ───────────────────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(24, 12, 24, bottomInset + 16),
             child: AppFilledButton(
@@ -612,8 +584,6 @@ class _AddToAlbumsSheetState extends State<_AddToAlbumsSheet> {
     );
   }
 }
-
-// ─── Action Button ────────────────────────────────────────────────────────────
 
 class _GalleryActionButton extends StatelessWidget {
   const _GalleryActionButton({

@@ -1,4 +1,4 @@
-import '../../init/access_token_storage.dart';
+﻿import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
 import '../../packages/index.dart';
 import 'home_state.dart';
@@ -9,8 +9,6 @@ class HomeController extends Cubit<HomeState> {
   }
 
   final _storage = sl.get<AccessTokenStorage>();
-
-  // ─── Tab ─────────────────────────────────────────────────────────────────────
 
   void switchTab(HomeTab tab) {
     emit(state.copyWith(activeTab: tab));
@@ -23,9 +21,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  // ─── Albums + Gallery ─────────────────────────────────────────────────────────
-
-  /// Fetches both albums and gallery in parallel.
   Future<void> _fetchAlbumsAndGallery() async {
     await Future.wait([fetchAlbums(), fetchGallery()]);
   }
@@ -58,7 +53,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  /// Permanently deletes a media item and removes it from the gallery list.
   Future<void> deleteGalleryMedia({
     required int mediaId,
     VoidCallback? onSuccess,
@@ -77,7 +71,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  /// Adds a media item to a single album. Returns true on success.
   Future<bool> addMediaToAlbum({
     required int mediaId,
     required int albumId,
@@ -109,9 +102,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  /// Creates a new album with [name] and the given [mediaIds], then prepends
-  /// it to the albums list. Returns the created [AlbumDto] on success, or
-  /// null on failure (error is returned via [onError]).
   Future<AlbumDto?> createAlbum({
     required String name,
     required List<int> mediaIds,
@@ -132,8 +122,6 @@ class HomeController extends Cubit<HomeState> {
       return null;
     }
   }
-
-  // ─── Projects ─────────────────────────────────────────────────────────────────
 
   Future<void> fetchProjects() async {
     emit(state.copyWith(projectsLoading: true, projectsError: null));
@@ -166,8 +154,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  /// Creates a new project and prepends it to the projects list.
-  /// Returns the created [ProjectDto] on success, null on failure.
   Future<ProjectDto?> createProject({
     required String projectName,
     required ArtStyle artStyle,
@@ -191,8 +177,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  // ─── Profile ──────────────────────────────────────────────────────────────────
-
   Future<void> fetchProfile() async {
     emit(state.copyWith(profileLoading: true, profileError: null));
     try {
@@ -212,8 +196,6 @@ class HomeController extends Cubit<HomeState> {
     onSignedOut();
   }
 
-  // ─── Edit Profile ─────────────────────────────────────────────────────────────
-
   Future<bool> editUser({
     String? firstName,
     String? lastName,
@@ -226,7 +208,6 @@ class HomeController extends Cubit<HomeState> {
         lastName: lastName,
         dateOfBirth: dateOfBirth,
       );
-      // Refresh the local user so the profile UI updates immediately.
       final updated = await _storage.repository.currentUser();
       emit(state.copyWith(user: updated));
       return true;
@@ -257,9 +238,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  // ─── Email Verification ────────────────────────────────────────────────────
-
-  /// Triggers the server to send a verification e-mail to the current user.
   Future<bool> sendVerificationEmail({
     void Function(String)? onError,
   }) async {
@@ -275,8 +253,6 @@ class HomeController extends Cubit<HomeState> {
     }
   }
 
-  /// Submits the token the user received by e-mail.
-  /// Returns true and refreshes the user on success.
   Future<bool> verifyEmailToken({
     required String token,
     void Function(String)? onError,

@@ -1,4 +1,4 @@
-import 'init/index.dart';
+﻿import 'init/index.dart';
 import 'packages/index.dart';
 
 void main() async {
@@ -16,10 +16,8 @@ Future<void> _initDependencies() async {
   final refreshToken = await accessTokenStorage.getRefreshToken();
   Config.refreshToken = refreshToken;
 
-  // Register AccessTokenStorage in GetIt
   sl.registerSingleton<AccessTokenStorage>(accessTokenStorage);
 
-  // Wire the token-refresh interceptor now that the router is available.
   accessTokenStorage.init(
     onSessionExpired: () => router.go(AppRouter.auth),
   );

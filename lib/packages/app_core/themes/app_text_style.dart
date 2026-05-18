@@ -1,4 +1,4 @@
-import '../../../packages/lib_manager/lib_manager.dart';
+﻿import '../../../packages/lib_manager/lib_manager.dart';
 import 'app_color.dart';
 
 extension ContextTextStyle on BuildContext {

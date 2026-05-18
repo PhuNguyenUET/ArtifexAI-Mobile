@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../packages/domain/index.dart';
 
@@ -47,7 +47,6 @@ extension GenerationModeExt on GenerationMode {
     }
   }
 
-
   bool get requiresPrompt {
     switch (this) {
       case GenerationMode.upscale:     return false;
@@ -58,7 +57,6 @@ extension GenerationModeExt on GenerationMode {
     }
   }
 
-  /// 0 = none, -1 = zero-or-more, 1 = exactly one
   int get imageCount {
     switch (this) {
       case GenerationMode.splashArt:   return 0;
@@ -83,7 +81,6 @@ abstract class ProjectState with _$ProjectState {
     ImageResponseDto? result,
     VideoResponseDto? videoResult,
     String? error,
-    // ─── Instructions ─────────────────────────────────────────────────────────
     @Default([]) List<String> instructions,
     @Default(false) bool addingInstruction,
     @Default(false) bool updatingInstructions,

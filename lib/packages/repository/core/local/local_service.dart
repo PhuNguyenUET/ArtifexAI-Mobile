@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import '../../../index.dart';
 
@@ -8,8 +8,6 @@ class LocalService {
   final List<String> keyExcludes = [];
 
   final SharedPreferences sharedPreferences;
-
-  // late final StreamingSharedPreferences preferences;
 
   LocalService({required this.sharedPreferences}) {
     /* _initStreamingSharedPreferences();

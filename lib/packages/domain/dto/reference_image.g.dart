@@ -1,9 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'reference_image.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
 // **************************************************************************
 
 _ReferenceImage _$ReferenceImageFromJson(Map<String, dynamic> json) =>

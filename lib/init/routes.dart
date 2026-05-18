@@ -1,10 +1,6 @@
-import '../features/index.dart';
+﻿import '../features/index.dart';
 import '../features/home/home_page.dart';
 import '../packages/index.dart';
-
-/// The route configuration.
-/// state.pathParameters['userId']
-/// state.uri.queryParameters['filter']
 
 abstract class AppRouter {
   AppRouter._();

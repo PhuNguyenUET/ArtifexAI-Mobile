@@ -1,10 +1,7 @@
-import '../../packages/index.dart';
+﻿import '../../packages/index.dart';
 import 'auth_controller.dart';
 import 'create_new_password_page.dart';
 
-/// Step 1 of the password-reset flow.
-/// The user enters their email; we call [forgotPassword] and, on success,
-/// push them to [CreateNewPasswordPage].
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
@@ -126,7 +123,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           children: [
             const SizedBox(height: 16),
 
-            // ── Icon ────────────────────────────────────────────────────────
             Center(
               child: Container(
                 width: 72,
@@ -153,7 +149,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
             const SizedBox(height: 24),
 
-            // ── Title & description ──────────────────────────────────────────
             Text(
               'Reset your password',
               textAlign: TextAlign.center,
@@ -176,7 +171,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
             const SizedBox(height: 32),
 
-            // ── Email field ──────────────────────────────────────────────────
             AppTextFormField(
               controller: _emailCtrl,
               labelText: 'Email Address',
@@ -198,7 +192,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
             const SizedBox(height: 20),
 
-            // ── Submit button ────────────────────────────────────────────────
             _buildGradientButton(
               label: 'Send Reset Code',
               loading: _loading,
@@ -210,8 +203,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
-
-// ─── Shared gradient button ───────────────────────────────────────────────────
 
 Widget _buildGradientButton({
   required String label,

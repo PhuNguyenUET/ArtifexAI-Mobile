@@ -1,4 +1,4 @@
-import '../../init/index.dart';
+﻿import '../../init/index.dart';
 import '../../packages/index.dart';
 import 'auth_state.dart';
 
@@ -6,8 +6,6 @@ class AuthController extends Cubit<AuthState> {
   AuthController() : super(const AuthState());
 
   final _storage = sl.get<AccessTokenStorage>();
-
-  // ─── Startup Auth Check ──────────────────────────────────────────────────────
 
   Future<void> checkAuthOnStartup({
     required VoidCallback onAuthenticated,
@@ -17,26 +15,20 @@ class AuthController extends Cubit<AuthState> {
     try {
       final repo = _storage.repository;
 
-      // 1. Load stored access token — skip everything if none exists.
       final accessToken = await _storage.getAccessToken();
       if (accessToken.isEmpty) {
         onUnauthenticated();
         return;
       }
 
-      // 2. Try JWT health check — succeeds if JWT is still active.
       try {
         await repo.jwtCheck();
         onAuthenticated();
         return;
       } on CustomException catch (e) {
-        // Only attempt a refresh when the server explicitly rejects the token
-        // (HTTP 401). For network errors, timeouts, etc. we fall through to
-        // the outer catch which routes to unauthenticated.
         if (e.statusCode != 401) rethrow;
       }
 
-      // 3. JWT is expired — try refreshing.
       final refreshToken = await _storage.getRefreshToken();
       if (refreshToken.isEmpty) {
         onUnauthenticated();
@@ -51,19 +43,15 @@ class AuthController extends Cubit<AuthState> {
         );
         onAuthenticated();
       } on CustomException catch (_) {
-        // Refresh token is expired or rejected by the server.
         await _storage.clearTokens();
         onUnauthenticated();
       }
     } catch (_) {
-      // Network error, timeout, or any unexpected failure — fall back to login.
       onUnauthenticated();
     } finally {
       emit(state.copyWith(loading: false));
     }
   }
-
-  // ─── Tab ─────────────────────────────────────────────────────────────────────
 
   void switchTab(AuthTab tab) {
     emit(state.copyWith(activeTab: tab, errorMessage: null));
@@ -80,8 +68,6 @@ class AuthController extends Cubit<AuthState> {
   void clearError() {
     emit(state.copyWith(errorMessage: null));
   }
-
-  // ─── Email / Password Auth ────────────────────────────────────────────────────
 
   Future<void> signIn({
     required BuildContext context,
@@ -127,8 +113,6 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
-  // ─── OAuth ───────────────────────────────────────────────────────────────────
-
   Future<void> signInWithGoogle({
     required BuildContext context,
     required VoidCallback onSuccess,
@@ -143,7 +127,6 @@ class AuthController extends Cubit<AuthState> {
       );
       onSuccess();
     } on CustomException catch (e) {
-      // User cancelled the browser — return silently.
       if (e.exceptionType == ExceptionType.cancelException) return;
       emit(state.copyWith(errorMessage: e.message));
     } catch (_) {
@@ -167,7 +150,6 @@ class AuthController extends Cubit<AuthState> {
       );
       onSuccess();
     } on CustomException catch (e) {
-      // User cancelled the browser — return silently.
       if (e.exceptionType == ExceptionType.cancelException) return;
       emit(state.copyWith(errorMessage: e.message));
     } catch (_) {
@@ -177,10 +159,6 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
-  // ─── Forgot Password ─────────────────────────────────────────────────────────
-
-  /// Sends a password-reset e-mail to [email].
-  /// Returns true on success, false on failure (error forwarded via [onError]).
   Future<bool> sendForgotPasswordEmail({
     required String email,
     void Function(String)? onError,
@@ -197,8 +175,6 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
-  /// Submits the reset [token] and [newPassword] to create a new password.
-  /// Returns true on success, false on failure (error forwarded via [onError]).
   Future<bool> submitNewPassword({
     required String token,
     required String newPassword,

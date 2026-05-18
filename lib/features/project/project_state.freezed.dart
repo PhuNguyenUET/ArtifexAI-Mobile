@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,13 +6,11 @@
 part of 'project_state.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$ProjectState {
   GenerationMode get mode;
   GenerationModel get generationModel;
@@ -20,14 +18,11 @@ mixin _$ProjectState {
   bool get done;
   ImageResponseDto? get result;
   VideoResponseDto? get videoResult;
-  String?
-      get error; // ─── Instructions ─────────────────────────────────────────────────────────
+  String? get error;
   List<String> get instructions;
   bool get addingInstruction;
   bool get updatingInstructions;
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ProjectStateCopyWith<ProjectState> get copyWith =>
@@ -77,7 +72,6 @@ mixin _$ProjectState {
   }
 }
 
-/// @nodoc
 abstract mixin class $ProjectStateCopyWith<$Res> {
   factory $ProjectStateCopyWith(
           ProjectState value, $Res Function(ProjectState) _then) =
@@ -99,15 +93,12 @@ abstract mixin class $ProjectStateCopyWith<$Res> {
   $VideoResponseDtoCopyWith<$Res>? get videoResult;
 }
 
-/// @nodoc
 class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
   _$ProjectStateCopyWithImpl(this._self, this._then);
 
   final ProjectState _self;
   final $Res Function(ProjectState) _then;
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,8 +157,6 @@ class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
     ));
   }
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ImageResponseDtoCopyWith<$Res>? get result {
@@ -180,8 +169,6 @@ class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
     });
   }
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $VideoResponseDtoCopyWith<$Res>? get videoResult {
@@ -195,20 +182,7 @@ class _$ProjectStateCopyWithImpl<$Res> implements $ProjectStateCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [ProjectState].
 extension ProjectStatePatterns on ProjectState {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_ProjectState value)? $default, {
@@ -223,19 +197,6 @@ extension ProjectStatePatterns on ProjectState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_ProjectState value) $default,
@@ -249,18 +210,6 @@ extension ProjectStatePatterns on ProjectState {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_ProjectState value)? $default,
@@ -273,18 +222,6 @@ extension ProjectStatePatterns on ProjectState {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -321,19 +258,6 @@ extension ProjectStatePatterns on ProjectState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
@@ -367,18 +291,6 @@ extension ProjectStatePatterns on ProjectState {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -415,8 +327,6 @@ extension ProjectStatePatterns on ProjectState {
   }
 }
 
-/// @nodoc
-
 class _ProjectState implements ProjectState {
   const _ProjectState(
       {this.mode = GenerationMode.splashArt,
@@ -449,9 +359,7 @@ class _ProjectState implements ProjectState {
   final VideoResponseDto? videoResult;
   @override
   final String? error;
-// ─── Instructions ─────────────────────────────────────────────────────────
   final List<String> _instructions;
-// ─── Instructions ─────────────────────────────────────────────────────────
   @override
   @JsonKey()
   List<String> get instructions {
@@ -467,8 +375,6 @@ class _ProjectState implements ProjectState {
   @JsonKey()
   final bool updatingInstructions;
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -518,7 +424,6 @@ class _ProjectState implements ProjectState {
   }
 }
 
-/// @nodoc
 abstract mixin class _$ProjectStateCopyWith<$Res>
     implements $ProjectStateCopyWith<$Res> {
   factory _$ProjectStateCopyWith(
@@ -544,7 +449,6 @@ abstract mixin class _$ProjectStateCopyWith<$Res>
   $VideoResponseDtoCopyWith<$Res>? get videoResult;
 }
 
-/// @nodoc
 class __$ProjectStateCopyWithImpl<$Res>
     implements _$ProjectStateCopyWith<$Res> {
   __$ProjectStateCopyWithImpl(this._self, this._then);
@@ -552,8 +456,6 @@ class __$ProjectStateCopyWithImpl<$Res>
   final _ProjectState _self;
   final $Res Function(_ProjectState) _then;
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
@@ -612,8 +514,6 @@ class __$ProjectStateCopyWithImpl<$Res>
     ));
   }
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ImageResponseDtoCopyWith<$Res>? get result {
@@ -626,8 +526,6 @@ class __$ProjectStateCopyWithImpl<$Res>
     });
   }
 
-  /// Create a copy of ProjectState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $VideoResponseDtoCopyWith<$Res>? get videoResult {

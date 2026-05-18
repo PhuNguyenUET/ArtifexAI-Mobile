@@ -1,20 +1,7 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-/// Full-screen animated deep-space background.
-/// Renders a dark gradient + gently twinkling stars.
-///
-/// Usage:
-/// ```dart
-/// Stack(
-///   fit: StackFit.expand,
-///   children: [
-///     const LavaBackground(),
-///     // your content
-///   ],
-/// )
-/// ```
 class LavaBackground extends StatefulWidget {
   const LavaBackground({super.key});
 
@@ -53,20 +40,10 @@ class _LavaBackgroundState extends State<LavaBackground>
   }
 }
 
-// ─── Painter ──────────────────────────────────────────────────────────────────
-
 class _SpacePainter extends CustomPainter {
   _SpacePainter(this.t);
   final double t;
 
-  // [xFrac, yFrac, radius, twinkleFreq, twinklePhase, driftAmt, driftFreq, driftPhase]
-  //
-  // Twinkle:  alpha = 0.5 + 0.5 * sin(t * twinkleFreq * 2π + twinklePhase * 2π)
-  //           → pure sin, range 0..1, seamlessly loops dim→bright→dim every cycle.
-  //
-  // Drift:    offset = driftAmt * sin(t * driftFreq * 2π + driftPhase * 2π)
-  //           → star returns to exact anchor every cycle, zero snap.
-  //           X and Y use the same offset but opposite signs → gentle diagonal sway.
   static const List<List<double>> _stars = [
     [0.05, 0.08, 1.6, 0.55, 0.00, 0.006, 0.30, 0.00],
     [0.18, 0.03, 1.0, 0.45, 0.20, 0.005, 0.25, 0.13],
@@ -112,7 +89,6 @@ class _SpacePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 1. Deep space gradient ────────────────────────────────────────────
     canvas.drawRect(
       Offset.zero & size,
       Paint()
@@ -128,13 +104,11 @@ class _SpacePainter extends CustomPainter {
         ).createShader(Offset.zero & size),
     );
 
-    // ── 2. Subtle colour nebula patches (static, two soft blobs) ─────────
     _drawNebulaBlob(canvas, size, size.width * 0.25, size.height * 0.30,
         size.shortestSide * 0.55, const Color(0x18803DFF));
     _drawNebulaBlob(canvas, size, size.width * 0.78, size.height * 0.65,
         size.shortestSide * 0.48, const Color(0x140060BE));
 
-    // ── 3. Twinkling stars ────────────────────────────────────────────────
     for (final s in _stars) {
       final baseX      = s[0];
       final baseY      = s[1];
@@ -145,11 +119,8 @@ class _SpacePainter extends CustomPainter {
       final driftFreq  = s[6];
       final driftPhase = s[7];
 
-      // Seamless twinkle: sin oscillates -1..1, centred at 0.5 → range 0..1
-      // No normalisation needed — sin(x) at loop boundaries matches perfectly.
       final twinkle = 0.5 + 0.5 * math.sin(t * tFreq * math.pi * 2 + tPhase * math.pi * 2);
 
-      // Gentle drift — X and Y use offset phases so movement is diagonal/elliptical
       final drift = driftAmt * math.sin(t * driftFreq * math.pi * 2 + driftPhase * math.pi * 2);
       final sx = size.width  * (baseX + drift);
       final sy = size.height * (baseY - drift * 0.6); // slight Y component
@@ -165,7 +136,6 @@ class _SpacePainter extends CustomPainter {
       );
     }
 
-    // ── 4. Vignette ───────────────────────────────────────────────────────
     canvas.drawRect(
       Offset.zero & size,
       Paint()

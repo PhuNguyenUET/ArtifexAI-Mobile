@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,28 +6,23 @@
 part of 'image_response_dto.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$ImageResponseDto {
   @JsonKey(name: 'imageUrls')
   List<String>? get imageUrls;
   @JsonKey(name: 'updatedInstruction')
   String? get updatedInstruction;
 
-  /// Create a copy of ImageResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ImageResponseDtoCopyWith<ImageResponseDto> get copyWith =>
       _$ImageResponseDtoCopyWithImpl<ImageResponseDto>(
           this as ImageResponseDto, _$identity);
 
-  /// Serializes this ImageResponseDto to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
@@ -51,7 +46,6 @@ mixin _$ImageResponseDto {
   }
 }
 
-/// @nodoc
 abstract mixin class $ImageResponseDtoCopyWith<$Res> {
   factory $ImageResponseDtoCopyWith(
           ImageResponseDto value, $Res Function(ImageResponseDto) _then) =
@@ -62,7 +56,6 @@ abstract mixin class $ImageResponseDtoCopyWith<$Res> {
       @JsonKey(name: 'updatedInstruction') String? updatedInstruction});
 }
 
-/// @nodoc
 class _$ImageResponseDtoCopyWithImpl<$Res>
     implements $ImageResponseDtoCopyWith<$Res> {
   _$ImageResponseDtoCopyWithImpl(this._self, this._then);
@@ -70,8 +63,6 @@ class _$ImageResponseDtoCopyWithImpl<$Res>
   final ImageResponseDto _self;
   final $Res Function(ImageResponseDto) _then;
 
-  /// Create a copy of ImageResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,19 +82,7 @@ class _$ImageResponseDtoCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [ImageResponseDto].
 extension ImageResponseDtoPatterns on ImageResponseDto {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -119,19 +98,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_ImageResponseDto value) $default,
@@ -145,18 +111,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_ImageResponseDto value)? $default,
@@ -169,18 +123,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -198,19 +140,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(@JsonKey(name: 'imageUrls') List<String>? imageUrls,
@@ -225,18 +154,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -254,7 +171,6 @@ extension ImageResponseDtoPatterns on ImageResponseDto {
   }
 }
 
-/// @nodoc
 @JsonSerializable()
 class _ImageResponseDto implements ImageResponseDto {
   _ImageResponseDto(
@@ -279,8 +195,6 @@ class _ImageResponseDto implements ImageResponseDto {
   @JsonKey(name: 'updatedInstruction')
   final String? updatedInstruction;
 
-  /// Create a copy of ImageResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -316,7 +230,6 @@ class _ImageResponseDto implements ImageResponseDto {
   }
 }
 
-/// @nodoc
 abstract mixin class _$ImageResponseDtoCopyWith<$Res>
     implements $ImageResponseDtoCopyWith<$Res> {
   factory _$ImageResponseDtoCopyWith(
@@ -329,7 +242,6 @@ abstract mixin class _$ImageResponseDtoCopyWith<$Res>
       @JsonKey(name: 'updatedInstruction') String? updatedInstruction});
 }
 
-/// @nodoc
 class __$ImageResponseDtoCopyWithImpl<$Res>
     implements _$ImageResponseDtoCopyWith<$Res> {
   __$ImageResponseDtoCopyWithImpl(this._self, this._then);
@@ -337,8 +249,6 @@ class __$ImageResponseDtoCopyWithImpl<$Res>
   final _ImageResponseDto _self;
   final $Res Function(_ImageResponseDto) _then;
 
-  /// Create a copy of ImageResponseDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({

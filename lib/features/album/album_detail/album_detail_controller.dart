@@ -1,4 +1,4 @@
-import '../../../init/access_token_storage.dart';
+﻿import '../../../init/access_token_storage.dart';
 import '../../../init/sl.dart';
 import '../../../packages/index.dart';
 import 'album_detail_state.dart';
@@ -6,7 +6,6 @@ import 'album_detail_state.dart';
 class AlbumDetailController extends Cubit<AlbumDetailState> {
   AlbumDetailController(AlbumDto album)
       : super(AlbumDetailState(album: album)) {
-    // Refresh the album from the server to get the latest media list.
     _refresh();
   }
 
@@ -30,8 +29,6 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
 
   Future<void> refresh() => _refresh();
 
-  /// Permanently deletes [mediaId] from the server and removes it from the
-  /// local album state.
   Future<void> deleteMedia({
     required int mediaId,
     VoidCallback? onSuccess,
@@ -51,7 +48,6 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
     }
   }
 
-  /// Removes [mediaId] from this album only (does not delete the media itself).
   Future<void> removeFromAlbum({
     required int mediaId,
     required int albumId,
@@ -74,8 +70,6 @@ class AlbumDetailController extends Cubit<AlbumDetailState> {
       _unmarkPending(mediaId);
     }
   }
-
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
 
   void _markPending(int id) {
     emit(state.copyWith(pendingMediaIds: {...state.pendingMediaIds, id}));

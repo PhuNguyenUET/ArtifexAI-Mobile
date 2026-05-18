@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,13 +6,11 @@
 part of 'album_dto.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$AlbumDto {
   @JsonKey(name: 'id')
   int? get id;
@@ -25,14 +23,11 @@ mixin _$AlbumDto {
   @JsonKey(name: 'modifiedDate', fromJson: _dateFromJson, toJson: _dateToJson)
   DateTime? get modifiedDate;
 
-  /// Create a copy of AlbumDto
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $AlbumDtoCopyWith<AlbumDto> get copyWith =>
       _$AlbumDtoCopyWithImpl<AlbumDto>(this as AlbumDto, _$identity);
 
-  /// Serializes this AlbumDto to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
@@ -65,7 +60,6 @@ mixin _$AlbumDto {
   }
 }
 
-/// @nodoc
 abstract mixin class $AlbumDtoCopyWith<$Res> {
   factory $AlbumDtoCopyWith(AlbumDto value, $Res Function(AlbumDto) _then) =
       _$AlbumDtoCopyWithImpl;
@@ -82,15 +76,12 @@ abstract mixin class $AlbumDtoCopyWith<$Res> {
       DateTime? modifiedDate});
 }
 
-/// @nodoc
 class _$AlbumDtoCopyWithImpl<$Res> implements $AlbumDtoCopyWith<$Res> {
   _$AlbumDtoCopyWithImpl(this._self, this._then);
 
   final AlbumDto _self;
   final $Res Function(AlbumDto) _then;
 
-  /// Create a copy of AlbumDto
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -125,19 +116,7 @@ class _$AlbumDtoCopyWithImpl<$Res> implements $AlbumDtoCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [AlbumDto].
 extension AlbumDtoPatterns on AlbumDto {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -153,19 +132,6 @@ extension AlbumDtoPatterns on AlbumDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_AlbumDto value) $default,
@@ -179,18 +145,6 @@ extension AlbumDtoPatterns on AlbumDto {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_AlbumDto value)? $default,
@@ -203,18 +157,6 @@ extension AlbumDtoPatterns on AlbumDto {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -245,19 +187,6 @@ extension AlbumDtoPatterns on AlbumDto {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
@@ -285,18 +214,6 @@ extension AlbumDtoPatterns on AlbumDto {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -327,7 +244,6 @@ extension AlbumDtoPatterns on AlbumDto {
   }
 }
 
-/// @nodoc
 @JsonSerializable()
 class _AlbumDto implements AlbumDto {
   _AlbumDto(
@@ -368,8 +284,6 @@ class _AlbumDto implements AlbumDto {
   @JsonKey(name: 'modifiedDate', fromJson: _dateFromJson, toJson: _dateToJson)
   final DateTime? modifiedDate;
 
-  /// Create a copy of AlbumDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -414,7 +328,6 @@ class _AlbumDto implements AlbumDto {
   }
 }
 
-/// @nodoc
 abstract mixin class _$AlbumDtoCopyWith<$Res>
     implements $AlbumDtoCopyWith<$Res> {
   factory _$AlbumDtoCopyWith(_AlbumDto value, $Res Function(_AlbumDto) _then) =
@@ -433,15 +346,12 @@ abstract mixin class _$AlbumDtoCopyWith<$Res>
       DateTime? modifiedDate});
 }
 
-/// @nodoc
 class __$AlbumDtoCopyWithImpl<$Res> implements _$AlbumDtoCopyWith<$Res> {
   __$AlbumDtoCopyWithImpl(this._self, this._then);
 
   final _AlbumDto _self;
   final $Res Function(_AlbumDto) _then;
 
-  /// Create a copy of AlbumDto
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({

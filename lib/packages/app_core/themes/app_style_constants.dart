@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'app_spacing.dart';
 
@@ -7,7 +7,6 @@ class AppStyleConstant {
 
   static const double hPagePadding = 16;
 
-  // TextFormField/TextField
   static const double textFieldBorderWidth = 1;
   static const double textFieldBorderRadius = 12;
   static const double textFieldHeight = 48;
@@ -17,7 +16,6 @@ class AppStyleConstant {
   static const BoxConstraints textFieldConstraints =
       BoxConstraints(minWidth: 20, maxWidth: 36, minHeight: 20, maxHeight: 48);
 
-  // Button
   static const Widget buttonContentPaddingWithIcon = YDSpacing.width8X;
   static const double buttonBorderRadius = 12;
   static const double buttonBorderWidth = 1.2;
@@ -34,16 +32,12 @@ class AppStyleConstant {
   static const double buttonHeight = 48;
   static const double smallButtonHeight = 40;
 
-  // ModalBottomSheet
   static const double sheetBarrierColorOpacity = 0.6;
   static const double sheetMaxDistanceFromTop = 84;
   static const double sheetTopBorderRadius = 20;
 
-  // Toast
   static const int toastDuration = 2250;
 
-  /// rounding
-  ///
   static const double noRounding = 0;
   static const double extraSmallRounding = 6;
   static const double smallRounding = 8;

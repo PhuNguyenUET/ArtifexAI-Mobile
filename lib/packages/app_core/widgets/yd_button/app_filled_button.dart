@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../index.dart';
 
@@ -20,8 +20,6 @@ class AppFilledButton extends StatelessWidget {
   final Color? disabled;
   final Widget child;
 
-  /// Use Size because we want to give the constraints to other type of
-  /// buttons, such as [YDSolidButton.small]
   final double? width;
   final double? height;
 

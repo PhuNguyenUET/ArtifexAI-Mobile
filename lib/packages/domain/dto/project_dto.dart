@@ -1,4 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+﻿import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:artifex_ai_mobile/packages/domain/enum/index.dart';
 
 part 'project_dto.freezed.dart';
@@ -8,7 +8,6 @@ DateTime? _dateFromJson(String? date) =>
     date == null ? null : DateTime.parse(date);
 
 String? _dateToJson(DateTime? date) => date?.toIso8601String();
-
 
 @freezed
 abstract class ProjectDto with _$ProjectDto {

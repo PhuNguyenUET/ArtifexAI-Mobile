@@ -1,4 +1,4 @@
-import '../../index.dart';
+﻿import '../../index.dart';
 
 abstract class Repository {
   static Local get local => Local.instance;
@@ -19,7 +19,6 @@ abstract class Repository {
     return RepositoryImpl.instance(apiService: apiService);
   }
 
-  // ─── User ────────────────────────────────────────────────────────────────────
   Future<void> editUser({String? firstName, String? lastName, String? dateOfBirth});
   Future<void> changePassword({required String oldPassword, required String newPassword});
   Future<void> forgotPassword({required String email});
@@ -28,7 +27,6 @@ abstract class Repository {
   Future<void> createNewPassword({required String token, required String password});
   Future<UserDto> currentUser();
 
-  // ─── Project Management ───────────────────────────────────────────────────────
   Future<void> updateInstructions({required int projectId, required List<String> instructions});
   Future<void> addInstructions({required int projectId, required String newInstruction});
   Future<void> editProject({required int projectId, String? projectName, ArtStyle? artStyle});
@@ -37,7 +35,6 @@ abstract class Repository {
   Future<List<ProjectDto>> getAllProjects();
   Future<void> deleteProject({required int projectId});
 
-  // ─── Album Management ─────────────────────────────────────────────────────────
   Future<void> editAlbum({required int albumId, String? albumName});
   Future<void> deleteMediaFromAlbum({required int albumId, required int mediaId});
   Future<void> addMedia({required int albumId, required int mediaId});
@@ -46,7 +43,6 @@ abstract class Repository {
   Future<List<AlbumDto>> getAllAlbums();
   Future<void> deleteAlbum({required int albumId});
 
-  // ─── Video Generation ─────────────────────────────────────────────────────────
   Future<VideoResponseDto> generateVideo({
     required int projectId,
     ReferenceImage? referenceImage,
@@ -54,7 +50,6 @@ abstract class Repository {
     required VideoLength videoLength,
   });
 
-  // ─── User Authentication ──────────────────────────────────────────────────────
   Future<void> register({required String email, required String password});
   Future<String> refreshJwt({required String refreshToken});
   Future<void> jwtCheck();
@@ -62,14 +57,12 @@ abstract class Repository {
   Future<AuthenticationResponseDto> authenticateOAuthGoogle();
   Future<AuthenticationResponseDto> authenticateOAuthGithub();
 
-  // ─── Media Management ─────────────────────────────────────────────────────────
   Future<MediaDto> uploadClient({required String base64, required MimeType mimeType});
   Future<MediaDto> getMediaById({required int id});
   Future<List<MediaDto>> getMediasByAlbum({required int albumId});
   Future<List<MediaDto>> getGallery();
   Future<void> deleteMedia({required int mediaId});
 
-  // ─── Image Generation ─────────────────────────────────────────────────────────
   Future<ImageResponseDto> imageVariation({
     required int projectId,
     List<ReferenceImage> imageInfos,

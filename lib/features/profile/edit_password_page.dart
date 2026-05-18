@@ -1,7 +1,6 @@
-import '../../packages/index.dart';
+﻿import '../../packages/index.dart';
 import '../home/home_controller.dart';
 
-/// Screen for changing the user's password.
 class EditPasswordPage extends StatefulWidget {
   const EditPasswordPage({super.key});
 
@@ -57,8 +56,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       Navigator.of(context).pop();
     }
   }
-
-  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +127,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
         key: _formKey,
         child: Column(
           children: [
-            // Info banner
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -154,7 +150,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
             ),
             const SizedBox(height: 20),
 
-            // Fields card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -216,7 +211,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
             ),
             const SizedBox(height: 16),
 
-            // Strength indicator
             _PasswordStrengthIndicator(passwordCtrl: _newPasswordCtrl),
           ],
         ),
@@ -235,8 +229,6 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
         ),
       );
 }
-
-// ─── Password Strength Indicator ─────────────────────────────────────────────
 
 class _PasswordStrengthIndicator extends StatefulWidget {
   const _PasswordStrengthIndicator({required this.passwordCtrl});
@@ -312,7 +304,6 @@ class _PasswordStrengthIndicatorState extends State<_PasswordStrengthIndicator> 
             ],
           ),
           const SizedBox(height: 8),
-          // 4-segment bar
           Row(
             children: List.generate(4, (i) => Expanded(
               child: Container(

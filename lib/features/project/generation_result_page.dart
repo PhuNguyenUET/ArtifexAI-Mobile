@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
+﻿import 'package:carousel_slider/carousel_slider.dart';
 import 'package:video_player/video_player.dart';
 import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
@@ -23,7 +23,6 @@ class GenerationResultPage extends StatefulWidget {
   final int           projectId;
   final HomeController   homeController;
   final String?          videoUrl;
-  /// When set, overrides the auto-generated "[mode.label] Results" title.
   final String?          customTitle;
 
   @override
@@ -34,7 +33,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
   int _currentIndex = 0;
   final CarouselSliderController _carouselCtrl = CarouselSliderController();
 
-  // Video player
   VideoPlayerController? _videoCtrl;
   bool _videoInitialized = false;
 
@@ -62,8 +60,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     super.dispose();
   }
 
-  // ─── Save to phone gallery ────────────────────────────────────────────────
-
   bool _isSaving = false;
 
   Future<void> _saveToGallery(String url) async {
@@ -71,7 +67,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     setState(() => _isSaving = true);
 
     try {
-      // 1. Request permission to write to the device photo library.
       final permission = await PhotoManager.requestPermissionExtend();
       if (!permission.hasAccess) {
         if (!mounted) return;
@@ -83,26 +78,22 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
         return;
       }
 
-      // 2. Download the image bytes from the remote URL.
       final response = await Dio().get<List<int>>(
         url,
         options: Options(responseType: ResponseType.bytes),
       );
       final bytes = Uint8List.fromList(response.data!);
 
-      // 3. Determine a sensible file name from the URL (fallback to timestamp).
       final fileName = Uri.parse(url).pathSegments.lastWhere(
             (s) => s.isNotEmpty,
             orElse: () => 'artifex_${DateTime.now().millisecondsSinceEpoch}.jpg',
           );
 
-      // 4. Save bytes directly into the phone's photo library.
       await PhotoManager.editor.saveImage(
         bytes,
         filename: fileName,
       );
 
-      // 5. Also keep the in-app gallery list up to date.
       await widget.homeController.fetchGallery();
 
       if (!mounted) return;
@@ -164,8 +155,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     );
   }
 
-  // ─── App Bar ──────────────────────────────────────────────────────────────
-
   Widget _buildAppBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(4, 8, 16, 8),
@@ -196,7 +185,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
               ],
             ),
           ),
-          // Dot indicator badge
           if (!_single)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -213,8 +201,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
       ),
     );
   }
-
-  // ─── Updated instruction sheet ────────────────────────────────────────────
 
   void _showInstructionSheet() {
     bool adding = false;
@@ -271,7 +257,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Handle bar
                     Center(
                       child: Container(
                         width: 40,
@@ -315,7 +300,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // ── Remove from Project button ─────────────────────────
                     GestureDetector(
                       onTap: added ? null : removeFromProject,
                       child: Container(
@@ -377,7 +361,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // ── Dismiss button ─────────────────────────────────────
                     GestureDetector(
                       onTap: () => Navigator.of(ctx).pop(),
                       child: Container(
@@ -407,10 +390,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
         );
   }
 
-  // ─── Main content ─────────────────────────────────────────────────────────
-
   Widget _buildContent() {
-    // ── Video ──────────────────────────────────────────────────────────────
     if (_isVideo) {
       return Center(
         child: Padding(
@@ -427,7 +407,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Play / pause toggle
                     GestureDetector(
                       onTap: () => setState(() {
                         _videoCtrl!.value.isPlaying
@@ -465,7 +444,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
       );
     }
 
-    // ── Single image ───────────────────────────────────────────────────────
     if (_single) {
       return Center(
         child: Padding(
@@ -498,7 +476,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           ),
         ),
         const SizedBox(height: 20),
-        // Dot indicator
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(_urls.length, (i) {
@@ -518,8 +495,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
       ],
     );
   }
-
-  // ─── Bottom bar ───────────────────────────────────────────────────────────
 
   Widget _buildBottomBar(BuildContext context) {
     final currentUrl = _urls.isNotEmpty ? _urls[_currentIndex] : null;
@@ -568,7 +543,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           Row(
             children: [
               if (!_isVideo) ...[
-                // Save current to gallery
                 Expanded(
                   child: _ActionButton(
                     icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_alt_rounded,
@@ -579,7 +553,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                 ),
                 if (!_single) ...[
                   const SizedBox(width: 10),
-                  // Save all
                   Expanded(
                     child: _ActionButton(
                       icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_rounded,
@@ -594,7 +567,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                   ),
                 ],
                 const SizedBox(width: 10),
-                // Mask Edit
                 Expanded(
                   child: _ActionButton(
                     icon: Icons.brush_rounded,
@@ -620,8 +592,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     );
   }
 }
-
-// ─── Small action button ──────────────────────────────────────────────────────
 
 class _ActionButton extends StatelessWidget {
   const _ActionButton({

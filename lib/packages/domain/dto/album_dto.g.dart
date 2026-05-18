@@ -1,9 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'album_dto.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
 // **************************************************************************
 
 _AlbumDto _$AlbumDtoFromJson(Map<String, dynamic> json) => _AlbumDto(

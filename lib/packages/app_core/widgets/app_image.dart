@@ -1,4 +1,4 @@
-import 'package:artifex_ai_mobile/generated/assets.dart';
+﻿import 'package:artifex_ai_mobile/generated/assets.dart';
 
 import '../../index.dart';
 

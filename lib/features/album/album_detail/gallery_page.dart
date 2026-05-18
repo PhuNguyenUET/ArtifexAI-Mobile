@@ -1,11 +1,8 @@
-import '../../../packages/index.dart';
+﻿import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
 import '../../home/home_state.dart';
 import '../media_viewer/gallery_viewer_page.dart';
 
-/// Displays all of the user's images in the same grid layout as
-/// [AlbumDetailPage]. Backed by [HomeController] — no album id, no
-/// "remove from album" action. Tapping an image opens [GalleryViewerPage].
 class GalleryPage extends StatelessWidget {
   const GalleryPage({super.key});
 
@@ -110,8 +107,6 @@ class _GalleryView extends StatelessWidget {
     );
   }
 
-  // ─── Body ─────────────────────────────────────────────────────────────────
-
   Widget _buildBody(BuildContext context, HomeState state) {
     if (state.galleryLoading && state.gallery.isEmpty) {
       return _buildLoadingGrid();
@@ -214,8 +209,6 @@ class _GalleryView extends StatelessWidget {
     );
   }
 }
-
-// ─── Gallery Thumbnail ────────────────────────────────────────────────────────
 
 class _GalleryThumbnail extends StatelessWidget {
   const _GalleryThumbnail({

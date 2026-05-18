@@ -1,4 +1,4 @@
-import '../../init/access_token_storage.dart';
+﻿import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
 import '../../packages/index.dart';
 import 'project_state.dart';
@@ -16,8 +16,6 @@ class ProjectController extends Cubit<ProjectState> {
 
   void clearResult() =>
       emit(ProjectState(mode: state.mode, generationModel: state.generationModel, instructions: state.instructions));
-
-  // ─── Instructions ─────────────────────────────────────────────────────────
 
   void loadInstructions(List<String> instructions) {
     emit(state.copyWith(instructions: List.unmodifiable(instructions)));
@@ -56,7 +54,6 @@ class ProjectController extends Cubit<ProjectState> {
         projectId: projectId,
         newInstruction: newInstruction,
       );
-      // Reload the project to get the AI-updated instruction list
       final updated = await _storage.repository.getProjectById(projectId: projectId);
       emit(state.copyWith(
         addingInstruction: false,
@@ -70,7 +67,6 @@ class ProjectController extends Cubit<ProjectState> {
       onError?.call('Failed to add instruction. Please try again.');
     }
   }
-
 
   Future<void> generate({
     required GenerationMode mode,
@@ -87,7 +83,6 @@ class ProjectController extends Cubit<ProjectState> {
     List<ReferenceImage>? spriteImages,
     ReferenceImage? upscaleImage,
     UpscaleFactor? upscaleFactor,
-    // Video
     String? videoPrompt,
     ReferenceImage? videoReferenceImage,
     VideoLength videoLength = VideoLength.medium,

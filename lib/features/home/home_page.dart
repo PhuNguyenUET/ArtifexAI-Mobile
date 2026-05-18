@@ -1,4 +1,4 @@
-
+﻿
 import '../../generated/assets.dart';
 import '../../init/routes.dart';
 import '../../packages/app_core/utils/art_style_helper.dart';
@@ -64,7 +64,6 @@ class _HomePageState extends State<HomePage>
     });
     context.read<HomeController>().switchTab(tab);
     _isProgrammaticScroll = true;
-    // Jump directly for non-adjacent tabs to avoid passing through the middle page
     if ((toIndex - fromIndex).abs() > 1) {
       _pageController.jumpToPage(toIndex);
       _isProgrammaticScroll = false;
@@ -110,8 +109,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // ─── Top Bar ─────────────────────────────────────────────────────────────────
-
   Widget _buildTopBar(BuildContext context, HomeState state) {
     final titles = {
       HomeTab.albums: 'My Albums',
@@ -137,7 +134,6 @@ class _HomePageState extends State<HomePage>
       ),
       child: Row(
         children: [
-          // App icon logo
           Image.asset(
             Assets.img.appIcon.appIconTransparent.path,
             width: 48,
@@ -216,8 +212,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // ─── Body ─────────────────────────────────────────────────────────────────────
-
   Widget _buildAnimatedBody(BuildContext context, HomeState state) {
     return PageView(
       controller: _pageController,
@@ -234,8 +228,6 @@ class _HomePageState extends State<HomePage>
       ],
     );
   }
-
-  // ─── Albums ───────────────────────────────────────────────────────────────────
 
   Widget _buildAlbumsSection(BuildContext context, HomeState state) {
     final isLoading = state.albumsLoading || state.galleryLoading;
@@ -278,8 +270,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // ─── Projects ─────────────────────────────────────────────────────────────────
-
   Widget _buildProjectsSection(BuildContext context, HomeState state) {
     if (state.projectsLoading) return _buildLoadingList();
 
@@ -315,8 +305,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // ─── Profile ──────────────────────────────────────────────────────────────────
-
   Widget _buildProfileSection(BuildContext context, HomeState state) {
     if (state.profileLoading) {
       return const Center(child: CircularProgressIndicator(color: AppColor.primary));
@@ -325,7 +313,6 @@ class _HomePageState extends State<HomePage>
     return SingleChildScrollView(
       child: Column(
         children: [
-          // ── Gradient hero header ────────────────────────────────────────
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 32, 20, 28),
@@ -338,7 +325,6 @@ class _HomePageState extends State<HomePage>
             ),
             child: Column(
               children: [
-                // Avatar with glowing ring
                 Container(
                   width: 92,
                   height: 92,
@@ -614,8 +600,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // ─── Bottom Nav ───────────────────────────────────────────────────────────────
-
   Widget _buildBottomNav(BuildContext context, HomeState state) {
     return Container(
       height: 68,
@@ -723,8 +707,6 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
-
-  // ─── Helpers ──────────────────────────────────────────────────────────────────
 
   Widget _buildLoadingGrid() {
     return GridView.builder(
@@ -864,8 +846,6 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-// ─── Pulsing Icon ─────────────────────────────────────────────────────────────
-
 class _PulsingIcon extends StatefulWidget {
   const _PulsingIcon({required this.icon});
   final IconData icon;
@@ -909,7 +889,6 @@ class _PulsingIconState extends State<_PulsingIcon>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Pulsing ring
           AnimatedBuilder(
             animation: _ring,
             builder: (_, __) => Opacity(
@@ -927,7 +906,6 @@ class _PulsingIconState extends State<_PulsingIcon>
               ),
             ),
           ),
-          // Core icon
           AnimatedBuilder(
             animation: _scale,
             builder: (_, child) => Transform.scale(
@@ -954,8 +932,6 @@ class _PulsingIconState extends State<_PulsingIcon>
   }
 }
 
-// ─── Gallery Card ─────────────────────────────────────────────────────────────
-
 class _GalleryCard extends StatelessWidget {
   const _GalleryCard({required this.media});
 
@@ -980,12 +956,10 @@ class _GalleryCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: mosaic of up to 4 images, or gradient placeholder
             ClipRRect(
               borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
               child: _buildMosaic(),
             ),
-            // Dark gradient scrim — transparent at top, opaque at bottom
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
@@ -1005,7 +979,6 @@ class _GalleryCard extends StatelessWidget {
                 ),
               ),
             ),
-            // "Gallery" badge top-left
             Positioned(
               top: 10,
               left: 10,
@@ -1032,7 +1005,6 @@ class _GalleryCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Label + count bottom-left
             Positioned(
               left: 12,
               right: 12,
@@ -1069,7 +1041,6 @@ class _GalleryCard extends StatelessWidget {
   }
 
   Widget _buildMosaic() {
-    // Pick up to 4 images; remaining slots are filled with placeholder tiles.
     final previews = media.take(4).toList();
 
     return IgnorePointer(
@@ -1102,8 +1073,6 @@ class _GalleryCard extends StatelessWidget {
     );
   }
 }
-
-// ─── Album Card ──────────────────────────────────────────────────────────────
 
 class _AlbumCard extends StatefulWidget {
   const _AlbumCard({
@@ -1148,7 +1117,6 @@ class _AlbumCardState extends State<_AlbumCard>
 
   Future<void> _deleteWithAnimation(BuildContext context) async {
     final homeCtrl = context.read<HomeController>();
-    // Call the API first — only animate out if deletion actually succeeds.
     homeCtrl.deleteAlbum(
       widget.album.id ?? 0,
       onSuccess: () async {
@@ -1156,7 +1124,6 @@ class _AlbumCardState extends State<_AlbumCard>
         await _exitCtrl.forward();
       },
       onError: (msg) {
-        // Delete was rejected (e.g. album linked to a project) — no animation.
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1387,8 +1354,6 @@ class _AlbumCardState extends State<_AlbumCard>
     );
   }
 }
-
-// ─── Project Card ─────────────────────────────────────────────────────────────
 
 class _ProjectCard extends StatefulWidget {
   const _ProjectCard({
@@ -1680,4 +1645,3 @@ class _ProjectCardState extends State<_ProjectCard>
   }
 }
 
-// ─── End of home_page.dart ───────────────────────────────────────────────────

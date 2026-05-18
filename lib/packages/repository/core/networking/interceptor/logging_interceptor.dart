@@ -1,75 +1,22 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import '../../../../index.dart';
 
-/// Log Level
 enum Level {
-  /// No logs.
   none,
 
-  /// Logs request and response lines.
-  ///
-  /// Example:
-  ///  ```
-  ///  --> POST /greeting
-  ///
-  ///  <-- 200 OK
-  ///  ```
   basic,
 
-  /// Logs request and response lines and their respective headers.
-  ///
-  ///  Example:
-  /// ```
-  /// --> POST /greeting
-  /// Host: example.com
-  /// Content-Type: plain/text
-  /// Content-Length: 3
-  /// --> END POST
-  ///
-  /// <-- 200 OK
-  /// Content-Type: plain/text
-  /// Content-Length: 6
-  /// <-- END HTTP
-  /// ```
   headers,
 
-  /// Logs request and response lines and their respective headers and bodies (if present).
-  ///
-  /// Example:
-  /// ```
-  /// --> POST /greeting
-  /// Host: example.com
-  /// Content-Type: plain/text
-  /// Content-Length: 3
-  ///
-  /// Hi?
-  /// --> END POST
-  ///
-  /// <-- 200 OK
-  /// Content-Type: plain/text
-  /// Content-Length: 6
-  ///
-  /// Hello!
-  /// <-- END HTTP
-  /// ```
   body,
 }
 
-/// DioLoggingInterceptor
-/// Simple logging interceptor for dio.
-///
-/// Inspired the okhttp-logging-interceptor and referred to pretty_dio_logger.
 class LoggingInterceptor extends Interceptor {
-  /// Log Level
   final Level level;
 
-  /// Log printer; defaults logPrint log to console.
-  /// In flutter, you'd better use debugPrint.
-  /// you can also write log in a file.
   void Function(Object object) logPrint;
 
-  /// Print compact json response
   final bool compact;
 
   final JsonDecoder decoder = const JsonDecoder();
@@ -100,7 +47,6 @@ class LoggingInterceptor extends Interceptor {
     final data = options.data;
 
     if (data != null) {
-      // logPrint('[DIO]dataType:${data.runtimeType}');
       if (data is Map) {
         if (compact) {
           logPrint('[DIO][Request]${jsonEncode(data)}');
@@ -138,10 +84,8 @@ class LoggingInterceptor extends Interceptor {
 
     final data = response.data;
     if (data != null) {
-      // logPrint('[DIO]dataType:${data.runtimeType}');
       if (data is Map) {
         if (compact) {
-          // Use toString instead of jsonEncode, as MultiPart file cannot be encoded
           try {
             logPrint('[DIO][Request]${jsonEncode(data)}');
           } on Exception catch (_) {
@@ -156,9 +100,7 @@ class LoggingInterceptor extends Interceptor {
           }
         }
       } else if (data is List) {
-        // NOT IMPLEMENT
       } else if (data is FormData) {
-        // NOT IMPLEMENT
       } else {
         logPrint('[DIO][Response]${data.toString()}');
       }

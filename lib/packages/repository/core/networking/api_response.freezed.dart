@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,13 +6,11 @@
 part of 'api_response.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$ApiResponse<T> {
   @override
   bool operator ==(Object other) {
@@ -29,24 +27,11 @@ mixin _$ApiResponse<T> {
   }
 }
 
-/// @nodoc
 class $ApiResponseCopyWith<T, $Res> {
   $ApiResponseCopyWith(ApiResponse<T> _, $Res Function(ApiResponse<T>) __);
 }
 
-/// Adds pattern-matching-related methods to [ApiResponse].
 extension ApiResponsePatterns<T> on ApiResponse<T> {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -65,19 +50,6 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(Success<T> value) success,
@@ -91,18 +63,6 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
         return error(_that);
     }
   }
-
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -119,18 +79,6 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -149,19 +97,6 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(T data) success,
@@ -175,18 +110,6 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
         return error(_that.code, _that.message);
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -205,15 +128,11 @@ extension ApiResponsePatterns<T> on ApiResponse<T> {
   }
 }
 
-/// @nodoc
-
 class Success<T> implements ApiResponse<T> {
   const Success({required this.data});
 
   final T data;
 
-  /// Create a copy of ApiResponse
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $SuccessCopyWith<T, Success<T>> get copyWith =>
@@ -237,7 +156,6 @@ class Success<T> implements ApiResponse<T> {
   }
 }
 
-/// @nodoc
 abstract mixin class $SuccessCopyWith<T, $Res>
     implements $ApiResponseCopyWith<T, $Res> {
   factory $SuccessCopyWith(Success<T> value, $Res Function(Success<T>) _then) =
@@ -246,15 +164,12 @@ abstract mixin class $SuccessCopyWith<T, $Res>
   $Res call({T data});
 }
 
-/// @nodoc
 class _$SuccessCopyWithImpl<T, $Res> implements $SuccessCopyWith<T, $Res> {
   _$SuccessCopyWithImpl(this._self, this._then);
 
   final Success<T> _self;
   final $Res Function(Success<T>) _then;
 
-  /// Create a copy of ApiResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
     Object? data = freezed,
@@ -268,16 +183,12 @@ class _$SuccessCopyWithImpl<T, $Res> implements $SuccessCopyWith<T, $Res> {
   }
 }
 
-/// @nodoc
-
 class Error<T> implements ApiResponse<T> {
   const Error({required this.code, required this.message});
 
   final int code;
   final String message;
 
-  /// Create a copy of ApiResponse
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $ErrorCopyWith<T, Error<T>> get copyWith =>
@@ -301,7 +212,6 @@ class Error<T> implements ApiResponse<T> {
   }
 }
 
-/// @nodoc
 abstract mixin class $ErrorCopyWith<T, $Res>
     implements $ApiResponseCopyWith<T, $Res> {
   factory $ErrorCopyWith(Error<T> value, $Res Function(Error<T>) _then) =
@@ -310,15 +220,12 @@ abstract mixin class $ErrorCopyWith<T, $Res>
   $Res call({int code, String message});
 }
 
-/// @nodoc
 class _$ErrorCopyWithImpl<T, $Res> implements $ErrorCopyWith<T, $Res> {
   _$ErrorCopyWithImpl(this._self, this._then);
 
   final Error<T> _self;
   final $Res Function(Error<T>) _then;
 
-  /// Create a copy of ApiResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
     Object? code = null,

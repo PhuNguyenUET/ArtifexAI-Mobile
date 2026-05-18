@@ -1,12 +1,8 @@
-import '../../../packages/index.dart';
+﻿import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
 import '../../project/mask_edit_page.dart';
 import '../album_detail/album_detail_controller.dart';
 
-/// Full-screen image viewer with a bottom action bar.
-///
-/// Receives the full [media] list and the [initialIndex] so the user can
-/// swipe between images without going back to the grid.
 class MediaViewerPage extends StatefulWidget {
   const MediaViewerPage({
     super.key,
@@ -50,11 +46,8 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // ── Space background ─────────────────────────────────────────────────
           const LavaBackground(),
-          // Dark scrim so the image reads clearly against the background
           Container(color: Colors.black.withValues(alpha: 0.55)),
-          // ── Full-screen pager ────────────────────────────────────────────────
           PageView.builder(
             controller: _pageController,
             itemCount: widget.media.length,
@@ -77,7 +70,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
             },
           ),
 
-          // ── Top bar ──────────────────────────────────────────────────────────
           Positioned(
             top: 0,
             left: 0,
@@ -107,7 +99,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
                         color: Colors.white, size: 24),
                   ),
                   const Spacer(),
-                  // Page indicator  e.g. "3 / 12"
                   Text(
                     '${_currentIndex + 1} / ${widget.media.length}',
                     style: GoogleFonts.inter(
@@ -121,7 +112,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
             ),
           ),
 
-          // ── Bottom action bar ─────────────────────────────────────────────────
           Positioned(
             bottom: 0,
             left: 0,
@@ -139,8 +129,6 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
     );
   }
 }
-
-// ─── Bottom Action Bar ────────────────────────────────────────────────────────
 
 class _BottomActionBar extends StatefulWidget {
   const _BottomActionBar({
@@ -163,8 +151,6 @@ class _BottomActionBar extends StatefulWidget {
 
 class _BottomActionBarState extends State<_BottomActionBar> {
   bool _isSaving = false;
-
-  // ─── Save to phone gallery ────────────────────────────────────────────────
 
   Future<void> _saveToGallery() async {
     final url = widget.mediaUrl;
@@ -255,7 +241,6 @@ class _BottomActionBarState extends State<_BottomActionBar> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Row 1: Remove from Album | Save to Gallery ───────────────────
           Row(
             children: [
               Expanded(
@@ -278,7 +263,6 @@ class _BottomActionBarState extends State<_BottomActionBar> {
             ],
           ),
           const SizedBox(height: 10),
-          // ── Row 2: Mask Edit | Delete Image ──────────────────────────────
           Row(
             children: [
               Expanded(
@@ -464,8 +448,6 @@ class _BottomActionBarState extends State<_BottomActionBar> {
     );
   }
 }
-
-// ─── Action Button ────────────────────────────────────────────────────────────
 
 class _ActionButton extends StatelessWidget {
   const _ActionButton({

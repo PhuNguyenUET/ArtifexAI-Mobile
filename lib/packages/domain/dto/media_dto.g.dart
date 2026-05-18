@@ -1,9 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'media_dto.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
 // **************************************************************************
 
 _MediaDto _$MediaDtoFromJson(Map<String, dynamic> json) => _MediaDto(

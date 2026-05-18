@@ -1,5 +1,4 @@
-import 'package:artifex_ai_mobile/packages/index.dart';
-
+﻿import 'package:artifex_ai_mobile/packages/index.dart';
 
 class AccessTokenStorage implements TokenStorage {
   static const storageKey = 'artifex_ai_access_token';
@@ -14,7 +13,6 @@ class AccessTokenStorage implements TokenStorage {
 
   AccessTokenStorage() {
     final refreshInterceptor = TokenRefreshInterceptor(
-      // Placeholder Dio; replaced by the real one when init() is called.
       primaryDio: Dio(),
       storage: this,
       onSessionExpired: () {},
@@ -30,7 +28,6 @@ class AccessTokenStorage implements TokenStorage {
     ));
   }
 
-  /// Must be called once from [main] after the [GoRouter] is created.
   void init({required VoidCallback onSessionExpired}) {
     _refreshInterceptor = TokenRefreshInterceptor(
       primaryDio: networkSrc.dioService.dio,

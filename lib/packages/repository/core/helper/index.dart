@@ -1,2 +1,2 @@
-export 'config.dart';
+﻿export 'config.dart';
 export 'typedefs.dart';

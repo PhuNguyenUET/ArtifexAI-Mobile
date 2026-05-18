@@ -1,9 +1,7 @@
-import '../../packages/app_core/utils/art_style_helper.dart';
+﻿import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
 import '../home/home_controller.dart';
 
-
-/// Bottom sheet for creating a new project.
 class CreateProjectSheet extends StatelessWidget {
   const CreateProjectSheet({super.key});
 
@@ -37,8 +35,6 @@ class CreateProjectSheet extends StatelessWidget {
   }
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────
-
 class _CreateProjectBody extends StatefulWidget {
   const _CreateProjectBody({required this.scrollController});
   final ScrollController scrollController;
@@ -63,8 +59,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
     super.dispose();
   }
 
-  // ─── Add instruction ──────────────────────────────────────────────────────
-
   void _addInstruction() {
     final text = _instrCtrl.text.trim();
     if (text.isEmpty) return;
@@ -77,8 +71,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
   void _removeInstruction(int index) {
     setState(() => _instructions.removeAt(index));
   }
-
-  // ─── Submit ───────────────────────────────────────────────────────────────
 
   void _showToast(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -136,8 +128,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
     Navigator.of(context).pop();
   }
 
-  // ─── Build ────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
@@ -145,7 +135,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
 
     return Stack(
       children: [
-        // ── Main sheet content ────────────────────────────────────────────
         Container(
           color: AppColor.spaceCard,
           child: Column(
@@ -165,7 +154,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
                     ],
                   ),
               ),
-              // ── Create button ───────────────────────────────────────────
               Container(
                 padding: EdgeInsets.fromLTRB(20, 12, 20, bottomPadding + 16),
                 decoration: BoxDecoration(
@@ -188,13 +176,10 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
           ),
         ),
 
-        // ── Processing overlay ────────────────────────────────────────────
         if (_submitting) _buildProcessingOverlay(),
       ],
     );
   }
-
-  // ─── Header ───────────────────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) {
     return Container(

@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,23 +6,18 @@
 part of 'album_detail_state.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$AlbumDetailState {
   AlbumDto? get album;
   bool get loading;
   String?
       get error; // Tracks media IDs currently being deleted/removed so the UI can show
-// per-item loading indicators.
   Set<int> get pendingMediaIds;
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $AlbumDetailStateCopyWith<AlbumDetailState> get copyWith =>
@@ -51,7 +46,6 @@ mixin _$AlbumDetailState {
   }
 }
 
-/// @nodoc
 abstract mixin class $AlbumDetailStateCopyWith<$Res> {
   factory $AlbumDetailStateCopyWith(
           AlbumDetailState value, $Res Function(AlbumDetailState) _then) =
@@ -63,7 +57,6 @@ abstract mixin class $AlbumDetailStateCopyWith<$Res> {
   $AlbumDtoCopyWith<$Res>? get album;
 }
 
-/// @nodoc
 class _$AlbumDetailStateCopyWithImpl<$Res>
     implements $AlbumDetailStateCopyWith<$Res> {
   _$AlbumDetailStateCopyWithImpl(this._self, this._then);
@@ -71,8 +64,6 @@ class _$AlbumDetailStateCopyWithImpl<$Res>
   final AlbumDetailState _self;
   final $Res Function(AlbumDetailState) _then;
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -101,8 +92,6 @@ class _$AlbumDetailStateCopyWithImpl<$Res>
     ));
   }
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AlbumDtoCopyWith<$Res>? get album {
@@ -116,19 +105,7 @@ class _$AlbumDetailStateCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [AlbumDetailState].
 extension AlbumDetailStatePatterns on AlbumDetailState {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -144,19 +121,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_AlbumDetailState value) $default,
@@ -170,18 +134,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_AlbumDetailState value)? $default,
@@ -194,18 +146,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -224,19 +164,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(AlbumDto? album, bool loading, String? error,
@@ -252,18 +179,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -282,8 +197,6 @@ extension AlbumDetailStatePatterns on AlbumDetailState {
   }
 }
 
-/// @nodoc
-
 class _AlbumDetailState implements AlbumDetailState {
   const _AlbumDetailState(
       {this.album,
@@ -299,11 +212,7 @@ class _AlbumDetailState implements AlbumDetailState {
   final bool loading;
   @override
   final String? error;
-// Tracks media IDs currently being deleted/removed so the UI can show
-// per-item loading indicators.
   final Set<int> _pendingMediaIds;
-// Tracks media IDs currently being deleted/removed so the UI can show
-// per-item loading indicators.
   @override
   @JsonKey()
   Set<int> get pendingMediaIds {
@@ -312,8 +221,6 @@ class _AlbumDetailState implements AlbumDetailState {
     return EqualUnmodifiableSetView(_pendingMediaIds);
   }
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -342,7 +249,6 @@ class _AlbumDetailState implements AlbumDetailState {
   }
 }
 
-/// @nodoc
 abstract mixin class _$AlbumDetailStateCopyWith<$Res>
     implements $AlbumDetailStateCopyWith<$Res> {
   factory _$AlbumDetailStateCopyWith(
@@ -357,7 +263,6 @@ abstract mixin class _$AlbumDetailStateCopyWith<$Res>
   $AlbumDtoCopyWith<$Res>? get album;
 }
 
-/// @nodoc
 class __$AlbumDetailStateCopyWithImpl<$Res>
     implements _$AlbumDetailStateCopyWith<$Res> {
   __$AlbumDetailStateCopyWithImpl(this._self, this._then);
@@ -365,8 +270,6 @@ class __$AlbumDetailStateCopyWithImpl<$Res>
   final _AlbumDetailState _self;
   final $Res Function(_AlbumDetailState) _then;
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
@@ -395,8 +298,6 @@ class __$AlbumDetailStateCopyWithImpl<$Res>
     ));
   }
 
-  /// Create a copy of AlbumDetailState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $AlbumDtoCopyWith<$Res>? get album {

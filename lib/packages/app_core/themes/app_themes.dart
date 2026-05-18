@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import 'app_color.dart';
 import 'app_text_style.dart';
@@ -24,14 +24,12 @@ class AppTheme {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      // ── Bottom sheets ───────────────────────────────────────────────────
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         modalBackgroundColor: Colors.transparent,
         modalBarrierColor: Colors.transparent,
       ),
-      // ── App bar ─────────────────────────────────────────────────────────
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColor.spaceCard,
         surfaceTintColor: Colors.transparent,
@@ -39,7 +37,6 @@ class AppTheme {
         elevation: 0,
         iconTheme: IconThemeData(color: AppColor.spaceTextPrimary, size: 24),
       ),
-      // ── Input fields ─────────────────────────────────────────────────────
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColor.spaceInputFill,
@@ -62,7 +59,6 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColor.alertError, width: 1.5),
         ),
       ),
-      // ── Dialogs ──────────────────────────────────────────────────────────
       dialogTheme: DialogThemeData(
         backgroundColor: AppColor.spaceCardHigh,
         surfaceTintColor: Colors.transparent,
@@ -80,7 +76,6 @@ class AppTheme {
           fontSize: 14,
         ),
       ),
-      // ── Date picker ───────────────────────────────────────────────────────
       datePickerTheme: const DatePickerThemeData(
         backgroundColor: AppColor.spaceCardHigh,
         headerBackgroundColor: AppColor.spaceCard,
@@ -93,7 +88,6 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         dividerColor: AppColor.spaceBorder,
       ),
-      // ── Snackbar ──────────────────────────────────────────────────────────
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColor.spaceCardHigh,
         contentTextStyle: const TextStyle(color: AppColor.spaceTextPrimary),
@@ -103,7 +97,6 @@ class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
       ),
-      // ── Progress indicator ────────────────────────────────────────────────
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColor.primary,
         linearTrackColor: AppColor.spaceBorder,

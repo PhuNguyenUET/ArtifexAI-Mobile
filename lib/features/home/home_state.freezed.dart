@@ -1,4 +1,4 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
@@ -6,13 +6,11 @@
 part of 'home_state.dart';
 
 // **************************************************************************
-// FreezedGenerator
 // **************************************************************************
 
 // dart format off
 T _$identity<T>(T value) => value;
 
-/// @nodoc
 mixin _$HomeState {
   HomeTab
       get activeTab; // Gallery (all user media — shown as pinned card in Albums tab)
@@ -29,8 +27,6 @@ mixin _$HomeState {
   bool get profileLoading;
   String? get profileError;
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $HomeStateCopyWith<HomeState> get copyWith =>
@@ -88,7 +84,6 @@ mixin _$HomeState {
   }
 }
 
-/// @nodoc
 abstract mixin class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) =
       _$HomeStateCopyWithImpl;
@@ -111,15 +106,12 @@ abstract mixin class $HomeStateCopyWith<$Res> {
   $UserDtoCopyWith<$Res>? get user;
 }
 
-/// @nodoc
 class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
   _$HomeStateCopyWithImpl(this._self, this._then);
 
   final HomeState _self;
   final $Res Function(HomeState) _then;
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -193,8 +185,6 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
     ));
   }
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserDtoCopyWith<$Res>? get user {
@@ -208,19 +198,7 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [HomeState].
 extension HomeStatePatterns on HomeState {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
@@ -236,19 +214,6 @@ extension HomeStatePatterns on HomeState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// Callbacks receives the raw object, upcasted.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case final Subclass2 value:
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_HomeState value) $default,
@@ -262,18 +227,6 @@ extension HomeStatePatterns on HomeState {
     }
   }
 
-  /// A variant of `map` that fallback to returning `null`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_HomeState value)? $default,
@@ -286,18 +239,6 @@ extension HomeStatePatterns on HomeState {
         return null;
     }
   }
-
-  /// A variant of `when` that fallback to an `orElse` callback.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -340,19 +281,6 @@ extension HomeStatePatterns on HomeState {
     }
   }
 
-  /// A `switch`-like method, using callbacks.
-  ///
-  /// As opposed to `map`, this offers destructuring.
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case Subclass2(:final field2):
-  ///     return ...;
-  /// }
-  /// ```
-
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
@@ -392,18 +320,6 @@ extension HomeStatePatterns on HomeState {
         throw StateError('Unexpected subclass');
     }
   }
-
-  /// A variant of `when` that fallback to returning `null`
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case Subclass(:final field):
-  ///     return ...;
-  ///   case _:
-  ///     return null;
-  /// }
-  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -446,8 +362,6 @@ extension HomeStatePatterns on HomeState {
   }
 }
 
-/// @nodoc
-
 class _HomeState implements HomeState {
   const _HomeState(
       {this.activeTab = HomeTab.albums,
@@ -470,9 +384,7 @@ class _HomeState implements HomeState {
   @override
   @JsonKey()
   final HomeTab activeTab;
-// Gallery (all user media — shown as pinned card in Albums tab)
   final List<MediaDto> _gallery;
-// Gallery (all user media — shown as pinned card in Albums tab)
   @override
   @JsonKey()
   List<MediaDto> get gallery {
@@ -486,9 +398,7 @@ class _HomeState implements HomeState {
   final bool galleryLoading;
   @override
   final String? galleryError;
-// Albums
   final List<AlbumDto> _albums;
-// Albums
   @override
   @JsonKey()
   List<AlbumDto> get albums {
@@ -502,9 +412,7 @@ class _HomeState implements HomeState {
   final bool albumsLoading;
   @override
   final String? albumsError;
-// Projects
   final List<ProjectDto> _projects;
-// Projects
   @override
   @JsonKey()
   List<ProjectDto> get projects {
@@ -518,7 +426,6 @@ class _HomeState implements HomeState {
   final bool projectsLoading;
   @override
   final String? projectsError;
-// Profile
   @override
   final UserDto? user;
   @override
@@ -527,8 +434,6 @@ class _HomeState implements HomeState {
   @override
   final String? profileError;
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -587,7 +492,6 @@ class _HomeState implements HomeState {
   }
 }
 
-/// @nodoc
 abstract mixin class _$HomeStateCopyWith<$Res>
     implements $HomeStateCopyWith<$Res> {
   factory _$HomeStateCopyWith(
@@ -614,15 +518,12 @@ abstract mixin class _$HomeStateCopyWith<$Res>
   $UserDtoCopyWith<$Res>? get user;
 }
 
-/// @nodoc
 class __$HomeStateCopyWithImpl<$Res> implements _$HomeStateCopyWith<$Res> {
   __$HomeStateCopyWithImpl(this._self, this._then);
 
   final _HomeState _self;
   final $Res Function(_HomeState) _then;
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
@@ -696,8 +597,6 @@ class __$HomeStateCopyWithImpl<$Res> implements _$HomeStateCopyWith<$Res> {
     ));
   }
 
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $UserDtoCopyWith<$Res>? get user {

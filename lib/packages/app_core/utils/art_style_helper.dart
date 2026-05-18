@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:artifex_ai_mobile/packages/domain/enum/art_style.dart';
 
-/// Metadata associated with an [ArtStyle] for display purposes.
 class ArtStyleMeta {
   const ArtStyleMeta({
     required this.label,
@@ -9,23 +8,13 @@ class ArtStyleMeta {
     required this.colors,
   });
 
-  /// Human-readable label shown in the UI.
   final String label;
 
-  /// Icon representing this art style.
   final IconData icon;
 
-  /// Gradient colours – always contains exactly 2 entries.
   final List<Color> colors;
 }
 
-/// Central map from [ArtStyle] to its display [ArtStyleMeta].
-///
-/// Use this across screens to keep icons, labels and colours consistent:
-/// ```dart
-/// final meta = ArtStyleHelper.of(project.artStyle);
-/// Icon(meta.icon, color: Colors.white);
-/// ```
 class ArtStyleHelper {
   const ArtStyleHelper._();
 
@@ -72,19 +61,15 @@ class ArtStyleHelper {
     ),
   };
 
-  /// Fallback metadata used when the style is null or unknown.
   static const ArtStyleMeta _fallback = ArtStyleMeta(
     label: 'Unknown',
     icon: Icons.auto_awesome,
     colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
   );
 
-  /// Returns the [ArtStyleMeta] for the given [style].
-  /// Falls back to a generic entry if [style] is null or not found.
   static ArtStyleMeta of(ArtStyle? style) =>
       style != null ? (_map[style] ?? _fallback) : _fallback;
 
-  /// Returns all entries in a stable display order.
   static List<MapEntry<ArtStyle, ArtStyleMeta>> get all =>
       _map.entries.toList();
 }

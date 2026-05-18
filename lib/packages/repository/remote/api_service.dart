@@ -1,7 +1,6 @@
-import '../../domain/index.dart';
+﻿import '../../domain/index.dart';
 
 abstract class ApiService {
-  // User
   Future<void> editUser({
     String? firstName,
     String? lastName,
@@ -28,7 +27,6 @@ abstract class ApiService {
 
   Future<UserDto> currentUser();
 
-  // Project Management
   Future<void> updateInstructions({
     required int projectId,
     required List<String> instructions
@@ -61,7 +59,6 @@ abstract class ApiService {
     required int projectId
   });
 
-  // Album Management
   Future<void> editAlbum({
     required int albumId,
     String? albumName
@@ -92,7 +89,6 @@ abstract class ApiService {
     required int albumId
   });
 
-  // Video Generation
   Future<VideoResponseDto> generateVideo({
     required int projectId,
     ReferenceImage? referenceImage,
@@ -100,7 +96,6 @@ abstract class ApiService {
     required VideoLength videoLength,
   });
 
-  // User Authentication
   Future<void> register({
     required String email,
     required String password
@@ -121,7 +116,6 @@ abstract class ApiService {
 
   Future<AuthenticationResponseDto> authenticateOAuthGithub();
 
-  // Media Management
   Future<MediaDto> uploadClient({
     required String base64,
     required MimeType mimeType
@@ -141,7 +135,6 @@ abstract class ApiService {
     required int mediaId
   });
 
-  // Image generation
   Future<ImageResponseDto> imageVariation({
     required int projectId,
     List<ReferenceImage> imageInfos,

@@ -1,4 +1,4 @@
-import '../../index.dart';
+﻿import '../../index.dart';
 
 class AppSkeletonWidget extends StatelessWidget {
   final double? width;

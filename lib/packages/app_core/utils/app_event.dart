@@ -1,14 +1,7 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 
-///
-///
-///    AppEvent.instance().post({AppEvent.pageIndex: 0});
-///    AppEvent.instance().subscribe<bool>(AppEvent.logged, (value) {
-///   listener(value);
-///   });
-///
 abstract class AppEvent {
   static const String totalCart = 'total_cart';
   static const String logged = "logged";

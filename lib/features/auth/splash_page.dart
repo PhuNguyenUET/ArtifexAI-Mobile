@@ -1,4 +1,4 @@
-import '../../generated/assets.dart';
+﻿import '../../generated/assets.dart';
 import '../../init/routes.dart';
 import '../../packages/index.dart';
 import 'auth_controller.dart';
@@ -104,7 +104,6 @@ class _SplashViewState extends State<_SplashView>
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Expanding pulse ring
                   AnimatedBuilder(
                     animation: _ctrl,
                     builder: (_, __) => Transform.scale(
@@ -125,7 +124,6 @@ class _SplashViewState extends State<_SplashView>
                       ),
                     ),
                   ),
-                  // Rotating arc
                   AnimatedBuilder(
                     animation: _rotate,
                     builder: (_, child) => RotationTransition(
@@ -144,7 +142,6 @@ class _SplashViewState extends State<_SplashView>
                       ),
                     ),
                   ),
-                  // App icon in the centre
                   Container(
                     width: 76,
                     height: 76,

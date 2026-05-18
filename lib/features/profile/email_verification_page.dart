@@ -1,8 +1,6 @@
-import '../../packages/index.dart';
+﻿import '../../packages/index.dart';
 import '../home/home_controller.dart';
 
-/// Shown after [validateEmail] is called.
-/// The user enters the token they received by e-mail and we call [emailToken].
 class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({super.key});
 
@@ -40,7 +38,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
     if (ok) {
       _showSnack('Email verified successfully!');
-      // Give the snack a moment then pop back to Profile.
       await Future<void>.delayed(const Duration(milliseconds: 800));
       if (mounted) Navigator.of(context).pop();
     }
@@ -141,7 +138,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         children: [
           const SizedBox(height: 16),
 
-          // ── Icon ──────────────────────────────────────────────────────────
           Center(
             child: Container(
               width: 72,
@@ -168,7 +164,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
           const SizedBox(height: 24),
 
-          // ── Title & description ───────────────────────────────────────────
           Text(
             'Check your inbox',
             textAlign: TextAlign.center,
@@ -191,7 +186,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
           const SizedBox(height: 32),
 
-          // ── Token input ───────────────────────────────────────────────────
           Text(
             'Verification Code',
             style: GoogleFonts.inter(
@@ -247,7 +241,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
           const SizedBox(height: 20),
 
-          // ── Submit button ─────────────────────────────────────────────────
           SizedBox(
             height: 50,
             child: ElevatedButton(
@@ -302,7 +295,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
 
           const SizedBox(height: 20),
 
-          // ── Resend ────────────────────────────────────────────────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -1,1 +1,1 @@
-export 'lib_manager.dart';
+﻿export 'lib_manager.dart';

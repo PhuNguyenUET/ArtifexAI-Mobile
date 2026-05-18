@@ -1,4 +1,4 @@
-import '../../../index.dart';
+﻿import '../../../index.dart';
 
 class Local {
   final SharedPreferences _sharedPreferences = GetIt.instance.get();

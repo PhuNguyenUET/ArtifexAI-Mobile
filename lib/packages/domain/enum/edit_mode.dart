@@ -1,4 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+﻿import 'package:freezed_annotation/freezed_annotation.dart';
 
 enum EditMode {
   @JsonValue('EDIT_MODE_DEFAULT')

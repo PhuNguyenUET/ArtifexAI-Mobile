@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 
 class AppColor extends Color {
   const AppColor._(super.value);
@@ -93,19 +93,12 @@ class AppColor extends Color {
 
   static const Color shadow = Color(0x292D3239);
 
-  // ── Space / dark-theme surfaces ──────────────────────────────────────────
-  /// Page / scaffold background — deep space indigo
   static const Color spaceBg        = Color(0xFF05040F);
-  /// Card / sheet surface
   static const Color spaceCard      = Color(0xFF110E2A);
-  /// Elevated card (modals, overlays)
   static const Color spaceCardHigh  = Color(0xFF1A1740);
-  /// Subtle border on dark surfaces
   static const Color spaceBorder    = Color(0xFF2A2550);
-  /// Input fill on dark surfaces
   static const Color spaceInputFill = Color(0xFF0E0C22);
 
-  // ── Text colours for dark surfaces ──────────────────────────────────────
   static const Color spaceTextPrimary   = Color(0xFFEEECFF);
   static const Color spaceTextSecondary = Color(0xFF9B96CC);
   static const Color spaceTextHint      = Color(0xFF5C5880);

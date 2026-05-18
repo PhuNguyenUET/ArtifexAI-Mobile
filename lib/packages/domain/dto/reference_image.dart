@@ -1,4 +1,4 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+﻿import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:artifex_ai_mobile/packages/domain/index.dart';
 
 part 'reference_image.freezed.dart';

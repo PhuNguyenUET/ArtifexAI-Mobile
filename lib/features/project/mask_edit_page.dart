@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -8,8 +8,6 @@ import '../../packages/index.dart';
 import '../home/home_controller.dart';
 import 'generation_result_page.dart';
 import 'project_state.dart';
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
 
 class _DrawStroke {
   final List<Offset> points;
@@ -23,20 +21,6 @@ class _DrawStroke {
   });
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
-/// Full-screen page that lets the user paint a mask over an image, choose
-/// [EditMode], enter a prompt, and call [imageMaskedEdit].
-///
-/// * [imageUrl]       – URL / server path of the source image.
-/// * [mimeType]          – MIME type of the image (defaults to JPEG).
-/// * [projectId]         – Pre-selected project.  Required when
-///                         [showProjectPicker] is false.
-/// * [showProjectPicker] – When true a project dropdown is shown so the user
-///                         can pick which project to generate into.
-///                         Pass false (default) when a [projectId] is already
-///                         known (e.g. opened from GenerationResultPage).
-/// * [homeController]    – Used for project list + gallery refresh.
 class MaskEditPage extends StatefulWidget {
   const MaskEditPage({
     super.key,
@@ -47,11 +31,8 @@ class MaskEditPage extends StatefulWidget {
     required this.homeController,
   });
 
-  /// Signed URL used only for displaying the image on canvas.
   final String imageUrl;
 
-  /// Server-side media path (e.g. `server/image_xxx.png`) sent to the API.
-  /// Falls back to [imageUrl] when null.
   final String? imagePath;
 
   final int? projectId;
@@ -63,27 +44,21 @@ class MaskEditPage extends StatefulWidget {
 }
 
 class _MaskEditPageState extends State<MaskEditPage> {
-  // ── Drawing state ────────────────────────────────────────────────────────
   final List<_DrawStroke> _strokes = [];
   List<Offset> _currentStrokePoints = [];
   double _brushSize = 24.0;
   bool _isErase = false;
   Size _canvasSize = Size.zero;
 
-  // ── API options ──────────────────────────────────────────────────────────
   EditMode _editMode = EditMode.editModeDefault;
   final _promptCtrl = TextEditingController();
 
-  // ── Project selection (when projectId not pre-set) ───────────────────────
   int? _selectedProjectId;
   List<ProjectDto> _projects = [];
   bool _projectsLoading = false;
 
-  // ── Generating ───────────────────────────────────────────────────────────
   bool _generating = false;
 
-  /// Original pixel dimensions of the source image, resolved on init.
-  /// Used to capture the mask at the correct size to match the server image.
   Size? _originalImageSize;
 
   @override
@@ -99,8 +74,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     _promptCtrl.dispose();
     super.dispose();
   }
-
-  // ─── Image size resolution ────────────────────────────────────────────────
 
   Future<void> _loadImageSize() async {
     if (widget.imageUrl.isEmpty) return;
@@ -123,11 +96,8 @@ class _MaskEditPageState extends State<MaskEditPage> {
       final img = await completer.future;
       _originalImageSize = Size(img.width.toDouble(), img.height.toDouble());
     } catch (_) {
-      // Falls back to canvas size in _captureMask()
     }
   }
-
-  // ─── Project loading ──────────────────────────────────────────────────────
 
   Future<void> _loadProjects() async {
     setState(() => _projectsLoading = true);
@@ -141,8 +111,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       if (mounted) setState(() => _projectsLoading = false);
     }
   }
-
-  // ─── Drawing ──────────────────────────────────────────────────────────────
 
   void _onPanStart(DragStartDetails d) {
     _currentStrokePoints = [d.localPosition];
@@ -175,8 +143,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     if (_strokes.isNotEmpty) setState(() => _strokes.removeLast());
   }
 
-  // ─── All strokes including any in-progress stroke ─────────────────────────
-
   List<_DrawStroke> get _allStrokes => [
         ..._strokes,
         if (_currentStrokePoints.isNotEmpty)
@@ -187,26 +153,20 @@ class _MaskEditPageState extends State<MaskEditPage> {
           ),
       ];
 
-  // ─── Mask capture via PictureRecorder ────────────────────────────────────
-
   Future<String> _captureMask() async {
     final Size targetSize;
     final List<_DrawStroke> strokesToRender;
 
     if (_originalImageSize != null && _originalImageSize != Size.zero) {
-      // Compute the BoxFit.contain scale used to display the image in the canvas.
-      // renderScale = how many canvas pixels correspond to one image pixel.
       final double renderScale = math.min(
         _canvasSize.width / _originalImageSize!.width,
         _canvasSize.height / _originalImageSize!.height,
       );
-      // The image is centred inside the canvas — compute the letterbox offsets.
       final double offsetX =
           (_canvasSize.width - _originalImageSize!.width * renderScale) / 2;
       final double offsetY =
           (_canvasSize.height - _originalImageSize!.height * renderScale) / 2;
 
-      // Transform every stroke point from canvas space → image space.
       strokesToRender = _allStrokes.map((stroke) {
         return _DrawStroke(
           points: stroke.points
@@ -221,7 +181,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       }).toList();
       targetSize = _originalImageSize!;
     } else {
-      // Fallback: no size info, use canvas dimensions as before.
       strokesToRender = _allStrokes;
       targetSize = _canvasSize;
     }
@@ -237,8 +196,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     return base64Encode(byteData!.buffer.asUint8List());
   }
-
-  // ─── Toast ────────────────────────────────────────────────────────────────
 
   void _toast(String msg, {bool isError = false}) {
     if (!mounted) return;
@@ -262,8 +219,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
         duration: const Duration(seconds: 3),
       ));
   }
-
-  // ─── Generate ─────────────────────────────────────────────────────────────
 
   Future<void> _generate() async {
     final projectId = _selectedProjectId ?? widget.projectId;
@@ -323,8 +278,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     }
   }
 
-  // ─── Build ────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -348,8 +301,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       ),
     );
   }
-
-  // ─── Full-screen loading overlay ──────────────────────────────────────────
 
   Widget _buildLoadingOverlay() {
     return Positioned.fill(
@@ -410,8 +361,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       ),
     );
   }
-
-  // ─── AppBar ───────────────────────────────────────────────────────────────
 
   Widget _buildAppBar() {
     return Container(
@@ -475,8 +424,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     );
   }
 
-  // ─── Canvas ───────────────────────────────────────────────────────────────
-
   Widget _buildCanvas() {
     return LayoutBuilder(builder: (context, constraints) {
       _canvasSize = Size(constraints.maxWidth, constraints.maxHeight);
@@ -498,8 +445,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       );
     });
   }
-
-  // ─── Toolbar ──────────────────────────────────────────────────────────────
 
   Widget _buildToolbar() {
     return Container(
@@ -584,8 +529,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     );
   }
 
-  // ─── Options panel ────────────────────────────────────────────────────────
-
   Widget _buildOptions() {
     return Container(
       constraints: const BoxConstraints(maxHeight: 260),
@@ -660,8 +603,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
       ),
     );
   }
-
-  // ─── Sub-helpers ──────────────────────────────────────────────────────────
 
   Widget _label(String text) => Text(
         text,
@@ -760,8 +701,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
     );
   }
 
-  // ─── Label helpers ────────────────────────────────────────────────────────
-
   String _editModeLabel(EditMode mode) {
     switch (mode) {
       case EditMode.editModeDefault:
@@ -786,8 +725,6 @@ class _MaskEditPageState extends State<MaskEditPage> {
   }
 
 }
-
-// ─── _ToolButton ──────────────────────────────────────────────────────────────
 
 class _ToolButton extends StatelessWidget {
   const _ToolButton({
@@ -839,8 +776,6 @@ class _ToolButton extends StatelessWidget {
     );
   }
 }
-
-// ─── Overlay painter (semi-transparent purple highlight) ──────────────────────
 
 class _OverlayPainter extends CustomPainter {
   final List<_DrawStroke> strokes;
@@ -897,8 +832,6 @@ class _OverlayPainter extends CustomPainter {
   @override
   bool shouldRepaint(_OverlayPainter old) => old.strokes != strokes;
 }
-
-// ─── Mask painter (black background, white = edit area) ──────────────────────
 
 class _MaskPainter extends CustomPainter {
   final List<_DrawStroke> strokes;

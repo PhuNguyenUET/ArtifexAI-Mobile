@@ -1,9 +1,8 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'image_response_dto.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
 // **************************************************************************
 
 _ImageResponseDto _$ImageResponseDtoFromJson(Map<String, dynamic> json) =>

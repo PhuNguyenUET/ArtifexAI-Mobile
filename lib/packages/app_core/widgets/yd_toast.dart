@@ -1,4 +1,4 @@
-import '../../index.dart';
+﻿import '../../index.dart';
 
 class YDToast {
   const YDToast._();
@@ -27,8 +27,6 @@ class YDToast {
     );
   }
 
-  /// Shows a "Session timed out" banner that fades in at the top of the screen
-  /// and auto-dismisses after [duration].
   static void showSessionExpiredToast({
     Duration duration = const Duration(milliseconds: 3000),
   }) {
@@ -42,11 +40,6 @@ class YDToast {
     );
   }
 
-  /// Show loading indicator when called. Usage:
-  ///
-  /// To show loading: [final cancel = YDToast.showLoadingToast;]
-  ///
-  /// To dismiss: [cancel();]
   static Function showLoadingToast({
     VoidCallback? onClose,
     required Widget child,
@@ -60,9 +53,6 @@ class YDToast {
     );
   }
 
-  /// Show loading indicator during the execution of [future].
-  ///
-  /// Returns the result of the [future].
   static Future<T> showAutoDismissLoading<T>({
     required Future<T> future,
     VoidCallback? onClose,

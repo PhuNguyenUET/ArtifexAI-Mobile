@@ -1,4 +1,4 @@
-import '../../index.dart';
+﻿import '../../index.dart';
 
 class RepositoryImpl extends Repository {
   static Repository instance({required ApiService apiService}) {
@@ -8,8 +8,6 @@ class RepositoryImpl extends Repository {
   RepositoryImpl(ApiService apiService) : _apiService = apiService;
 
   final ApiService _apiService;
-
-  // ─── User ────────────────────────────────────────────────────────────────────
 
   @override
   Future<void> editUser({String? firstName, String? lastName, String? dateOfBirth}) =>
@@ -36,8 +34,6 @@ class RepositoryImpl extends Repository {
 
   @override
   Future<UserDto> currentUser() => _apiService.currentUser();
-
-  // ─── Project Management ───────────────────────────────────────────────────────
 
   @override
   Future<void> updateInstructions({required int projectId, required List<String> instructions}) =>
@@ -66,8 +62,6 @@ class RepositoryImpl extends Repository {
   Future<void> deleteProject({required int projectId}) =>
       _apiService.deleteProject(projectId: projectId);
 
-  // ─── Album Management ─────────────────────────────────────────────────────────
-
   @override
   Future<void> editAlbum({required int albumId, String? albumName}) =>
       _apiService.editAlbum(albumId: albumId, albumName: albumName);
@@ -95,8 +89,6 @@ class RepositoryImpl extends Repository {
   Future<void> deleteAlbum({required int albumId}) =>
       _apiService.deleteAlbum(albumId: albumId);
 
-  // ─── Video Generation ─────────────────────────────────────────────────────────
-
   @override
   Future<VideoResponseDto> generateVideo({
     required int projectId,
@@ -109,8 +101,6 @@ class RepositoryImpl extends Repository {
         prompt: prompt,
         videoLength: videoLength,
       );
-
-  // ─── User Authentication ──────────────────────────────────────────────────────
 
   @override
   Future<void> register({required String email, required String password}) =>
@@ -135,8 +125,6 @@ class RepositoryImpl extends Repository {
   Future<AuthenticationResponseDto> authenticateOAuthGithub() =>
       _apiService.authenticateOAuthGithub();
 
-  // ─── Media Management ─────────────────────────────────────────────────────────
-
   @override
   Future<MediaDto> uploadClient({required String base64, required MimeType mimeType}) =>
       _apiService.uploadClient(base64: base64, mimeType: mimeType);
@@ -155,8 +143,6 @@ class RepositoryImpl extends Repository {
   @override
   Future<void> deleteMedia({required int mediaId}) =>
       _apiService.deleteMedia(mediaId: mediaId);
-
-  // ─── Image Generation ─────────────────────────────────────────────────────────
 
   @override
   Future<ImageResponseDto> imageVariation({

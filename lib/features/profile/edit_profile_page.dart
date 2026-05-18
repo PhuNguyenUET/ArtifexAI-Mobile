@@ -1,8 +1,7 @@
-import '../../packages/index.dart';
+﻿import '../../packages/index.dart';
 import '../home/home_controller.dart';
 import '../home/home_state.dart';
 
-/// Screen for editing the user's first name, last name, and date of birth.
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
 
@@ -178,7 +177,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Avatar placeholder ────────────────────────────────────────
             Center(
               child: Container(
                 width: 80,
@@ -205,7 +203,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 28),
 
-            // ── Fields card ───────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -242,7 +239,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   const SizedBox(height: 4),
 
-                  // ── Date of birth picker ──────────────────────────────
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

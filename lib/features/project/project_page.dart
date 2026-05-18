@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'package:marquee/marquee.dart';
 import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
@@ -23,8 +23,6 @@ class ProjectPage extends StatelessWidget {
   }
 }
 
-// ─── View ──────────────────────────────────────────────────────────────────────
-
 class _ProjectView extends StatefulWidget {
   const _ProjectView({required this.project});
   final ProjectDto project;
@@ -34,33 +32,26 @@ class _ProjectView extends StatefulWidget {
 }
 
 class _ProjectViewState extends State<_ProjectView> {
-  // ── Shared ───────────────────────────────────────────────────────────────
   final _promptCtrl        = TextEditingController();
   final _additionalCtrl    = TextEditingController();
   final _charDescCtrl      = TextEditingController();
   final _actionDescCtrl    = TextEditingController();
 
-  // ── Single-image modes ────────────────────────────────────────────────────
   ReferenceImage? _singleImage;
   String?         _singleImagePreview;   // base64
 
-  // ── Multi-image modes ────────────────────────────────────────────────────
   final List<ReferenceImage> _multiImages      = [];
   final List<String>         _multiImagePreviews = [];
 
-  // ── Upscale ───────────────────────────────────────────────────────────────
   UpscaleFactor _upscaleFactor = UpscaleFactor.x2;
 
-  // ── Style change ──────────────────────────────────────────────────────────
   ArtStyle _targetStyle = ArtStyle.realistic;
 
-  // ── Video ─────────────────────────────────────────────────────────────────
   VideoLength _videoLength = VideoLength.medium;
 
   @override
   void initState() {
     super.initState();
-    // Seed the cubit with the instructions already on the project DTO.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProjectController>().loadInstructions(
             widget.project.instructions ?? [],
@@ -77,8 +68,6 @@ class _ProjectViewState extends State<_ProjectView> {
     super.dispose();
   }
 
-  // ─── Image helpers ────────────────────────────────────────────────────────
-
   Future<(ReferenceImage, String)?> _pickImage() async {
     final picker = ImagePicker();
     final file   = await picker.pickImage(source: ImageSource.gallery);
@@ -93,7 +82,6 @@ class _ProjectViewState extends State<_ProjectView> {
     final mimeType = ext.endsWith('.png') ? MimeType.png : MimeType.jpeg;
     final b64      = base64Encode(bytes);
 
-    // Upload to server and get back the MediaDto with the server-side path.
     final mediaDto = await sl.get<AccessTokenStorage>().repository
         .uploadClient(base64: b64, mimeType: mimeType);
 
@@ -126,7 +114,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _multiImages.removeAt(index);
       _multiImagePreviews.removeAt(index);
     });
-    // When no images remain, non-GPT/Gemini models become locked → reset to GPT.
     if (_multiImages.isEmpty) {
       final ctrl = context.read<ProjectController>();
       final m = ctrl.state.generationModel;
@@ -136,8 +123,6 @@ class _ProjectViewState extends State<_ProjectView> {
     }
   }
 
-  /// Clears the single reference image and resets the model to GPT if a
-  /// model that requires an image is selected.
   void _clearSingleImage() {
     setState(() {
       _singleImage = null;
@@ -149,8 +134,6 @@ class _ProjectViewState extends State<_ProjectView> {
       ctrl.setGenerationModel(GenerationModel.gpt);
     }
   }
-
-  // ─── Toast ────────────────────────────────────────────────────────────────
 
   void _toast(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -168,14 +151,11 @@ class _ProjectViewState extends State<_ProjectView> {
     ));
   }
 
-  // ─── Submit ───────────────────────────────────────────────────────────────
-
   Future<void> _submit(ProjectController ctrl) async {
     final mode = ctrl.state.mode;
     final genModel = ctrl.state.generationModel;
     FocusScope.of(context).unfocus();
 
-    // Validation
     if (mode.requiresPrompt && _promptCtrl.text.trim().isEmpty) {
       _toast('Please enter a prompt / description.');
       return;
@@ -184,8 +164,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _toast('Please select a reference image.');
       return;
     }
-    // GPT and Gemini variation are text-optional. Flux-2 / Qwen variation is
-    // strictly image-to-image — the API will reject requests without an image.
     if (mode == GenerationMode.variation &&
         _multiImages.isEmpty &&
         genModel != GenerationModel.gemini &&
@@ -207,9 +185,6 @@ class _ProjectViewState extends State<_ProjectView> {
       return;
     }
 
-    // ── Model × image safety net ─────────────────────────────────────────────
-    // Flux-2 and Qwen are image-to-image only for variation / sprite / style.
-    // The UI already locks them, but guard here in case of any bypass.
     if (genModel != GenerationModel.gemini && genModel != GenerationModel.gpt) {
       final bool missingImage;
       switch (mode) {
@@ -258,7 +233,6 @@ class _ProjectViewState extends State<_ProjectView> {
 
     if (!mounted) return;
 
-    // Video result
     final videoResult = ctrl.state.videoResult;
     if (videoResult != null && videoResult.videoUrl != null) {
       await Navigator.of(context).push(MaterialPageRoute(
@@ -274,7 +248,6 @@ class _ProjectViewState extends State<_ProjectView> {
       return;
     }
 
-    // Image result
     final result = ctrl.state.result;
     if (result != null && result.imageUrls != null && result.imageUrls!.isNotEmpty) {
       await Navigator.of(context).push(MaterialPageRoute(
@@ -290,8 +263,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _toast('Something went wrong. Please try again later.', isError: true);
     }
   }
-
-  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -314,12 +285,10 @@ class _ProjectViewState extends State<_ProjectView> {
                   ),
                 ],
               ),
-              // Bottom mode bar
               Positioned(
                 left: 0, right: 0, bottom: 0,
                 child: _buildModeBar(context, state, ctrl),
               ),
-              // Full-screen loading overlay
               if (state.generating) _buildLoadingOverlay(),
             ],
           ),
@@ -327,8 +296,6 @@ class _ProjectViewState extends State<_ProjectView> {
       },
     );
   }
-
-  // ─── App Bar ──────────────────────────────────────────────────────────────
 
   Widget _buildAppBar(BuildContext context, ProjectState state) {
     final meta = ArtStyleHelper.of(widget.project.artStyle);
@@ -383,7 +350,6 @@ class _ProjectViewState extends State<_ProjectView> {
               ],
             ),
           ),
-          // Instructions button
           _buildInstructionsButton(context, state),
           const SizedBox(width: 8),
           _buildGenerateButton(context, state),
@@ -444,8 +410,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ─── Mode bar ─────────────────────────────────────────────────────────────
-
   Widget _buildModeBar(BuildContext context, ProjectState state, ProjectController ctrl) {
     return Container(
       decoration: BoxDecoration(
@@ -474,7 +438,6 @@ class _ProjectViewState extends State<_ProjectView> {
                   onTap: () {
                     if (selected) return;
                     ctrl.setMode(mode);
-                    // Clearing images → Flux-2/Qwen require images → reset to GPT.
                     if (ctrl.state.generationModel != GenerationModel.gemini &&
                         ctrl.state.generationModel != GenerationModel.gpt) {
                       ctrl.setGenerationModel(GenerationModel.gpt);
@@ -500,8 +463,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ─── Dynamic Form ─────────────────────────────────────────────────────────
-
   Widget _buildForm(ProjectState state) {
     switch (state.mode) {
       case GenerationMode.splashArt:   return _buildSplashArtForm();
@@ -512,8 +473,6 @@ class _ProjectViewState extends State<_ProjectView> {
       case GenerationMode.video:       return _buildVideoForm();
     }
   }
-
-  // ── Splash Art ────────────────────────────────────────────────────────────
 
   Widget _buildSplashArtForm() {
     return BlocBuilder<ProjectController, ProjectState>(
@@ -537,8 +496,6 @@ class _ProjectViewState extends State<_ProjectView> {
       ]),
     );
   }
-
-  // ── Variation ─────────────────────────────────────────────────────────────
 
   Widget _buildVariationForm() {
     return BlocBuilder<ProjectController, ProjectState>(
@@ -596,8 +553,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ── Style Change ──────────────────────────────────────────────────────────
-
   Widget _buildStyleChangeForm() {
     return BlocBuilder<ProjectController, ProjectState>(
       builder: (context, state) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -628,8 +583,6 @@ class _ProjectViewState extends State<_ProjectView> {
       ]),
     );
   }
-
-  // ── Sprite Sheet ──────────────────────────────────────────────────────────
 
   Widget _buildSpriteSheetForm() {
     return BlocBuilder<ProjectController, ProjectState>(
@@ -697,8 +650,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ── Upscale ───────────────────────────────────────────────────────────────
-
   Widget _buildUpscaleForm() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _modeTitle('Upscale', 'Enhance and upscale an image to a higher resolution'),
@@ -712,8 +663,6 @@ class _ProjectViewState extends State<_ProjectView> {
       _buildUpscaleFactorPicker(),
     ]);
   }
-
-  // ── Video ──────────────────────────────────────────────────────────────────
 
   Widget _buildVideoForm() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -773,8 +722,6 @@ class _ProjectViewState extends State<_ProjectView> {
     style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppColor.spaceTextPrimary, letterSpacing: 0.2),
   );
 
-  // ── Single image picker ────────────────────────────────────────────────────
-
   Widget _buildSingleImagePicker() {
     if (_singleImagePreview != null) {
       return Stack(
@@ -819,8 +766,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ── Multi image picker ─────────────────────────────────────────────────────
-
   Widget _buildMultiImagePicker() {
     return Column(children: [
       if (_multiImagePreviews.isNotEmpty) ...[
@@ -831,7 +776,6 @@ class _ProjectViewState extends State<_ProjectView> {
             itemCount: _multiImagePreviews.length + 1,
             itemBuilder: (_, i) {
               if (i == _multiImagePreviews.length) {
-                // Add button
                 return GestureDetector(
                   onTap: _addMultiImage,
                   child: Container(
@@ -893,9 +837,6 @@ class _ProjectViewState extends State<_ProjectView> {
     ]);
   }
 
-
-  // ── Style picker ──────────────────────────────────────────────────────────
-
   Widget _buildStylePicker() {
     return Wrap(
       spacing: 8, runSpacing: 8,
@@ -926,8 +867,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 
-  // ── Upscale factor picker ──────────────────────────────────────────────────
-
   Widget _buildUpscaleFactorPicker() {
     const factors = [
       (UpscaleFactor.x2, '2×'), (UpscaleFactor.x4, '4×'),
@@ -954,8 +893,6 @@ class _ProjectViewState extends State<_ProjectView> {
       );
     }).toList());
   }
-
-  // ─── Full-screen loading overlay ──────────────────────────────────────────
 
   Widget _buildLoadingOverlay() {
     return BlocBuilder<ProjectController, ProjectState>(
@@ -994,7 +931,6 @@ class _ProjectViewState extends State<_ProjectView> {
                   border: Border.all(color: AppColor.spaceBorder),
                 ),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  // Animated gradient circle
                   TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: 1),
                     duration: const Duration(seconds: 2),
@@ -1039,8 +975,6 @@ class _ProjectViewState extends State<_ProjectView> {
     );
   }
 }
-
-// ─── Video Length Card ─────────────────────────────────────────────────────────
 
 class _VideoLengthCard extends StatefulWidget {
   const _VideoLengthCard({
@@ -1106,7 +1040,6 @@ class _VideoLengthCardState extends State<_VideoLengthCard>
             padding: const EdgeInsets.symmetric(vertical: 14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
-              // Blend from flat card to gradient by layering opacity
               color: Color.lerp(AppColor.spaceCardHigh, Colors.transparent, t),
               gradient: t > 0
                   ? LinearGradient(
@@ -1158,8 +1091,6 @@ class _VideoLengthCardState extends State<_VideoLengthCard>
     );
   }
 }
-
-// ─── Mode Bar Item ─────────────────────────────────────────────────────────────
 
 class _ModeBarItem extends StatefulWidget {
   const _ModeBarItem({
@@ -1236,7 +1167,6 @@ class _ModeBarItemState extends State<_ModeBarItem>
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon container — only this scales up
                 Transform.scale(
                   scale: _scale.value,
                   child: Container(
@@ -1279,7 +1209,6 @@ class _ModeBarItemState extends State<_ModeBarItem>
                   ),
                 ),
                 const SizedBox(height: 4),
-                // Label — fixed size, no scaling
                 Text(
                   widget.mode.label,
                   maxLines: 1,
@@ -1307,8 +1236,6 @@ class _ModeBarItemState extends State<_ModeBarItem>
     );
   }
 }
-
-// ─── Instructions Sheet ────────────────────────────────────────────────────────
 
 class _InstructionsSheet extends StatefulWidget {
   const _InstructionsSheet({required this.projectId});
@@ -1384,7 +1311,6 @@ class _InstructionsSheetState extends State<_InstructionsSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Drag handle ─────────────────────────────────────────────
               const SizedBox(height: 12),
               Container(
                 width: 38, height: 4,
@@ -1395,7 +1321,6 @@ class _InstructionsSheetState extends State<_InstructionsSheet> {
               ),
               const SizedBox(height: 16),
 
-              // ── Header ──────────────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -1474,7 +1399,6 @@ class _InstructionsSheetState extends State<_InstructionsSheet> {
               const SizedBox(height: 4),
               const Divider(color: AppColor.spaceBorder, thickness: 1, height: 24),
 
-              // ── Instruction list ────────────────────────────────────────
               ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.38,
@@ -1540,7 +1464,6 @@ class _InstructionsSheetState extends State<_InstructionsSheet> {
               const Divider(color: AppColor.spaceBorder, thickness: 1, height: 1),
               const SizedBox(height: 12),
 
-              // ── Add instruction field ────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: _InstructionAddField(
@@ -1558,8 +1481,6 @@ class _InstructionsSheetState extends State<_InstructionsSheet> {
     );
   }
 }
-
-// ─── Instruction Item ──────────────────────────────────────────────────────────
 
 class _InstructionItem extends StatelessWidget {
   const _InstructionItem({
@@ -1593,7 +1514,6 @@ class _InstructionItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Index bubble
           Container(
             width: 22, height: 22,
             margin: const EdgeInsets.only(top: 1),
@@ -1627,7 +1547,6 @@ class _InstructionItem extends StatelessWidget {
               ),
             ),
           ),
-          // Delete button – only in edit mode
           if (editMode) ...[
             const SizedBox(width: 8),
             GestureDetector(
@@ -1655,8 +1574,6 @@ class _InstructionItem extends StatelessWidget {
     );
   }
 }
-
-// ─── Add-field with shimmer when AI is running ─────────────────────────────────
 
 class _InstructionAddField extends StatefulWidget {
   const _InstructionAddField({
@@ -1709,7 +1626,6 @@ class _InstructionAddFieldState extends State<_InstructionAddField>
     super.dispose();
   }
 
-  // ─── Suffix icon: arrow or spinner ────────────────────────────────────────
   Widget _buildSuffix() {
     if (widget.isAdding) {
       return Padding(
@@ -1763,7 +1679,6 @@ class _InstructionAddFieldState extends State<_InstructionAddField>
 
     if (!widget.isAdding) return field;
 
-    // Wrap in shimmer overlay while AI is processing
     return AnimatedBuilder(
       animation: _shimmer,
       builder: (_, child) {
@@ -1795,10 +1710,6 @@ class _InstructionAddFieldState extends State<_InstructionAddField>
   }
 }
 
-// ─── Model Selector ────────────────────────────────────────────────────────────
-
-/// Displays a horizontal row of model option cards for the given [mode].
-/// GPT-Image-2 is listed first and pre-selected by default.
 class _ModelSelector extends StatelessWidget {
   const _ModelSelector({
     required this.mode,
@@ -1830,7 +1741,6 @@ class _ModelSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final models = GenerationModel.values.toList();
 
-    // Non-GPT/Gemini models need a reference image for non-splash-art modes.
     final isLocked = (GenerationModel model) =>
         model != GenerationModel.gpt &&
         model != GenerationModel.gemini &&
@@ -1859,8 +1769,6 @@ class _ModelSelector extends StatelessWidget {
               final colors = _modelColors[model]!;
               final icon = _modelIcons[model]!;
 
-              // Flux-2 and Qwen are image-to-image only on image-based modes.
-              // Lock them until the user adds a reference image.
               final locked = isLocked(model);
 
               return Padding(

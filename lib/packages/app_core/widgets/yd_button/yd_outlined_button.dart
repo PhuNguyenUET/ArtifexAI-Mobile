@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../index.dart';
 
@@ -13,8 +13,6 @@ class YDOutlinedButton extends StatelessWidget {
 
   final Widget label;
 
-  /// Use Size because we want to give the constraints to other type of
-  /// buttons, such as [YDOutlinedButton.small]
   final Size? size;
 
   final ButtonStyle? buttonStyle;

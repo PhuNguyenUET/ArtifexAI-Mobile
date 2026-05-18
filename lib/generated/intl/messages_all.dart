@@ -1,7 +1,4 @@
-// DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that looks up messages for specific locales by
-// delegating to the appropriate library.
-
+﻿
 // Ignore issues from commonly used lints in this file.
 // ignore_for_file:implementation_imports, file_names, unnecessary_new
 // ignore_for_file:unnecessary_brace_in_string_interps, directives_ordering
@@ -44,7 +41,6 @@ MessageLookupByLibrary? _findExact(String localeName) {
   }
 }
 
-/// User programs should call this before using [localeName] for messages.
 Future<bool> initializeMessages(String localeName) {
   var availableLocale = Intl.verifiedLocale(
     localeName,

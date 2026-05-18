@@ -1,13 +1,9 @@
-import '../../packages/index.dart';
+﻿import '../../packages/index.dart';
 import 'auth_controller.dart';
 
-/// Step 2 of the password-reset flow.
-/// The user enters the token from their email plus a new password.
-/// On success the screen pops all the way back to Sign In.
 class CreateNewPasswordPage extends StatefulWidget {
   const CreateNewPasswordPage({super.key, required this.email});
 
-  /// The email address used in step 1 — shown as a reminder.
   final String email;
 
   @override
@@ -50,7 +46,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
       _showSnack('Password reset successfully! Please sign in.');
       await Future<void>.delayed(const Duration(milliseconds: 900));
       if (mounted) {
-        // Pop both this page and ForgotPasswordPage back to AuthPage.
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     }
@@ -136,7 +131,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
           children: [
             const SizedBox(height: 16),
 
-            // ── Icon ────────────────────────────────────────────────────────
             Center(
               child: Container(
                 width: 72,
@@ -163,7 +157,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
 
             const SizedBox(height: 24),
 
-            // ── Title & description ──────────────────────────────────────────
             Text(
               'Create new password',
               textAlign: TextAlign.center,
@@ -199,7 +192,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
 
             const SizedBox(height: 32),
 
-            // ── Fields card ──────────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -210,7 +202,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
               ),
               child: Column(
                 children: [
-                  // Token
                   AppTextFormField(
                     controller: _tokenCtrl,
                     labelText: 'Reset Code',
@@ -225,7 +216,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                   ),
                   const SizedBox(height: 4),
 
-                  // New password
                   AppTextFormField(
                     controller: _passwordCtrl,
                     labelText: 'New Password',
@@ -258,7 +248,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
                   ),
                   const SizedBox(height: 4),
 
-                  // Confirm password
                   AppTextFormField(
                     controller: _confirmCtrl,
                     labelText: 'Confirm Password',
@@ -298,7 +287,6 @@ class _CreateNewPasswordPageState extends State<CreateNewPasswordPage> {
 
             const SizedBox(height: 20),
 
-            // ── Submit button ────────────────────────────────────────────────
             SizedBox(
               height: 50,
               child: ElevatedButton(

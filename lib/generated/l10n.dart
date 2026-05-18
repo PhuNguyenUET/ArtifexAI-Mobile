@@ -1,11 +1,9 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
+﻿// GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'intl/messages_all.dart';
 
 // **************************************************************************
-// Generator: Flutter Intl IDE plugin
-// Made by Localizely
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
@@ -54,12 +52,10 @@ class AppLocale {
     return Localizations.of<AppLocale>(context, AppLocale);
   }
 
-  /// `Tìm kiếm`
   String get common_search {
     return Intl.message('Tìm kiếm', name: 'common_search', desc: '', args: []);
   }
 
-  /// `Thông báo`
   String get common_notification {
     return Intl.message(
       'Thông báo',
@@ -69,7 +65,6 @@ class AppLocale {
     );
   }
 
-  /// `Bộ sưu tập`
   String get common_collection {
     return Intl.message(
       'Bộ sưu tập',
@@ -79,12 +74,10 @@ class AppLocale {
     );
   }
 
-  /// `Trang chủ`
   String get common_home {
     return Intl.message('Trang chủ', name: 'common_home', desc: '', args: []);
   }
 
-  /// `Tài khoản`
   String get common_profile {
     return Intl.message(
       'Tài khoản',
@@ -94,47 +87,38 @@ class AppLocale {
     );
   }
 
-  /// `Thứ Hai`
   String get common_monday {
     return Intl.message('Thứ Hai', name: 'common_monday', desc: '', args: []);
   }
 
-  /// `Thứ Ba`
   String get common_tuesday {
     return Intl.message('Thứ Ba', name: 'common_tuesday', desc: '', args: []);
   }
 
-  /// `Thứ Tư`
   String get common_wednesday {
     return Intl.message('Thứ Tư', name: 'common_wednesday', desc: '', args: []);
   }
 
-  /// `Thứ Năm`
   String get common_thursday {
     return Intl.message('Thứ Năm', name: 'common_thursday', desc: '', args: []);
   }
 
-  /// `Thứ Sáu`
   String get common_friday {
     return Intl.message('Thứ Sáu', name: 'common_friday', desc: '', args: []);
   }
 
-  /// `Thứ Bảy`
   String get common_saturday {
     return Intl.message('Thứ Bảy', name: 'common_saturday', desc: '', args: []);
   }
 
-  /// `Chủ Nhật`
   String get common_sunday {
     return Intl.message('Chủ Nhật', name: 'common_sunday', desc: '', args: []);
   }
 
-  /// `Email`
   String get common_email {
     return Intl.message('Email', name: 'common_email', desc: '', args: []);
   }
 
-  /// `Số điện thoại`
   String get common_phone_number {
     return Intl.message(
       'Số điện thoại',
@@ -144,7 +128,6 @@ class AppLocale {
     );
   }
 
-  /// `Mật khẩu`
   String get common_password {
     return Intl.message(
       'Mật khẩu',
@@ -154,7 +137,6 @@ class AppLocale {
     );
   }
 
-  /// `Họ và tên`
   String get common_first_name_last_name {
     return Intl.message(
       'Họ và tên',
@@ -164,12 +146,10 @@ class AppLocale {
     );
   }
 
-  /// `Tên`
   String get common_name {
     return Intl.message('Tên', name: 'common_name', desc: '', args: []);
   }
 
-  /// `Username`
   String get common_username {
     return Intl.message(
       'Username',
@@ -179,7 +159,6 @@ class AppLocale {
     );
   }
 
-  /// `Nhập số điện thoại mới`
   String get validator_please_input_new_phone_number {
     return Intl.message(
       'Nhập số điện thoại mới',
@@ -189,7 +168,6 @@ class AppLocale {
     );
   }
 
-  /// `Số điện thoại phải có ít nhất 10 chữ số`
   String get validator_phone_at_least_10_digits {
     return Intl.message(
       'Số điện thoại phải có ít nhất 10 chữ số',
@@ -199,7 +177,6 @@ class AppLocale {
     );
   }
 
-  /// `{value} không đúng định dạng`
   String validator_value_not_correct_format(Object value) {
     return Intl.message(
       '$value không đúng định dạng',
@@ -209,7 +186,6 @@ class AppLocale {
     );
   }
 
-  /// `Nhập số điện thoại`
   String get validator_please_input_phone_number {
     return Intl.message(
       'Nhập số điện thoại',
@@ -219,7 +195,6 @@ class AppLocale {
     );
   }
 
-  /// `{value} không hợp lệ`
   String validator_value_is_not_invalid(Object value) {
     return Intl.message(
       '$value không hợp lệ',
@@ -229,7 +204,6 @@ class AppLocale {
     );
   }
 
-  /// `Vui lòng điền {value}`
   String validator_please_input_value(Object value) {
     return Intl.message(
       'Vui lòng điền $value',
@@ -239,7 +213,6 @@ class AppLocale {
     );
   }
 
-  /// `Nhập {value} của bạn`
   String common_validate_empty_value(Object value) {
     return Intl.message(
       'Nhập $value của bạn',
@@ -249,7 +222,6 @@ class AppLocale {
     );
   }
 
-  /// `Cập nhật username`
   String get validator_please_input_username {
     return Intl.message(
       'Cập nhật username',
@@ -259,12 +231,10 @@ class AppLocale {
     );
   }
 
-  /// `Cho phép`
   String get common_allow {
     return Intl.message('Cho phép', name: 'common_allow', desc: '', args: []);
   }
 
-  /// `Không cho phép`
   String get common_un_allow {
     return Intl.message(
       'Không cho phép',
@@ -274,17 +244,14 @@ class AppLocale {
     );
   }
 
-  /// `Camera`
   String get common_camera {
     return Intl.message('Camera', name: 'common_camera', desc: '', args: []);
   }
 
-  /// `Thư viện`
   String get common_gallery {
     return Intl.message('Thư viện', name: 'common_gallery', desc: '', args: []);
   }
 
-  /// `Cho phép truy cập hình ảnh và nội dung nghe nhìn trên thiết bị để tải hình ảnh lên đánh giá của bạn`
   String get permission_photos_message {
     return Intl.message(
       'Cho phép truy cập hình ảnh và nội dung nghe nhìn trên thiết bị để tải hình ảnh lên đánh giá của bạn',
@@ -294,12 +261,10 @@ class AppLocale {
     );
   }
 
-  /// `Face App`
   String get app_name {
     return Intl.message('Face App', name: 'app_name', desc: '', args: []);
   }
 
-  /// `<p>Các bước để cho phép truy cập hình ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Quyền</b> > Chọn <b>Bộ nhớ</b><br>\n   3. Chọn <b>Chỉ cho phép truy cập vào nội dung nghe nhìn</b></p>`
   String get permission_photos_steps_android {
     return Intl.message(
       '<p>Các bước để cho phép truy cập hình ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Quyền</b> > Chọn <b>Bộ nhớ</b><br>\n   3. Chọn <b>Chỉ cho phép truy cập vào nội dung nghe nhìn</b></p>',
@@ -309,7 +274,6 @@ class AppLocale {
     );
   }
 
-  /// `<p>Các bước để cho phép truy cập hình ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Ảnh</b><br>\n   3. Chọn <b>Ảnh được chọn</b> hoặc <b>Tất cả ảnh</b></p>`
   String get permission_photos_steps_ios {
     return Intl.message(
       '<p>Các bước để cho phép truy cập hình ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Ảnh</b><br>\n   3. Chọn <b>Ảnh được chọn</b> hoặc <b>Tất cả ảnh</b></p>',
@@ -319,7 +283,6 @@ class AppLocale {
     );
   }
 
-  /// `Cho phép truy cập chụp ảnh và quay video để chụp hình ảnh cho đánh giá của bạn`
   String get permission_camera_message {
     return Intl.message(
       'Cho phép truy cập chụp ảnh và quay video để chụp hình ảnh cho đánh giá của bạn',
@@ -329,7 +292,6 @@ class AppLocale {
     );
   }
 
-  /// `<p>Các bước để cho phép truy cập máy ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Quyền</b> > Chọn <b>Máy ảnh</b><br>\n   3. Chọn <b>Chỉ cho phép khi dùng dứng dụng</b> hoặc <b>Luôn hỏi</b></p>`
   String get permission_camera_steps_android {
     return Intl.message(
       '<p>Các bước để cho phép truy cập máy ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Chọn <b>Quyền</b> > Chọn <b>Máy ảnh</b><br>\n   3. Chọn <b>Chỉ cho phép khi dùng dứng dụng</b> hoặc <b>Luôn hỏi</b></p>',
@@ -339,7 +301,6 @@ class AppLocale {
     );
   }
 
-  /// `<p>Các bước để cho phép truy cập máy ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Bật quyền <b>Camera</b><br>`
   String get permission_camera_steps_ios {
     return Intl.message(
       '<p>Các bước để cho phép truy cập máy ảnh<br>\n   1. Vào thông tin ứng dụng <b>Face AI</b><br>\n   2. Bật quyền <b>Camera</b><br>',
@@ -349,7 +310,6 @@ class AppLocale {
     );
   }
 
-  /// `Face App`
   String get enhance_topbar_title {
     return Intl.message(
       'Face App',
@@ -359,22 +319,18 @@ class AppLocale {
     );
   }
 
-  /// `Làm đẹp`
   String get enhance_title {
     return Intl.message('Làm đẹp', name: 'enhance_title', desc: '', args: []);
   }
 
-  /// `Bằng văn bản`
   String get text_style {
     return Intl.message('Bằng văn bản', name: 'text_style', desc: '', args: []);
   }
 
-  /// `Tạo`
   String get face_ai_generate {
     return Intl.message('Tạo', name: 'face_ai_generate', desc: '', args: []);
   }
 
-  /// `Tìm kiếm phổ biến`
   String get face_ai_popular_searches {
     return Intl.message(
       'Tìm kiếm phổ biến',
@@ -384,12 +340,10 @@ class AppLocale {
     );
   }
 
-  /// `Hình ảnh`
   String get face_ai_person {
     return Intl.message('Hình ảnh', name: 'face_ai_person', desc: '', args: []);
   }
 
-  /// `Cho phép truy cập`
   String get allow_access {
     return Intl.message(
       'Cho phép truy cập',
@@ -399,7 +353,6 @@ class AppLocale {
     );
   }
 
-  /// `Bộ sưu tập của bạn`
   String get to_your_photos {
     return Intl.message(
       'Bộ sưu tập của bạn',
@@ -409,7 +362,6 @@ class AppLocale {
     );
   }
 
-  /// `Ảnh sẽ xuất hiện ở đây`
   String get they_will_appear_here {
     return Intl.message(
       'Ảnh sẽ xuất hiện ở đây',
@@ -419,7 +371,6 @@ class AppLocale {
     );
   }
 
-  /// `Kết quả AI`
   String get ai_gen_result {
     return Intl.message(
       'Kết quả AI',
@@ -429,7 +380,6 @@ class AppLocale {
     );
   }
 
-  /// `Xin hãy đợi một chút...`
   String get loading {
     return Intl.message(
       'Xin hãy đợi một chút...',
@@ -439,7 +389,6 @@ class AppLocale {
     );
   }
 
-  /// `Tạo lại`
   String get regenerate_image {
     return Intl.message(
       'Tạo lại',
@@ -449,7 +398,6 @@ class AppLocale {
     );
   }
 
-  /// `Tải xuống`
   String get download_image {
     return Intl.message(
       'Tải xuống',
@@ -459,12 +407,10 @@ class AppLocale {
     );
   }
 
-  /// `Chia sẻ`
   String get share {
     return Intl.message('Chia sẻ', name: 'share', desc: '', args: []);
   }
 
-  /// `Thêm mô tả`
   String get additional_prompt {
     return Intl.message(
       'Thêm mô tả',
@@ -474,12 +420,10 @@ class AppLocale {
     );
   }
 
-  /// `Bằng ảnh`
   String get photo_style {
     return Intl.message('Bằng ảnh', name: 'photo_style', desc: '', args: []);
   }
 
-  /// `Kiểu siêu thực`
   String get super_style {
     return Intl.message(
       'Kiểu siêu thực',
@@ -489,12 +433,10 @@ class AppLocale {
     );
   }
 
-  /// `Kiểu thực tế`
   String get real_style {
     return Intl.message('Kiểu thực tế', name: 'real_style', desc: '', args: []);
   }
 
-  /// `Đổi khuôn mặt`
   String get photo_swap {
     return Intl.message(
       'Đổi khuôn mặt',
@@ -504,7 +446,6 @@ class AppLocale {
     );
   }
 
-  /// `Làm đẹp siêu thực`
   String get super_enhance {
     return Intl.message(
       'Làm đẹp siêu thực',
@@ -514,12 +455,10 @@ class AppLocale {
     );
   }
 
-  /// `Làm đẹp`
   String get normal_enhance {
     return Intl.message('Làm đẹp', name: 'normal_enhance', desc: '', args: []);
   }
 
-  /// `QR này đã hết thời hạn`
   String get QR_expired_message {
     return Intl.message(
       'QR này đã hết thời hạn',
@@ -529,7 +468,6 @@ class AppLocale {
     );
   }
 
-  /// `Thanh toán thành công`
   String get QR_success_message {
     return Intl.message(
       'Thanh toán thành công',
@@ -539,7 +477,6 @@ class AppLocale {
     );
   }
 
-  /// `Thanh toán QR`
   String get QR_code_payment {
     return Intl.message(
       'Thanh toán QR',
@@ -549,12 +486,10 @@ class AppLocale {
     );
   }
 
-  /// `Giá cả`
   String get pricing {
     return Intl.message('Giá cả', name: 'pricing', desc: '', args: []);
   }
 
-  /// `Số tiền thanh toán`
   String get payment_amount {
     return Intl.message(
       'Số tiền thanh toán',
@@ -564,7 +499,6 @@ class AppLocale {
     );
   }
 
-  /// `Số click còn lại`
   String get clicks_remained {
     return Intl.message(
       'Số click còn lại',
@@ -574,7 +508,6 @@ class AppLocale {
     );
   }
 
-  /// `Ảnh của bạn không có khuôn mặt. Một số chức năng có thể sẽ không hoạt động`
   String get no_face_warning {
     return Intl.message(
       'Ảnh của bạn không có khuôn mặt. Một số chức năng có thể sẽ không hoạt động',
@@ -584,12 +517,10 @@ class AppLocale {
     );
   }
 
-  /// `Chỉnh sửa`
   String get editor {
     return Intl.message('Chỉnh sửa', name: 'editor', desc: '', args: []);
   }
 
-  /// `Xóa nền`
   String get remove_background {
     return Intl.message(
       'Xóa nền',
@@ -599,7 +530,6 @@ class AppLocale {
     );
   }
 
-  /// `Đã có lỗi xảy ra. Hãy thử lại sau ít phút`
   String get error_msg {
     return Intl.message(
       'Đã có lỗi xảy ra. Hãy thử lại sau ít phút',
@@ -609,7 +539,6 @@ class AppLocale {
     );
   }
 
-  /// `Server đang quá tải. Hãy thử lại sau ít phút.`
   String get overloaded_error {
     return Intl.message(
       'Server đang quá tải. Hãy thử lại sau ít phút.',
@@ -619,7 +548,6 @@ class AppLocale {
     );
   }
 
-  /// `Chức năng này yêu cầu ảnh của bạn phải có khuôn mặt. Xin hãy chọn lại.`
   String get no_face_force_warning {
     return Intl.message(
       'Chức năng này yêu cầu ảnh của bạn phải có khuôn mặt. Xin hãy chọn lại.',
@@ -629,17 +557,14 @@ class AppLocale {
     );
   }
 
-  /// `Tất cả`
   String get all {
     return Intl.message('Tất cả', name: 'all', desc: '', args: []);
   }
 
-  /// `Khuôn mặt`
   String get faces {
     return Intl.message('Khuôn mặt', name: 'faces', desc: '', args: []);
   }
 
-  /// `Bạn đã hết lượt click. Xin hãy mua thêm để tiếp tục.`
   String get out_of_clicks_warning {
     return Intl.message(
       'Bạn đã hết lượt click. Xin hãy mua thêm để tiếp tục.',
@@ -649,32 +574,26 @@ class AppLocale {
     );
   }
 
-  /// `Thành công`
   String get successfully {
     return Intl.message('Thành công', name: 'successfully', desc: '', args: []);
   }
 
-  /// `Lỗi`
   String get error {
     return Intl.message('Lỗi', name: 'error', desc: '', args: []);
   }
 
-  /// `Bình thường`
   String get normal {
     return Intl.message('Bình thường', name: 'normal', desc: '', args: []);
   }
 
-  /// `Cảnh báo`
   String get warning {
     return Intl.message('Cảnh báo', name: 'warning', desc: '', args: []);
   }
 
-  /// `Trang điểm`
   String get make_up {
     return Intl.message('Trang điểm', name: 'make_up', desc: '', args: []);
   }
 
-  // skipped getter for the '' key
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocale> {

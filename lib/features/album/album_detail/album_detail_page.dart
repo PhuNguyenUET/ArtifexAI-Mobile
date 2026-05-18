@@ -1,4 +1,4 @@
-import '../../../packages/index.dart';
+﻿import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
 import 'album_detail_controller.dart';
 import 'album_detail_state.dart';
@@ -308,8 +308,6 @@ class _AlbumDetailView extends StatelessWidget {
     );
   }
 }
-
-// ─── Media Thumbnail ──────────────────────────────────────────────────────────
 
 class _MediaThumbnail extends StatelessWidget {
   const _MediaThumbnail({

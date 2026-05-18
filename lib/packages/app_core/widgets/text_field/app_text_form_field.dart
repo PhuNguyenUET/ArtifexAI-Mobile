@@ -1,10 +1,8 @@
-import 'package:flutter/services.dart';
+﻿import 'package:flutter/services.dart';
 
 import '../../../index.dart';
 import 'app_input_decoration.dart';
 
-/// This TextFormField will have a default spacing of 20px below it, as we inserted
-/// a blank hintText to avoid layout shifting.
 class AppTextFormField extends StatelessWidget {
   const AppTextFormField({
     super.key,
@@ -92,7 +90,6 @@ class AppTextFormField extends StatelessWidget {
   final int? maxLines;
   final BoxConstraints? prefixIconConstraints;
 
-  /// Icon before and outside of the TextFormField border
   final Widget? icon;
 
   @override

@@ -1,14 +1,7 @@
-import '../../../packages/index.dart';
+﻿import '../../../packages/index.dart';
 import '../../home/home_controller.dart';
 import '../../home/home_state.dart';
 
-/// Opens a bottom sheet that lets the user type an album name and pick
-/// images from their gallery to include in the new album.
-///
-/// Usage:
-/// ```dart
-/// CreateAlbumSheet.show(context);
-/// ```
 class CreateAlbumSheet extends StatelessWidget {
   const CreateAlbumSheet({super.key});
 
@@ -47,8 +40,6 @@ class CreateAlbumSheet extends StatelessWidget {
     );
   }
 }
-
-// ─── Body ─────────────────────────────────────────────────────────────────────
 
 class _CreateAlbumBody extends StatefulWidget {
   const _CreateAlbumBody({
@@ -143,10 +134,8 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
       color: AppColor.spaceCard,
       child: Column(
         children: [
-          // ── Header ──────────────────────────────────────────────────────
           _buildHeader(context),
 
-          // ── Name field ──────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
             child: AppTextFormField(
@@ -159,7 +148,6 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
             ),
           ),
 
-          // ── Section label ────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
             child: Row(
@@ -223,10 +211,8 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
 
           const Divider(height: 1, color: AppColor.spaceBorder),
 
-          // ── Image grid ───────────────────────────────────────────────────
           Expanded(child: _buildGrid()),
 
-          // ── Create button ────────────────────────────────────────────────
           Container(
             padding: EdgeInsets.fromLTRB(
                 20, 12, 20, bottomInset + bottomPadding + 16),
@@ -260,8 +246,6 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
       ),
     );
   }
-
-  // ─── Header ───────────────────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) {
     return Container(
@@ -311,8 +295,6 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
       ),
     );
   }
-
-  // ─── Image Grid ───────────────────────────────────────────────────────────
 
   Widget _buildGrid() {
     if (widget.isGalleryLoading && widget.gallery.isEmpty) {
@@ -375,13 +357,11 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Image
                 item.mediaUrl != null
                     ? AppImage(
                         asset: item.mediaUrl!, fit: BoxFit.cover)
                     : Container(color: AppColor.spaceCardHigh),
 
-                // Selection overlay
                 AnimatedOpacity(
                   duration: const Duration(milliseconds: 150),
                   opacity: isSelected ? 1.0 : 0.0,
@@ -390,7 +370,6 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
                   ),
                 ),
 
-                // Checkmark
                 Positioned(
                   top: 6,
                   right: 6,

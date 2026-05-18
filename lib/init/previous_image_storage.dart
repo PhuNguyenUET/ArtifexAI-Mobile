@@ -1,4 +1,4 @@
-import 'package:artifex_ai_mobile/packages/index.dart';
+﻿import 'package:artifex_ai_mobile/packages/index.dart';
 
 class PreviousImageStorage {
   static const storageKey = 'face2_ai_previously_saved_image';
