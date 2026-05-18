@@ -300,6 +300,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    if (widget.result.updatedInstruction != 'N/A')
                     GestureDetector(
                       onTap: added ? null : removeFromProject,
                       child: Container(
@@ -507,7 +508,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.result.updatedInstruction != null) ...[
+          if (widget.result.updatedInstruction != null && widget.result.updatedInstruction != 'N/A') ...[
             GestureDetector(
               onTap: _showInstructionSheet,
               child: Container(
