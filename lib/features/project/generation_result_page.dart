@@ -51,7 +51,12 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     await _videoCtrl!.initialize();
     _videoCtrl!.setLooping(true);
     _videoCtrl!.play();
+    _videoCtrl!.addListener(_onVideoUpdate);
     if (mounted) setState(() => _videoInitialized = true);
+  }
+
+  void _onVideoUpdate() {
+    if (mounted) setState(() {});
   }
 
   @override
