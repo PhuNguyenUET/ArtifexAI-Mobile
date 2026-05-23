@@ -164,7 +164,7 @@ class HomeController extends Cubit<HomeState> {
       final project = await _storage.repository.createProject(
         projectName: projectName,
         artStyle: artStyle,
-        instructions: instructions.isNotEmpty ? instructions.join('\n') : '',
+        instructions: instructions.isNotEmpty ? instructions.join('. ') : '',
       );
       emit(state.copyWith(projects: [project, ...state.projects]));
       return project;
