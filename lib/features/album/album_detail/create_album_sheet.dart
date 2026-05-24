@@ -130,7 +130,9 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Container(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
       color: AppColor.spaceCard,
       child: Column(
         children: [
@@ -243,6 +245,7 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

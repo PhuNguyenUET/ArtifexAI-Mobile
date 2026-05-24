@@ -1,5 +1,4 @@
-﻿
-import '../../generated/assets.dart';
+﻿import '../../generated/assets.dart';
 import '../../init/routes.dart';
 import '../../packages/app_core/utils/art_style_helper.dart';
 import '../../packages/index.dart';
@@ -22,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   late final HomeController _controller;
   late final PageController _pageController;
   HomeTab _previousTab = HomeTab.albums;
@@ -41,7 +40,21 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    // Called when a pushed route is popped and this page becomes visible again
+    _controller.fetchAlbums();
+    _controller.fetchGallery();
+  }
+
+  @override
   void dispose() {
+    appRouteObserver.unsubscribe(this);
     _pageController.dispose();
     super.dispose();
   }
@@ -231,8 +244,10 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildAlbumsSection(BuildContext context, HomeState state) {
     final isLoading = state.albumsLoading || state.galleryLoading;
+    final hasData = state.albums.isNotEmpty || state.gallery.isNotEmpty;
 
-    if (isLoading) return _buildLoadingGrid();
+    // Only show skeleton on initial load (no data yet); background refreshes keep existing content
+    if (isLoading && !hasData) return _buildLoadingGrid();
 
     if (state.albumsError != null) {
       return _buildError(state.albumsError!, () {
@@ -249,7 +264,23 @@ class _HomePageState extends State<HomePage>
           context.read<HomeController>().fetchGallery(),
         ]);
       },
-      child: GridView.builder(
+      child: state.albums.isEmpty && state.gallery.isEmpty
+          ? LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: constraints.maxHeight,
+                  child: _buildEmpty(
+                    icon: Icons.photo_library_outlined,
+                    title: 'No Albums Yet',
+                    subtitle: 'Your generated images and\nalbums will appear here.',
+                    actionLabel: 'Create Album',
+                    onAction: () => CreateAlbumSheet.show(context),
+                  ),
+                ),
+              ),
+            )
+          : GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -257,12 +288,13 @@ class _HomePageState extends State<HomePage>
           mainAxisSpacing: 12,
           childAspectRatio: 0.82,
         ),
-        itemCount: state.albums.length + 1,
+        itemCount: state.albums.length + (state.gallery.isEmpty ? 0 : 1),
         itemBuilder: (context, i) {
-          if (i == 0) return _GalleryCard(media: state.gallery);
+          if (state.gallery.isNotEmpty && i == 0) return _GalleryCard(media: state.gallery);
+          final albumIndex = state.gallery.isEmpty ? i : i - 1;
           return _AlbumCard(
-            key: ValueKey(state.albums[i - 1].id),
-            album: state.albums[i - 1],
+            key: ValueKey(state.albums[albumIndex].id),
+            album: state.albums[albumIndex],
             editMode: _editMode,
           );
         },
@@ -271,7 +303,8 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _buildProjectsSection(BuildContext context, HomeState state) {
-    if (state.projectsLoading) return _buildLoadingList();
+    // Only show skeleton on initial load (no data yet); background refreshes keep existing content
+    if (state.projectsLoading && state.projects.isEmpty) return _buildLoadingList();
 
     if (state.projectsError != null) {
       return _buildError(state.projectsError!, () {
@@ -801,7 +834,7 @@ class _HomePageState extends State<HomePage>
               style: GoogleFonts.inter(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: AppColor.textTitle,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 8),
@@ -846,88 +879,24 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-class _PulsingIcon extends StatefulWidget {
+class _PulsingIcon extends StatelessWidget {
   const _PulsingIcon({required this.icon});
   final IconData icon;
 
   @override
-  State<_PulsingIcon> createState() => _PulsingIconState();
-}
-
-class _PulsingIconState extends State<_PulsingIcon>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _scale;
-  late final Animation<double> _ring;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat(reverse: false);
-    _scale = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
-    );
-    _ring = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      height: 100,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          AnimatedBuilder(
-            animation: _ring,
-            builder: (_, __) => Opacity(
-              opacity: (1 - _ring.value) * 0.5,
-              child: Container(
-                width: 60 + _ring.value * 40,
-                height: 60 + _ring.value * 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColor.primary,
-                    width: 2,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          AnimatedBuilder(
-            animation: _scale,
-            builder: (_, child) => Transform.scale(
-              scale: _scale.value,
-              child: child,
-            ),
-            child: Container(
-              width: 72,
-              height: 72,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Color(0xFF803DFF), Color(0xFF5B6AF0)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Icon(widget.icon, size: 34, color: Colors.white),
-            ),
-          ),
-        ],
+    return Container(
+      width: 72,
+      height: 72,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Color(0xFF803DFF), Color(0xFF5B6AF0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
+      child: Icon(icon, size: 34, color: Colors.white),
     );
   }
 }
@@ -1053,21 +1022,7 @@ class _GalleryCard extends StatelessWidget {
           if (i < previews.length && previews[i].mediaUrl != null) {
             return AppImage(asset: previews[i].mediaUrl!, fit: BoxFit.cover);
           }
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColor.gradientStart3.withValues(alpha: 0.35),
-                  AppColor.gradientEnd3.withValues(alpha: 0.35),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: const Center(
-              child: Icon(Icons.image_outlined, size: 22, color: Colors.white54),
-            ),
-          );
+          return const SizedBox.shrink();
         }),
       ),
     );

@@ -38,10 +38,22 @@ class _ProjectViewState extends State<_ProjectView> {
   final _actionDescCtrl    = TextEditingController();
 
   ReferenceImage? _singleImage;
-  String?         _singleImagePreview;   // base64
+  String?         _singleImagePreview;    // base64 (phone gallery)
+  String?         _singleImagePreviewUrl; // network url (generated)
 
-  final List<ReferenceImage> _multiImages      = [];
-  final List<String>         _multiImagePreviews = [];
+  // Separate image state for the Upscale form
+  ReferenceImage? _upscaleImage;
+  String?         _upscaleImagePreview;
+  String?         _upscaleImagePreviewUrl;
+
+  // Separate image state for the Video form
+  ReferenceImage? _videoImage;
+  String?         _videoImagePreview;
+  String?         _videoImagePreviewUrl;
+
+  final List<ReferenceImage> _multiImages        = [];
+  final List<String>         _multiImagePreviews = [];   // base64 (phone gallery)
+  final List<String?>        _multiImagePreviewUrls = []; // network url (generated, parallel list)
 
   UpscaleFactor _upscaleFactor = UpscaleFactor.x2;
 
@@ -106,13 +118,76 @@ class _ProjectViewState extends State<_ProjectView> {
     setState(() {
       _multiImages.add(result.$1);
       _multiImagePreviews.add(result.$2);
+      _multiImagePreviewUrls.add(null);
     });
+  }
+
+  MimeType _mimeTypeFromPath(String? path) {
+    if (path != null && path.toLowerCase().endsWith('.png')) return MimeType.png;
+    return MimeType.jpeg;
+  }
+
+  void _pickSingleFromGenerated(MediaDto media) {
+    if (media.mediaPath == null) return;
+    setState(() {
+      _singleImage = ReferenceImage(imagePath: media.mediaPath, mimeType: _mimeTypeFromPath(media.mediaPath));
+      _singleImagePreview = null;
+      _singleImagePreviewUrl = media.mediaUrl;
+    });
+  }
+
+  void _addMultiFromGenerated(MediaDto media) {
+    if (media.mediaPath == null) return;
+    setState(() {
+      _multiImages.add(ReferenceImage(imagePath: media.mediaPath, mimeType: _mimeTypeFromPath(media.mediaPath)));
+      _multiImagePreviews.add('');         // placeholder, won't be used
+      _multiImagePreviewUrls.add(media.mediaUrl);
+    });
+  }
+
+  void _showSingleImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ImageSourceSheet(
+        gallery: context.read<HomeController>().state.gallery,
+        onPhoneGallery: () {
+          Navigator.of(context).pop();
+          _pickSingleImage();
+        },
+        onGeneratedSelected: (media) {
+          Navigator.of(context).pop();
+          _pickSingleFromGenerated(media);
+        },
+      ),
+    );
+  }
+
+  void _showMultiImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ImageSourceSheet(
+        gallery: context.read<HomeController>().state.gallery,
+        onPhoneGallery: () {
+          Navigator.of(context).pop();
+          _addMultiImage();
+        },
+        onGeneratedSelected: (media) {
+          Navigator.of(context).pop();
+          _addMultiFromGenerated(media);
+        },
+      ),
+    );
   }
 
   void _removeMultiImage(int index) {
     setState(() {
       _multiImages.removeAt(index);
       _multiImagePreviews.removeAt(index);
+      _multiImagePreviewUrls.removeAt(index);
     });
     if (_multiImages.isEmpty) {
       final ctrl = context.read<ProjectController>();
@@ -127,12 +202,105 @@ class _ProjectViewState extends State<_ProjectView> {
     setState(() {
       _singleImage = null;
       _singleImagePreview = null;
+      _singleImagePreviewUrl = null;
     });
     final ctrl = context.read<ProjectController>();
     final m = ctrl.state.generationModel;
     if (m != GenerationModel.gpt && m != GenerationModel.gemini) {
       ctrl.setGenerationModel(GenerationModel.gpt);
     }
+  }
+
+  Future<void> _pickUpscaleImage() async {
+    final result = await _pickImage();
+    if (result == null) return;
+    setState(() {
+      _upscaleImage        = result.$1;
+      _upscaleImagePreview = result.$2;
+      _upscaleImagePreviewUrl = null;
+    });
+  }
+
+  void _pickUpscaleFromGenerated(MediaDto media) {
+    if (media.mediaPath == null) return;
+    setState(() {
+      _upscaleImage = ReferenceImage(imagePath: media.mediaPath, mimeType: _mimeTypeFromPath(media.mediaPath));
+      _upscaleImagePreview = null;
+      _upscaleImagePreviewUrl = media.mediaUrl;
+    });
+  }
+
+  void _clearUpscaleImage() {
+    setState(() {
+      _upscaleImage = null;
+      _upscaleImagePreview = null;
+      _upscaleImagePreviewUrl = null;
+    });
+  }
+
+  void _showUpscaleImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ImageSourceSheet(
+        gallery: context.read<HomeController>().state.gallery,
+        onPhoneGallery: () {
+          Navigator.of(context).pop();
+          _pickUpscaleImage();
+        },
+        onGeneratedSelected: (media) {
+          Navigator.of(context).pop();
+          _pickUpscaleFromGenerated(media);
+        },
+      ),
+    );
+  }
+
+  Future<void> _pickVideoImage() async {
+    final result = await _pickImage();
+    if (result == null) return;
+    setState(() {
+      _videoImage        = result.$1;
+      _videoImagePreview = result.$2;
+      _videoImagePreviewUrl = null;
+    });
+  }
+
+  void _pickVideoFromGenerated(MediaDto media) {
+    if (media.mediaPath == null) return;
+    setState(() {
+      _videoImage = ReferenceImage(imagePath: media.mediaPath, mimeType: _mimeTypeFromPath(media.mediaPath));
+      _videoImagePreview = null;
+      _videoImagePreviewUrl = media.mediaUrl;
+    });
+  }
+
+  void _clearVideoImage() {
+    setState(() {
+      _videoImage = null;
+      _videoImagePreview = null;
+      _videoImagePreviewUrl = null;
+    });
+  }
+
+  void _showVideoImageSourceSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ImageSourceSheet(
+        gallery: context.read<HomeController>().state.gallery,
+        onPhoneGallery: () {
+          Navigator.of(context).pop();
+          _pickVideoImage();
+        },
+        onGeneratedSelected: (media) {
+          Navigator.of(context).pop();
+          _pickVideoFromGenerated(media);
+        },
+      ),
+    );
   }
 
   void _toast(String msg, {bool isError = false}) {
@@ -180,7 +348,7 @@ class _ProjectViewState extends State<_ProjectView> {
       _toast('Please enter an action description.');
       return;
     }
-    if (mode == GenerationMode.upscale && _singleImage == null) {
+    if (mode == GenerationMode.upscale && _upscaleImage == null) {
       _toast('Please select an image to upscale.');
       return;
     }
@@ -223,10 +391,10 @@ class _ProjectViewState extends State<_ProjectView> {
       characterDescription: _charDescCtrl.text.trim().isEmpty ? null : _charDescCtrl.text.trim(),
       actionDescription:  _actionDescCtrl.text.trim().isEmpty ? null : _actionDescCtrl.text.trim(),
       spriteImages:       _multiImages,
-      upscaleImage:       _singleImage,
+      upscaleImage:       _upscaleImage,
       upscaleFactor:      _upscaleFactor,
       videoPrompt:        _promptCtrl.text.trim(),
-      videoReferenceImage: _singleImage,
+      videoReferenceImage: _videoImage,
       videoLength:        _videoLength,
       onError: (msg) => _toast(msg, isError: true),
     );
@@ -445,8 +613,16 @@ class _ProjectViewState extends State<_ProjectView> {
                     setState(() {
                       _singleImage = null;
                       _singleImagePreview = null;
+                      _singleImagePreviewUrl = null;
+                      _upscaleImage = null;
+                      _upscaleImagePreview = null;
+                      _upscaleImagePreviewUrl = null;
+                      _videoImage = null;
+                      _videoImagePreview = null;
+                      _videoImagePreviewUrl = null;
                       _multiImages.clear();
                       _multiImagePreviews.clear();
+                      _multiImagePreviewUrls.clear();
                       _promptCtrl.clear();
                       _additionalCtrl.clear();
                       _charDescCtrl.clear();
@@ -656,7 +832,7 @@ class _ProjectViewState extends State<_ProjectView> {
       const SizedBox(height: 20),
       _fieldLabel('Image to Upscale'),
       const SizedBox(height: 8),
-      _buildSingleImagePicker(),
+      _buildUpscaleImagePicker(),
       const SizedBox(height: 20),
       _fieldLabel('Upscale Factor'),
       const SizedBox(height: 8),
@@ -679,7 +855,7 @@ class _ProjectViewState extends State<_ProjectView> {
       const SizedBox(height: 20),
       _fieldLabel('Reference Image (optional)'),
       const SizedBox(height: 8),
-      _buildSingleImagePicker(),
+      _buildVideoImagePicker(),
       const SizedBox(height: 24),
       _fieldLabel('Video Length'),
       const SizedBox(height: 12),
@@ -723,16 +899,23 @@ class _ProjectViewState extends State<_ProjectView> {
   );
 
   Widget _buildSingleImagePicker() {
-    if (_singleImagePreview != null) {
+    final hasImage = _singleImagePreview != null || _singleImagePreviewUrl != null;
+    if (hasImage) {
       return Stack(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
-            child: Image.memory(
-              base64Decode(_singleImagePreview!),
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-            ),
+            child: _singleImagePreviewUrl != null
+                ? AppImage(
+                    asset: _singleImagePreviewUrl!,
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.memory(
+                    base64Decode(_singleImagePreview!),
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  ),
           ),
           Positioned(
             top: 8, right: 8,
@@ -749,7 +932,109 @@ class _ProjectViewState extends State<_ProjectView> {
       );
     }
     return GestureDetector(
-      onTap: _pickSingleImage,
+      onTap: _showSingleImageSourceSheet,
+      child: Container(
+        height: 130,
+        decoration: BoxDecoration(
+          color: AppColor.spaceCardHigh,
+          borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
+          border: Border.all(color: AppColor.spaceBorder, style: BorderStyle.solid),
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.add_photo_alternate_outlined, size: 36, color: AppColor.spaceTextSecondary),
+          const SizedBox(height: 8),
+          Text('Tap to select image', style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextSecondary)),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildUpscaleImagePicker() {
+    final hasImage = _upscaleImagePreview != null || _upscaleImagePreviewUrl != null;
+    if (hasImage) {
+      return Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
+            child: _upscaleImagePreviewUrl != null
+                ? AppImage(
+                    asset: _upscaleImagePreviewUrl!,
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.memory(
+                    base64Decode(_upscaleImagePreview!),
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  ),
+          ),
+          Positioned(
+            top: 8, right: 8,
+            child: GestureDetector(
+              onTap: _clearUpscaleImage,
+              child: Container(
+                width: 28, height: 28,
+                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                child: const Icon(Icons.close, size: 16, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return GestureDetector(
+      onTap: _showUpscaleImageSourceSheet,
+      child: Container(
+        height: 130,
+        decoration: BoxDecoration(
+          color: AppColor.spaceCardHigh,
+          borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
+          border: Border.all(color: AppColor.spaceBorder, style: BorderStyle.solid),
+        ),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(Icons.add_photo_alternate_outlined, size: 36, color: AppColor.spaceTextSecondary),
+          const SizedBox(height: 8),
+          Text('Tap to select image', style: GoogleFonts.inter(fontSize: 13, color: AppColor.spaceTextSecondary)),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildVideoImagePicker() {
+    final hasImage = _videoImagePreview != null || _videoImagePreviewUrl != null;
+    if (hasImage) {
+      return Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
+            child: _videoImagePreviewUrl != null
+                ? AppImage(
+                    asset: _videoImagePreviewUrl!,
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.memory(
+                    base64Decode(_videoImagePreview!),
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  ),
+          ),
+          Positioned(
+            top: 8, right: 8,
+            child: GestureDetector(
+              onTap: _clearVideoImage,
+              child: Container(
+                width: 28, height: 28,
+                decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                child: const Icon(Icons.close, size: 16, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return GestureDetector(
+      onTap: _showVideoImageSourceSheet,
       child: Container(
         height: 130,
         decoration: BoxDecoration(
@@ -777,7 +1062,7 @@ class _ProjectViewState extends State<_ProjectView> {
             itemBuilder: (_, i) {
               if (i == _multiImagePreviews.length) {
                 return GestureDetector(
-                  onTap: _addMultiImage,
+                  onTap: _showMultiImageSourceSheet,
                   child: Container(
                     width: 80, height: 80,
                     margin: const EdgeInsets.only(right: 8),
@@ -790,6 +1075,8 @@ class _ProjectViewState extends State<_ProjectView> {
                   ),
                 );
               }
+              final previewUrl = _multiImagePreviewUrls[i];
+              final previewB64 = _multiImagePreviews[i];
               return Stack(
                 children: [
                   Container(
@@ -797,7 +1084,9 @@ class _ProjectViewState extends State<_ProjectView> {
                     margin: const EdgeInsets.only(right: 8),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(AppStyleConstant.smallRounding),
-                      child: Image.memory(base64Decode(_multiImagePreviews[i]), fit: BoxFit.cover),
+                      child: previewUrl != null
+                          ? AppImage(asset: previewUrl, fit: BoxFit.cover)
+                          : Image.memory(base64Decode(previewB64), fit: BoxFit.cover),
                     ),
                   ),
                   Positioned(
@@ -818,7 +1107,7 @@ class _ProjectViewState extends State<_ProjectView> {
         ),
       ] else ...[
         GestureDetector(
-          onTap: _addMultiImage,
+          onTap: _showMultiImageSourceSheet,
           child: Container(
             height: 90,
             decoration: BoxDecoration(
@@ -1896,3 +2185,240 @@ class _ModelSelector extends StatelessWidget {
   }
 }
 
+// ─── Image Source Picker Sheet ───────────────────────────────────────────────
+
+class _ImageSourceSheet extends StatefulWidget {
+  const _ImageSourceSheet({
+    required this.gallery,
+    required this.onPhoneGallery,
+    required this.onGeneratedSelected,
+  });
+
+  final List<MediaDto> gallery;
+  final VoidCallback onPhoneGallery;
+  final void Function(MediaDto) onGeneratedSelected;
+
+  @override
+  State<_ImageSourceSheet> createState() => _ImageSourceSheetState();
+}
+
+class _ImageSourceSheetState extends State<_ImageSourceSheet>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabCtrl = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, scrollCtrl) => Scaffold(
+        backgroundColor: Colors.transparent,
+        body: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppStyleConstant.sheetTopBorderRadius),
+          ),
+          child: Container(
+            color: AppColor.spaceCard,
+            child: Column(
+              children: [
+                // handle
+                const SizedBox(height: 12),
+                Center(
+                  child: Container(
+                    width: 40, height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColor.spaceBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // header
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 34, height: 34,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColor.primaryBackground,
+                        ),
+                        child: const Icon(Icons.add_photo_alternate_outlined,
+                            size: 18, color: AppColor.primary),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Select Image Source',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(Icons.close_rounded,
+                            size: 20, color: AppColor.spaceTextSecondary),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // tab bar
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColor.spaceCardHigh,
+                    borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius),
+                    border: Border.all(color: AppColor.spaceBorder),
+                  ),
+                  child: TabBar(
+                    controller: _tabCtrl,
+                    indicator: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF803DFF), Color(0xFF5B6AF0)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(AppStyleConstant.buttonBorderRadius - 1),
+                    ),
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelStyle: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600),
+                    unselectedLabelStyle: GoogleFonts.inter(fontSize: 13),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: AppColor.spaceTextSecondary,
+                    tabs: const [
+                      Tab(text: 'Phone Gallery'),
+                      Tab(text: 'My Generations'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabCtrl,
+                    children: [
+                      // ── Phone Gallery tab ──
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: GestureDetector(
+                            onTap: widget.onPhoneGallery,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              decoration: BoxDecoration(
+                                color: AppColor.spaceCardHigh,
+                                borderRadius: BorderRadius.circular(AppStyleConstant.mediumRounding),
+                                border: Border.all(color: AppColor.spaceBorder),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 56, height: 56,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColor.primaryBackground,
+                                    ),
+                                    child: const Icon(Icons.photo_library_outlined,
+                                        size: 26, color: AppColor.primary),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Open Phone Gallery',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Pick any image from your device',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppColor.spaceTextSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // ── My Generations tab ──
+                      widget.gallery.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.auto_awesome_outlined,
+                                      size: 40, color: AppColor.spaceTextSecondary),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'No generated images yet',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: AppColor.spaceTextSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : GridView.builder(
+                              controller: scrollCtrl,
+                              padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 4,
+                                mainAxisSpacing: 4,
+                              ),
+                              itemCount: widget.gallery.length,
+                              itemBuilder: (_, i) {
+                                final media = widget.gallery[i];
+                                return GestureDetector(
+                                  onTap: () => widget.onGeneratedSelected(media),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        AppStyleConstant.smallRounding),
+                                    child: media.mediaUrl != null
+                                        ? AppImage(
+                                            asset: media.mediaUrl!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(color: AppColor.spaceCardHigh),
+                                  ),
+                                );
+                              },
+                            ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -24,6 +24,8 @@ class _AuthPageState extends State<AuthPage> {
   final _signUpPasswordCtrl = TextEditingController();
   final _signUpConfirmPasswordCtrl = TextEditingController();
 
+  bool _registrationSuccess = false;
+
   AuthController _createController(BuildContext context) {
     _controller = AuthController();
     return _controller;
@@ -143,13 +145,19 @@ class _AuthPageState extends State<AuthPage> {
             context: context,
             label: 'Sign In',
             isActive: state.activeTab == AuthTab.signIn,
-            onTap: () => context.read<AuthController>().switchTab(AuthTab.signIn),
+            onTap: () {
+              setState(() => _registrationSuccess = false);
+              context.read<AuthController>().switchTab(AuthTab.signIn);
+            },
           ),
           _buildTabItem(
             context: context,
             label: 'Sign Up',
             isActive: state.activeTab == AuthTab.signUp,
-            onTap: () => context.read<AuthController>().switchTab(AuthTab.signUp),
+            onTap: () {
+              setState(() => _registrationSuccess = false);
+              context.read<AuthController>().switchTab(AuthTab.signUp);
+            },
           ),
         ],
       ),
@@ -364,7 +372,29 @@ class _AuthPageState extends State<AuthPage> {
             },
             onFieldSubmitted: (_) => _onSignUp(context),
           ),
-          if (state.errorMessage != null) ...[
+          if (_registrationSuccess) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.15),
+                border: Border.all(color: Colors.green.withValues(alpha: 0.5)),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Registration successful! You can now sign in.',
+                      style: GoogleFonts.inter(fontSize: 13, color: Colors.green),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ] else if (state.errorMessage != null) ...[
             const SizedBox(height: 12),
             _buildErrorBanner(state.errorMessage!),
           ],
@@ -530,12 +560,17 @@ class _AuthPageState extends State<AuthPage> {
   void _onSignUp(BuildContext context) {
     FocusScope.of(context).unfocus();
     if (_signUpFormKey.currentState?.validate() != true) return;
+    setState(() => _registrationSuccess = false);
     context.read<AuthController>().signUp(
           context: context,
           email: _signUpEmailCtrl.text.trim(),
           password: _signUpPasswordCtrl.text,
           onSuccess: () {
-            context.read<AuthController>().switchTab(AuthTab.signIn);
+            _signUpEmailCtrl.clear();
+            _signUpPasswordCtrl.clear();
+            _signUpConfirmPasswordCtrl.clear();
+            _signUpFormKey.currentState?.reset();
+            setState(() => _registrationSuccess = true);
           },
         );
   }

@@ -48,23 +48,32 @@ class _MediaViewerPageState extends State<MediaViewerPage> {
         children: [
           const LavaBackground(),
           Container(color: Colors.black.withValues(alpha: 0.55)),
-          PageView.builder(
-            controller: _pageController,
-            itemCount: widget.media.length,
-            onPageChanged: (i) => setState(() => _currentIndex = i),
-            itemBuilder: (context, i) {
-              final item = widget.media[i];
-              return InteractiveViewer(
-                minScale: 0.8,
-                maxScale: 4.0,
-                child: Center(
-                  child: item.mediaUrl != null
-                      ? AppImage(
-                          asset: item.mediaUrl!,
-                          fit: BoxFit.contain,
-                        )
-                      : const Icon(Icons.broken_image_outlined,
-                          size: 64, color: Colors.white38),
+          Builder(
+            builder: (context) {
+              final topPadding = MediaQuery.of(context).padding.top + 8 + 56.0;
+              final bottomPadding = MediaQuery.of(context).padding.bottom + 16 + 52 + 10 + 52 + 16.0;
+              return Padding(
+                padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: widget.media.length,
+                  onPageChanged: (i) => setState(() => _currentIndex = i),
+                  itemBuilder: (context, i) {
+                    final item = widget.media[i];
+                    return InteractiveViewer(
+                      minScale: 0.8,
+                      maxScale: 4.0,
+                      child: Center(
+                        child: item.mediaUrl != null
+                            ? AppImage(
+                                asset: item.mediaUrl!,
+                                fit: BoxFit.contain,
+                              )
+                            : const Icon(Icons.broken_image_outlined,
+                                size: 64, color: Colors.white38),
+                      ),
+                    );
+                  },
                 ),
               );
             },

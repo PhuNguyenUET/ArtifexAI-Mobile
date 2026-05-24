@@ -16,10 +16,13 @@ extension AppNavigator on BuildContext {
   void navigateToHome() => go(AppRouter.home);
 }
 
+final RouteObserver<ModalRoute<void>> appRouteObserver =
+    RouteObserver<ModalRoute<void>>();
+
 final GoRouter router = GoRouter(
   initialLocation: AppRouter.splash,
   debugLogDiagnostics: true,
-  observers: [YDToast.obs()],
+  observers: [YDToast.obs(), appRouteObserver],
   routes: <RouteBase>[
     GoRoute(
       path: AppRouter.splash,

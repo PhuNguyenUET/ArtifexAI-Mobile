@@ -4,7 +4,6 @@ import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
 import '../../packages/index.dart';
 import '../home/home_controller.dart';
-import 'mask_edit_page.dart';
 import 'project_state.dart';
 
 class GenerationResultPage extends StatefulWidget {
@@ -456,20 +455,25 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
-            child: AppImage(asset: _urls.first, fit: BoxFit.contain, width: double.infinity),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: AppImage(asset: _urls.first, fit: BoxFit.cover, width: double.infinity),
+            ),
           ),
         ),
       );
     }
 
-    return Column(
-      children: [
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
         const SizedBox(height: 16),
         CarouselSlider.builder(
           carouselController: _carouselCtrl,
           itemCount: _urls.length,
           options: CarouselOptions(
-            height: MediaQuery.of(context).size.height * 0.56,
+            height: MediaQuery.of(context).size.width - 32,
             viewportFraction: 0.88,
             enlargeCenterPage: true,
             enlargeFactor: 0.22,
@@ -478,7 +482,10 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           ),
           itemBuilder: (_, i, __) => ClipRRect(
             borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
-            child: AppImage(asset: _urls[i], fit: BoxFit.cover, width: double.infinity),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: AppImage(asset: _urls[i], fit: BoxFit.cover, width: double.infinity),
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -499,6 +506,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           }),
         ),
       ],
+      ),
     );
   }
 
@@ -572,24 +580,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                     ),
                   ),
                 ],
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _ActionButton(
-                    icon: Icons.brush_rounded,
-                    label: 'Mask Edit',
-                    gradient: const [Color(0xFFEE85FF), Color(0xFFFF6B6B)],
-                    onTap: currentUrl != null
-                        ? () => Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => MaskEditPage(
-                                imageUrl: currentUrl,
-                                imagePath: null,
-                                projectId: widget.projectId,
-                                homeController: widget.homeController,
-                              ),
-                            ))
-                        : null,
-                  ),
-                ),
+
               ],
             ],
           ),

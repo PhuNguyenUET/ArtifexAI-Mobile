@@ -103,12 +103,12 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
     FocusScope.of(context).unfocus();
 
     if (_nameCtrl.text.trim().isEmpty) {
-      _showToast('Please enter a project name.');
+      _showToast('Please enter a project name.', isError: true);
       return;
     }
 
     if (_instructions.isEmpty) {
-      _showToast('Please add at least one instruction for the AI.');
+      _showToast('Please add at least one instruction for the AI.', isError: true);
       return;
     }
 
@@ -133,7 +133,9 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-    return Stack(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
       children: [
         Container(
           color: AppColor.spaceCard,
@@ -163,12 +165,18 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
                 child: AppFilledButton(
                   onPressed: _submitting ? null : _submit,
                   width: double.infinity,
+                  buttonStyle: YDButtonStyle.defaultSolidStyle.copyWith(
+                    foregroundColor: WidgetStateProperty.resolveWith(
+                      (states) => Colors.white.withValues(
+                        alpha: states.contains(WidgetState.disabled) ? 0.55 : 1.0,
+                      ),
+                    ),
+                  ),
                   child: Text(
                     'Create Project',
                     style: GoogleFonts.inter(
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -178,6 +186,7 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
 
         if (_submitting) _buildProcessingOverlay(),
       ],
+      ),
     );
   }
 
