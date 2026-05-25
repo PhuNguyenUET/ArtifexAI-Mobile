@@ -198,12 +198,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
       ),
       child: Row(
         children: [
-          Container(
-            width: 36, height: 36,
-            decoration: const BoxDecoration(color: AppColor.primaryBackground, shape: BoxShape.circle),
-            child: const Icon(Icons.auto_awesome, size: 18, color: AppColor.primary),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

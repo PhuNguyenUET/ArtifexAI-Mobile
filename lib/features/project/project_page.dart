@@ -485,7 +485,7 @@ class _ProjectViewState extends State<_ProjectView> {
               shape: BoxShape.circle,
               gradient: LinearGradient(colors: meta.colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
             ),
-            child: Icon(meta.icon, size: 18, color: Colors.white),
+            child: const Icon(Icons.brush, size: 18, color: Colors.white),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -2050,13 +2050,12 @@ class _ModelSelector extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 72,
+          height: 44,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: models.map((model) {
               final isSelected = selected == model;
               final colors = _modelColors[model]!;
-              final icon = _modelIcons[model]!;
 
               final locked = isLocked(model);
 
@@ -2093,8 +2092,8 @@ class _ModelSelector extends StatelessWidget {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeOut,
-                    width: 116,
-                    height: 72,
+                    width: 110,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: locked
                           ? AppColor.spaceCard
@@ -2122,55 +2121,18 @@ class _ModelSelector extends StatelessWidget {
                     ),
                     child: Opacity(
                       opacity: locked ? 0.35 : 1.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                ShaderMask(
-                                  shaderCallback: (b) => LinearGradient(
-                                    colors: colors,
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ).createShader(b),
-                                  child:
-                                      Icon(icon, size: 18, color: Colors.white),
-                                ),
-                                const Spacer(),
-                                if (locked)
-                                  const Icon(Icons.lock_rounded,
-                                      size: 11,
-                                      color: AppColor.spaceTextSecondary)
-                                else if (isSelected)
-                                  Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient:
-                                          LinearGradient(colors: colors),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              model.displayName,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: isSelected && !locked
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: isSelected && !locked
-                                    ? Colors.white
-                                    : AppColor.spaceTextSecondary,
-                              ),
-                            ),
-                          ],
+                      child: Center(
+                        child: Text(
+                          model.displayName,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: isSelected && !locked
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            color: isSelected && !locked
+                                ? Colors.white
+                                : AppColor.spaceTextSecondary,
+                          ),
                         ),
                       ),
                     ),

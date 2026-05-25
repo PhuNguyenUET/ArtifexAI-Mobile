@@ -1517,7 +1517,7 @@ class _ProjectCardState extends State<_ProjectCard>
                           ),
                         ),
                         child: Center(
-                          child: Icon(styleMeta.icon, size: 28,
+                          child: Icon(Icons.brush, size: 28,
                               color: Colors.white.withValues(alpha: 0.9)),
                         ),
                       ),
@@ -1539,7 +1539,7 @@ class _ProjectCardState extends State<_ProjectCard>
                               ),
                               const SizedBox(height: 6),
                               Row(children: [
-                                _buildChip(styleMeta.label, styleMeta.icon,
+                                _buildChip(styleMeta.label, Icons.brush,
                                     styleMeta.colors[0]),
                                 const SizedBox(width: 6),
                                 _buildChip('$instrCount instructions',
@@ -1586,16 +1586,9 @@ class _ProjectCardState extends State<_ProjectCard>
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 10, color: color),
-          const SizedBox(width: 4),
-          Text(label,
-              style: GoogleFonts.inter(
-                  fontSize: 10, fontWeight: FontWeight.w600, color: color)),
-        ],
-      ),
+      child: Text(label,
+          style: GoogleFonts.inter(
+              fontSize: 10, fontWeight: FontWeight.w600, color: color)),
     );
   }
 }
