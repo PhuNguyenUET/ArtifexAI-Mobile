@@ -1142,14 +1142,10 @@ class _ProjectViewState extends State<_ProjectView> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: selected ? AppColor.primary : AppColor.spaceBorder, width: selected ? 1.5 : 1),
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              Icon(meta.icon, size: 14, color: selected ? AppColor.primary : AppColor.spaceTextSecondary),
-              const SizedBox(width: 6),
-              Text(meta.label, style: GoogleFonts.inter(
-                fontSize: 12, fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                color: selected ? AppColor.primary : AppColor.spaceTextSecondary,
-              )),
-            ]),
+            child: Text(meta.label, style: GoogleFonts.inter(
+              fontSize: 12, fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+              color: selected ? AppColor.primary : AppColor.spaceTextSecondary,
+            )),
           ),
         );
       }).toList(),

@@ -132,6 +132,7 @@ class _CreateAlbumBodyState extends State<_CreateAlbumBody> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: false,
       body: Container(
       color: AppColor.spaceCard,
       child: Column(

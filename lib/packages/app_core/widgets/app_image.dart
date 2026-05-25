@@ -66,9 +66,12 @@ class AppImage extends StatelessWidget {
         final devicePixelRatio =
             MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
         // Prefer explicit memCacheWidth, then explicit width, then layout width.
+        // Guard against double.infinity / NaN which would crash .round() → toInt().
+        final effectiveWidth =
+            (width != null && width!.isFinite && width! > 0) ? width : null;
         final resolvedMem = memCacheWidth ??
-            (width != null
-                ? (width! * devicePixelRatio).round()
+            (effectiveWidth != null
+                ? (effectiveWidth * devicePixelRatio).round()
                 : constraints.maxWidth.isFinite && constraints.maxWidth > 0
                     ? (constraints.maxWidth * devicePixelRatio).round()
                     : null);
@@ -77,8 +80,10 @@ class AppImage extends StatelessWidget {
         return (radius == 0) ? img : _buildRadius(img);
       }
 
-      // If a concrete width is already known we can skip the extra layout pass.
-      if (width != null || memCacheWidth != null) {
+      // Skip LayoutBuilder only when width is a real finite value.
+      final hasConcreteWidth =
+          width != null && width!.isFinite && width! > 0;
+      if (hasConcreteWidth || memCacheWidth != null) {
         return inner(const BoxConstraints());
       }
       return LayoutBuilder(builder: (_, constraints) => inner(constraints));
