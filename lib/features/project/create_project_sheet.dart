@@ -267,15 +267,6 @@ class _CreateProjectBodyState extends State<_CreateProjectBody> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 child: Row(
                   children: [
-                    Container(
-                      width: 28, height: 28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(colors: meta.colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
-                      ),
-                      child: Icon(meta.icon, size: 14, color: Colors.white),
-                    ),
-                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(meta.label,
                           maxLines: 1,

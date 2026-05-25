@@ -3,10 +3,27 @@
 part 'user_dto.freezed.dart';
 part 'user_dto.g.dart';
 
-DateTime? _dateFromJson(String? date) =>
-    date == null ? null : DateTime.parse(date);
+DateTime? _dateFromJson(String? date) {
+  if (date == null) return null;
+  // Server returns dd/MM/yyyy format.
+  final parts = date.split('/');
+  if (parts.length == 3) {
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+    if (day != null && month != null && year != null) {
+      return DateTime(year, month, day);
+    }
+  }
+  // Fallback for ISO 8601.
+  return DateTime.tryParse(date);
+}
 
-String? _dateToJson(DateTime? date) => date?.toIso8601String();
+String? _dateToJson(DateTime? date) {
+  if (date == null) return null;
+  // Server expects dd/MM/yyyy format.
+  return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+}
 
 @freezed
 abstract class UserDto with _$UserDto {

@@ -38,7 +38,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() => _saving = true);
 
     final dobString = _selectedDob != null
-        ? '${_selectedDob!.year}-${_selectedDob!.month.toString().padLeft(2, '0')}-${_selectedDob!.day.toString().padLeft(2, '0')}'
+        ? '${_selectedDob!.day.toString().padLeft(2, '0')}/${_selectedDob!.month.toString().padLeft(2, '0')}/${_selectedDob!.year}'
         : null;
 
     final ok = await context.read<HomeController>().editUser(
