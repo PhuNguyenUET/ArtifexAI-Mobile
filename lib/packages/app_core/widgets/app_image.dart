@@ -1,6 +1,34 @@
 ﻿import 'package:artifex_ai_mobile/generated/assets.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart' as fcm;
 
 import '../../index.dart';
+
+/// A shared cache manager with a 30-day stalePeriod and a 500-object limit,
+/// so images are reused across sessions without constantly re-downloading.
+class AppImageCacheManager {
+  static const _key = 'appImageCache';
+
+  static final fcm.CacheManager instance = fcm.CacheManager(
+    fcm.Config(
+      _key,
+      stalePeriod: const Duration(days: 30),
+      maxNrOfCacheObjects: 500,
+    ),
+  );
+}
+
+/// Strips ephemeral query params (Firebase `token`, CDN `X-Goog-Signature`, etc.)
+/// so the disk-cache key stays stable even when the signed URL rotates.
+String _stableCacheKey(String url) {
+  try {
+    final uri = Uri.parse(url);
+    if (uri.queryParameters.isEmpty) return url;
+    final stripped = uri.removeFragment().replace(queryParameters: const {});
+    return stripped.toString();
+  } catch (_) {
+    return url;
+  }
+}
 
 class AppImage extends StatelessWidget {
   final String asset;
@@ -11,6 +39,10 @@ class AppImage extends StatelessWidget {
   final double radius;
   final bool cache;
   final bool inStorage;
+  /// When set, the image is decoded at this width in memory (saves RAM and
+  /// speeds up rendering for thumbnails). Pass the logical pixel width of the
+  /// widget; Flutter will scale up for device pixel ratio automatically.
+  final int? memCacheWidth;
 
   const AppImage({
     super.key,
@@ -22,15 +54,39 @@ class AppImage extends StatelessWidget {
     this.radius = 0,
     this.cache = true,
     this.inStorage = false,
+    this.memCacheWidth,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (!inStorage && isNetworkAsset() && !isSvgAsset()) {
+      // Use LayoutBuilder so we always know the rendered size,
+      // even when no explicit width/height is passed (e.g. grid thumbnails).
+      Widget inner(BoxConstraints constraints) {
+        final devicePixelRatio =
+            MediaQuery.maybeDevicePixelRatioOf(context) ?? 1.0;
+        // Prefer explicit memCacheWidth, then explicit width, then layout width.
+        final resolvedMem = memCacheWidth ??
+            (width != null
+                ? (width! * devicePixelRatio).round()
+                : constraints.maxWidth.isFinite && constraints.maxWidth > 0
+                    ? (constraints.maxWidth * devicePixelRatio).round()
+                    : null);
+
+        final img = _buildNetworkImgResolved(resolvedMem);
+        return (radius == 0) ? img : _buildRadius(img);
+      }
+
+      // If a concrete width is already known we can skip the extra layout pass.
+      if (width != null || memCacheWidth != null) {
+        return inner(const BoxConstraints());
+      }
+      return LayoutBuilder(builder: (_, constraints) => inner(constraints));
+    }
+
     late Widget child;
     if (inStorage) {
       child = _buildStorageImage();
-    } else if (isNetworkAsset()) {
-      child = _buildNetworkImg();
     } else if (isSvgAsset()) {
       child = _buildSvg();
     } else {
@@ -86,21 +142,28 @@ class AppImage extends StatelessWidget {
     );
   }
 
-  Widget _buildNetworkImg() {
-    return cache
-        ? CachedNetworkImage(
-            imageUrl: asset,
-            width: width,
-            height: height,
-            fit: fit,
-            errorWidget: (_, __, ___) {
-              return AppSkeletonWidget(width: width, height: height);
-            },
-          )
-        : Image.network(asset, width: width, height: height, fit: fit,
-            errorBuilder: (_, __, ___) {
-            return AppSkeletonWidget(width: width, height: height);
-          });
+  Widget _buildNetworkImgResolved(int? resolvedMemCacheWidth) {
+    if (!cache) {
+      return Image.network(
+        asset,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: asset,
+      cacheKey: _stableCacheKey(asset),
+      cacheManager: AppImageCacheManager.instance,
+      width: width,
+      height: height,
+      fit: fit,
+      memCacheWidth: resolvedMemCacheWidth,
+      fadeInDuration: const Duration(milliseconds: 300),
+      errorWidget: (_, __, ___) => const SizedBox.shrink(),
+    );
   }
 }
 
