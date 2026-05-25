@@ -21,6 +21,15 @@ class ProjectController extends Cubit<ProjectState> {
     emit(state.copyWith(instructions: List.unmodifiable(instructions)));
   }
 
+  Future<void> refreshInstructions({required int projectId}) async {
+    try {
+      final project = await _storage.repository.getProjectById(projectId: projectId);
+      emit(state.copyWith(instructions: List.unmodifiable(project.instructions ?? [])));
+    } catch (_) {
+      // Silently fail — keep whatever is already in state.
+    }
+  }
+
   Future<void> deleteInstruction({
     required int projectId,
     required int index,

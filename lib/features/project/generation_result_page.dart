@@ -1,4 +1,5 @@
 ﻿import 'package:carousel_slider/carousel_slider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../init/access_token_storage.dart';
 import '../../init/sl.dart';
@@ -118,6 +119,60 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
     }
   }
 
+  Future<void> _saveVideoToGallery() async {
+    if (_isSaving || widget.videoUrl == null) return;
+    setState(() => _isSaving = true);
+
+    try {
+      final permission = await PhotoManager.requestPermissionExtend();
+      if (!permission.hasAccess) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+          icon: Icons.lock_outline_rounded,
+          message: 'Photo library permission denied. Please enable it in Settings.',
+          color: Colors.redAccent,
+        ));
+        return;
+      }
+
+      final response = await Dio().get<List<int>>(
+        widget.videoUrl!,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final bytes = Uint8List.fromList(response.data!);
+
+      final fileName = Uri.parse(widget.videoUrl!).pathSegments.lastWhere(
+            (s) => s.isNotEmpty,
+            orElse: () => 'artifex_${DateTime.now().millisecondsSinceEpoch}.mp4',
+          );
+
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File('${tempDir.path}/$fileName');
+      await tempFile.writeAsBytes(bytes);
+
+      await PhotoManager.editor.saveVideo(tempFile, title: fileName);
+
+      await tempFile.delete();
+      await widget.homeController.fetchGallery();
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        icon: Icons.check_circle_outline,
+        message: 'Video saved to your gallery',
+        color: const Color(0xFF2ECC71),
+      ));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        icon: Icons.error_outline_rounded,
+        message: 'Could not save video: ${e.toString()}',
+        color: Colors.redAccent,
+      ));
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
   SnackBar _snackBar({
     required IconData icon,
     required String message,
@@ -189,7 +244,7 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
               ],
             ),
           ),
-          if (!_single)
+          if (!_isVideo && !_single)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -401,39 +456,39 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: _videoInitialized && _videoCtrl != null
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
-                      child: AspectRatio(
-                        aspectRatio: _videoCtrl!.value.aspectRatio,
-                        child: VideoPlayer(_videoCtrl!),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: () => setState(() {
-                        _videoCtrl!.value.isPlaying
-                            ? _videoCtrl!.pause()
-                            : _videoCtrl!.play();
-                      }),
-                      child: Container(
-                        width: 52, height: 52,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColor.spaceCardHigh,
-                          border: Border.all(color: AppColor.spaceBorder),
+              ? GestureDetector(
+                  onTap: () => setState(() {
+                    _videoCtrl!.value.isPlaying
+                        ? _videoCtrl!.pause()
+                        : _videoCtrl!.play();
+                  }),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppStyleConstant.largeRounding),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _videoCtrl!.value.aspectRatio,
+                          child: VideoPlayer(_videoCtrl!),
                         ),
-                        child: Icon(
-                          _videoCtrl!.value.isPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          color: Colors.white, size: 28,
+                        AnimatedOpacity(
+                          opacity: _videoCtrl!.value.isPlaying ? 0.0 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Container(
+                            width: 56, height: 56,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withValues(alpha: 0.55),
+                            ),
+                            child: const Icon(
+                              Icons.play_arrow_rounded,
+                              color: Colors.white, size: 32,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 )
               : Container(
                   height: 220,
@@ -556,7 +611,16 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
           ],
           Row(
             children: [
-              if (!_isVideo) ...[
+              if (_isVideo) ...[
+                Expanded(
+                  child: _ActionButton(
+                    icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_alt_rounded,
+                    label: 'Save Video',
+                    gradient: const [AppColor.gradientStart3, AppColor.gradientEnd3],
+                    onTap: _isSaving ? null : _saveVideoToGallery,
+                  ),
+                ),
+              ] else ...[
                 Expanded(
                   child: _ActionButton(
                     icon: _isSaving ? Icons.hourglass_top_rounded : Icons.save_alt_rounded,
@@ -580,7 +644,6 @@ class _GenerationResultPageState extends State<GenerationResultPage> {
                     ),
                   ),
                 ],
-
               ],
             ],
           ),

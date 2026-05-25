@@ -530,8 +530,10 @@ class _ProjectViewState extends State<_ProjectView> {
     return Tooltip(
       message: 'Instructions',
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
           final ctrl = context.read<ProjectController>();
+          await ctrl.refreshInstructions(projectId: widget.project.id!);
+          if (!context.mounted) return;
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -1183,25 +1185,41 @@ class _ProjectViewState extends State<_ProjectView> {
     return BlocBuilder<ProjectController, ProjectState>(
       builder: (context, state) {
         final model = state.generationModel;
+        final mode = state.mode;
         final String title;
         final String subtitle;
-        switch (model) {
-          case GenerationModel.gpt:
-            title = 'Generating with ChatGPT…';
-            subtitle = 'GPT-Image-2 is crafting your image.\nThis may take a moment.';
-            break;
-          case GenerationModel.gemini:
-            title = 'Generating with Gemini…';
-            subtitle = 'The AI is working its magic.\nThis may take up to a minute.';
-            break;
-          case GenerationModel.flux2:
-            title = 'Generating with Flux-2…';
-            subtitle = 'This may take a moment while the model renders.';
-            break;
-          case GenerationModel.qwen:
-            title = 'Generating with Qwen…';
-            subtitle = 'This may take a moment while the model renders.';
-            break;
+
+        if (mode == GenerationMode.video) {
+          title = 'Generating your video…';
+          subtitle = 'Your video is being rendered.\nThis may take a moment.';
+        } else if (mode == GenerationMode.upscale) {
+          title = 'Upscaling your image…';
+          subtitle = 'Enhancing resolution. This may take a moment.';
+        } else if (mode == GenerationMode.styleChange) {
+          title = 'Applying style…';
+          subtitle = 'Transforming your image to the target style.\nThis may take a moment.';
+        } else if (mode == GenerationMode.spriteSheet) {
+          title = 'Generating sprite sheet…';
+          subtitle = 'Your sprite sheet is being crafted.\nThis may take a moment.';
+        } else {
+          switch (model) {
+            case GenerationModel.gpt:
+              title = 'Generating with ChatGPT…';
+              subtitle = 'GPT-Image-2 is crafting your image.\nThis may take a moment.';
+              break;
+            case GenerationModel.gemini:
+              title = 'Generating with Gemini…';
+              subtitle = 'The AI is working its magic.\nThis may take up to a minute.';
+              break;
+            case GenerationModel.flux2:
+              title = 'Generating with Flux-2…';
+              subtitle = 'This may take a moment while the model renders.';
+              break;
+            case GenerationModel.qwen:
+              title = 'Generating with Qwen…';
+              subtitle = 'This may take a moment while the model renders.';
+              break;
+          }
         }
         return Positioned.fill(
           child: Container(
